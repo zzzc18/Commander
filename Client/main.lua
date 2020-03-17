@@ -1,14 +1,21 @@
 package.path = package.path .. ";../?.lua;..\\?.lua"
 package.cpath = package.cpath .. ";../?.so;..\\?.dll"
 
+CGameMap = require("lib.GameMap")
+CSystem = require("lib.System")
+
 Sock = require("sock")
 Bitser = require("spec.bitser")
+PlayGame = require("PlayGame.PlayGame")
+require("System.Picture")
+require("System.BasicMap")
+require("System.MapAdjust")
+require("Init")
 
 Running = {}
 
 function love.load()
-    Init.Init()
-    -- Running = Menu
+    Running = PlayGame
     Running.Init()
 end
 

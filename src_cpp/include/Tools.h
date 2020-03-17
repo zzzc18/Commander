@@ -2,6 +2,7 @@
 #define Tools_H
 
 #include <utility>
+#include <iostream>
 
 inline std::pair<int, int> operator+(std::pair<int, int> x,
                                      std::pair<int, int> y) {

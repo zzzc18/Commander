@@ -1,5 +1,6 @@
 #include "GameMap.h"
 #include <cstdlib>
+#include <iostream>
 using namespace std;
 
 // NODE_TYPE _type = NODE_TYPE_BLANK, int _unitNum = 0, int _belong = 0
@@ -34,6 +35,25 @@ void NODE::BigUpdate() {
     }
 }
 
+string NODE::GetType() {
+    switch (type) {
+        case NODE_TYPE_BLANK:
+            return "NODE_TYPE_BLANK";
+        case NODE_TYPE_HILL:
+            return "NODE_TYPE_HILL";
+        case NODE_TYPE_FORT:
+            return "NODE_TYPE_FORT";
+        case NODE_TYPE_KING:
+            return "NODE_TYPE_KING";
+        case NODE_TYPE_OBSTACLE:
+            return "NODE_TYPE_OBSTACLE";
+        case NODE_TYPE_MARSH:
+            return "NODE_TYPE_MARSH";
+        default:
+            break;
+    }
+}
+
 ////////////////////////////////////////////////////////////
 
 void MAP::Update() {
@@ -54,12 +74,14 @@ void MAP::BigUpdate() {
 
 void MAP::InitNode(int x, int y, NODE_TYPE type) {
     if (type == NODE_TYPE_FORT) {
-        int num = 40 + rand() / RAND_MAX * 10;
+        int num = 40 + 1.0 * rand() / RAND_MAX * 10;
         mat[x][y] = NODE(type, num);
     } else {
         mat[x][y] = NODE(type);
     }
 }
+
+string MAP::GetNodeType(int x, int y) { return mat[x][y].GetType(); }
 
 bool MAP::InMap(int x, int y) {
     return x >= 0 && x < MainMap->GetSize().first && y >= 0 &&

@@ -16,7 +16,7 @@ NODE_TYPE tmpMap[50][50];
 }
 
 NODE_TYPE RandomNode(int level) {
-    double ratio = rand() / RAND_MAX;
+    double ratio = 1.0 * rand() / RAND_MAX;
     if (level == 0) {
         if (ratio < 0.70) {
             return NODE_TYPE_BLANK;
@@ -42,6 +42,7 @@ NODE_TYPE RandomNode(int level) {
 }
 
 bool CheckKingConnectivity(vector<pair<int, int>> kingPos) {
+    return true;
     using Random_Gen_Map::tmpMap;
     bool vis[50][50];
     memset(vis, 0, sizeof(vis));
@@ -52,10 +53,14 @@ bool CheckKingConnectivity(vector<pair<int, int>> kingPos) {
     direct[3] = {0, -1};
     queue<pair<int, int>> que;
     que.push(kingPos[0]);
-    int kingNumFound = 1;
+    int kingNumFound = 0;
     while (true) {
         pair<int, int> fro = que.front();
+        cerr << fro.first << " " << fro.second << endl;
         que.pop();
+        if (vis[fro.second][fro.second]) {
+            continue;
+        }
         if (tmpMap[fro.second][fro.second] == NODE_TYPE_KING) {
             kingNumFound++;
             if (kingNumFound == kingPos.size()) return true;
@@ -87,8 +92,8 @@ void RandomGenMap(int playerNum, int level) {
     vector<pair<int, int>> kingPos;
     for (int i = 1; i <= playerNum; i++) {
         int x, y;
-        x = rand() / RAND_MAX * size.first;
-        y = rand() / RAND_MAX * size.second;
+        x = 1.0 * rand() / RAND_MAX * size.first;
+        y = 1.0 * rand() / RAND_MAX * size.second;
         tmpMap[x][y] = NODE_TYPE_KING;
         kingPos.push_back({x, y});
     }
@@ -97,7 +102,6 @@ void RandomGenMap(int playerNum, int level) {
     }
     for (int i = 0; i < size.first; i++) {
         for (int j = 0; j < size.second; j++) {
-            //由于地图不能太规整，所以我们按概率生成
             MainMap->InitNode(i, j, tmpMap[i][j]);
         }
     }

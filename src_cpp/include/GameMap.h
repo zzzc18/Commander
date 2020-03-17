@@ -2,6 +2,8 @@
 #define GameMap_H
 
 #include <utility>
+#include <string>
+#include <iostream>
 #include "LuaAPI.h"
 
 enum NODE_TYPE {
@@ -20,6 +22,7 @@ class NODE {
     // 每25秒大更新
     void BigUpdate();
     void ModifyBelong(int id);
+    std::string GetType();
     NODE(NODE_TYPE _type = NODE_TYPE_BLANK, int _unitNum = 0, int _belong = 0);
 
    protected:
@@ -35,6 +38,7 @@ class MAP {
     // 每25秒大更新
     void BigUpdate();
 
+    std::string GetNodeType(int x, int y);
     void InitNode(int x, int y, NODE_TYPE type);
     void SetKingPos(int id, std::pair<int, int> pos);
     bool InMap(int x, int y);
