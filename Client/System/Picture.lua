@@ -1,0 +1,3 @@
+Picture = {}
+
+return Picture
