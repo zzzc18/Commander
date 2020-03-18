@@ -2,9 +2,9 @@ PlayGame = {}
 
 function PlayGame.Init(MapMode)
     Picture.Init()
-    -- CGameMap.RandomGenMap()
+    CGameMap.RandomGenMap()
     -- CGameMap.WriteMap()
-    CGameMap.LoadMap()
+    -- CGameMap.LoadMap()
     BasicMap.Init()
 end
 

@@ -1,10 +1,12 @@
 #include "GameMap.h"
-#include "Tools.h"
-#include <ctime>
+
 #include <cstdlib>
-#include <vector>
-#include <queue>
 #include <cstring>
+#include <ctime>
+#include <queue>
+#include <vector>
+
+#include "Tools.h"
 using namespace std;
 
 MAP* MainMap;
@@ -42,7 +44,9 @@ NODE_TYPE RandomNode(int level) {
 bool CheckKingConnectivity(vector<pair<int, int>> kingPos) {
     using Random_Gen_Map::tmpMap;
     bool vis[50][50];
+    bool inQue[50][50];
     memset(vis, 0, sizeof(vis));
+    memset(inQue, 0, sizeof(inQue));
     pair<int, int> direct[4];
     direct[0] = {1, 0};
     direct[1] = {0, 1};
@@ -51,13 +55,13 @@ bool CheckKingConnectivity(vector<pair<int, int>> kingPos) {
     queue<pair<int, int>> que;
     que.push(kingPos[0]);
     int kingNumFound = 0;
+    inQue[kingPos[0].first][kingPos[0].second] = false;
+
     while (true) {
         pair<int, int> fro = que.front();
         que.pop();
-        if (vis[fro.first][fro.second]) {
-            continue;
-        }
-        if (tmpMap[fro.second][fro.second] == NODE_TYPE_KING) {
+        inQue[fro.first][fro.second] = false;
+        if (tmpMap[fro.first][fro.second] == NODE_TYPE_KING) {
             kingNumFound++;
             if (kingNumFound == kingPos.size()) return true;
         }
@@ -66,13 +70,10 @@ bool CheckKingConnectivity(vector<pair<int, int>> kingPos) {
             pair<int, int> nex = fro + direct[i];
             if (MainMap->InMap(nex)) {
                 if (!vis[nex.first][nex.second] &&
+                    !inQue[nex.first][nex.second] &&
                     tmpMap[nex.first][nex.second] != NODE_TYPE_HILL) {
-                    cerr << "///////////" << endl;
-                    cerr << fro.first << " " << fro.second << endl;
-                    cerr << "------------->" << endl;
-                    cerr << nex.first << " " << nex.second << endl;
-                    cerr << "///////////" << endl;
                     que.push(nex);
+                    inQue[nex.first][nex.second] = true;
                 }
             }
         }
@@ -119,15 +120,6 @@ void LoadMap() {
     ifstream fin("Input/map.map");
     fin >> MainMap;
     fin.close();
-    // vector<pair<int, int>> tmp;
-    // for (int i = 0; i < MainMap->GetSize().first; i++) {
-    //     for (int j = 0; j < MainMap->GetSize().second; j++) {
-    //         if (MainMap->GetNode(i, j).GetType() == "NODE_TYPE_KING") {
-    //             tmp.push_back({i, j});
-    //         }
-    //     }
-    // }
-    // CheckKingConnectivity(tmp);
 }
 
 void WriteMap() {
