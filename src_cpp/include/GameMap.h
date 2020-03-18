@@ -4,6 +4,7 @@
 #include <utility>
 #include <string>
 #include <iostream>
+#include <fstream>
 #include "LuaAPI.h"
 
 enum NODE_TYPE {
@@ -21,8 +22,15 @@ class NODE {
     void Update();
     // 每25秒大更新
     void BigUpdate();
+
+    std::string GetType() const;
+    int GetUnitNum() const;
+    int GetBelong() const;
+
+    void ModifyUnitNum(int _unitNum);
     void ModifyBelong(int id);
-    std::string GetType();
+    void ModifyType(std::string _type);
+    void ModifyType(NODE_TYPE _type);
     NODE(NODE_TYPE _type = NODE_TYPE_BLANK, int _unitNum = 0, int _belong = 0);
 
    protected:
@@ -43,8 +51,10 @@ class MAP {
     void SetKingPos(int id, std::pair<int, int> pos);
     bool InMap(int x, int y);
     bool InMap(std::pair<int, int> pos);
-    std::pair<int, int> GetSize();
+    std::pair<int, int> GetSize() const;
     MAP(int x, int y);
+    NODE GetNode(int x, int y) const;
+    void ModifyNode(int x, int y, NODE node);
 
    private:
     NODE mat[50][50];
@@ -54,6 +64,11 @@ class MAP {
 void LoadMap();
 void RandomGenMap(int playerNum = 0, int level = 0);
 void WriteMap();
+
+std::ifstream& operator>>(std::ifstream& _ifstream, NODE& node);
+std::ofstream& operator<<(std::ofstream& _ofstream, const NODE& node);
+std::ifstream& operator>>(std::ifstream& _ifstream, MAP*& mapPtr);
+std::ofstream& operator<<(std::ofstream& _ofstream, const MAP* mapPtr);
 
 extern MAP* MainMap;
 

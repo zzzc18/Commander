@@ -8,6 +8,17 @@ NODE::NODE(NODE_TYPE _type, int _unitNum, int _belong)
     : type(_type), unitNum(_unitNum), belong(_belong) {}
 
 void NODE::ModifyBelong(int id) { belong = id; }
+void NODE::ModifyUnitNum(int _unitNum) { unitNum = _unitNum; }
+void NODE::ModifyType(NODE_TYPE _type) { type = _type; }
+
+void NODE::ModifyType(std::string _type) {
+    if (_type == "NODE_TYPE_BLANK") type = NODE_TYPE_BLANK;
+    if (_type == "NODE_TYPE_HILL") type = NODE_TYPE_HILL;
+    if (_type == "NODE_TYPE_FORT") type = NODE_TYPE_FORT;
+    if (_type == "NODE_TYPE_KING") type = NODE_TYPE_KING;
+    if (_type == "NODE_TYPE_OBSTACLE") type = NODE_TYPE_OBSTACLE;
+    if (_type == "NODE_TYPE_MARSH") type = NODE_TYPE_MARSH;
+}
 
 void NODE::Update() {
     if (!belong) return;
@@ -35,7 +46,7 @@ void NODE::BigUpdate() {
     }
 }
 
-string NODE::GetType() {
+string NODE::GetType() const {
     switch (type) {
         case NODE_TYPE_BLANK:
             return "NODE_TYPE_BLANK";
@@ -53,6 +64,9 @@ string NODE::GetType() {
             break;
     }
 }
+
+int NODE::GetUnitNum() const { return unitNum; }
+int NODE::GetBelong() const { return belong; }
 
 ////////////////////////////////////////////////////////////
 
@@ -90,10 +104,14 @@ bool MAP::InMap(int x, int y) {
 
 bool MAP::InMap(pair<int, int> pos) { return InMap(pos.first, pos.second); }
 
-pair<int, int> MAP::GetSize() { return {sizeX, sizeY}; }
+pair<int, int> MAP::GetSize() const { return {sizeX, sizeY}; }
 
 MAP::MAP(int _sizeX, int _sizeY) : sizeX(_sizeX), sizeY(_sizeY) {}
 
 void MAP::SetKingPos(int id, pair<int, int> pos) {
     mat[pos.first][pos.second].ModifyBelong(id);
 }
+
+NODE MAP::GetNode(int x, int y) const { return mat[x][y]; }
+
+void MAP::ModifyNode(int x, int y, NODE node) { mat[x][y] = node; }

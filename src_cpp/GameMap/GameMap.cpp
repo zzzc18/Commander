@@ -9,8 +9,6 @@ using namespace std;
 
 MAP* MainMap;
 
-void LoadMap() {}
-
 namespace Random_Gen_Map {
 NODE_TYPE tmpMap[50][50];
 }
@@ -42,7 +40,6 @@ NODE_TYPE RandomNode(int level) {
 }
 
 bool CheckKingConnectivity(vector<pair<int, int>> kingPos) {
-    return true;
     using Random_Gen_Map::tmpMap;
     bool vis[50][50];
     memset(vis, 0, sizeof(vis));
@@ -56,9 +53,8 @@ bool CheckKingConnectivity(vector<pair<int, int>> kingPos) {
     int kingNumFound = 0;
     while (true) {
         pair<int, int> fro = que.front();
-        cerr << fro.first << " " << fro.second << endl;
         que.pop();
-        if (vis[fro.second][fro.second]) {
+        if (vis[fro.first][fro.second]) {
             continue;
         }
         if (tmpMap[fro.second][fro.second] == NODE_TYPE_KING) {
@@ -68,9 +64,16 @@ bool CheckKingConnectivity(vector<pair<int, int>> kingPos) {
         vis[fro.first][fro.second] = 1;
         for (int i = 0; i < 4; i++) {
             pair<int, int> nex = fro + direct[i];
-            if (!vis[nex.first][nex.second] && MainMap->InMap(nex) &&
-                tmpMap[nex.first][nex.second] != NODE_TYPE_HILL) {
-                que.push(nex);
+            if (MainMap->InMap(nex)) {
+                if (!vis[nex.first][nex.second] &&
+                    tmpMap[nex.first][nex.second] != NODE_TYPE_HILL) {
+                    cerr << "///////////" << endl;
+                    cerr << fro.first << " " << fro.second << endl;
+                    cerr << "------------->" << endl;
+                    cerr << nex.first << " " << nex.second << endl;
+                    cerr << "///////////" << endl;
+                    que.push(nex);
+                }
             }
         }
     }
@@ -110,4 +113,25 @@ void RandomGenMap(int playerNum, int level) {
     }
 }
 
-void WriteMap() {}
+#include <fstream>
+
+void LoadMap() {
+    ifstream fin("Input/map.map");
+    fin >> MainMap;
+    fin.close();
+    // vector<pair<int, int>> tmp;
+    // for (int i = 0; i < MainMap->GetSize().first; i++) {
+    //     for (int j = 0; j < MainMap->GetSize().second; j++) {
+    //         if (MainMap->GetNode(i, j).GetType() == "NODE_TYPE_KING") {
+    //             tmp.push_back({i, j});
+    //         }
+    //     }
+    // }
+    // CheckKingConnectivity(tmp);
+}
+
+void WriteMap() {
+    ofstream fout("Output/map.map");
+    fout << MainMap << endl;
+    fout.close();
+}

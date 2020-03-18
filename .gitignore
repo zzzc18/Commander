@@ -2,3 +2,5 @@ lib
 src_cpp/Build
 .vscode
 tmp
+Client/Output
+Client/Input
