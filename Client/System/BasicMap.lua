@@ -6,19 +6,28 @@ BasicMap.Focus = {}
 BasicMap.ratio = 1
 BasicMap.edgeLength = 40
 
-function BasicMap.Coornidate2Pixel(x, y)
+function BasicMap.Coordinate2Pixel(x, y)
+    -- 注意地图坐标的第一维是横坐标，第二维是纵坐标
+    -- 而显示的时候，第一维是x轴（水平向右），第二维是y轴（竖直向下）
+    -- 所以在这里要用Focus x,y（地图坐标）对应offset x,y（显示坐标）
     local retX, retY = BasicMap.Focus.pixelX, BasicMap.Focus.pixelY
-    local offsetX, offsetY =
-        (BasicMap.Focus.x - x) * BasicMap.edgeLength,
-        (BasicMap.Focus.y - y) * BasicMap.edgeLength
+    local offsetY, offsetX =
+        (x - BasicMap.Focus.x) * BasicMap.edgeLength,
+        (y - BasicMap.Focus.y) * BasicMap.edgeLength
     retX, retY = retX + offsetX, retY + offsetY
     return retX, retY
 end
 
-function BasicMap.Pixel2Coornidate(pixelX, pixelY)
+function BasicMap.Pixel2Coordinate(pixelX, pixelY)
     local retX, retY
     for i = 0, BasicMap.MapSize.x - 1 do
-        local tmpx, tmpy = BasicMap.Coornidate2Pixel(i, 0)
+        local tmpx, tmpy = BasicMap.Coordinate2Pixel(i, 0)
+        print(tmpx, tmpy)
+        -- print(
+        --     tmpy - BasicMap.edgeLength / 2,
+        --     pixelY,
+        --     tmpy + BasicMap.edgeLength / 2
+        -- )
         if
             tmpy - BasicMap.edgeLength / 2 < pixelY and
                 pixelY < tmpy + BasicMap.edgeLength / 2
@@ -28,7 +37,12 @@ function BasicMap.Pixel2Coornidate(pixelX, pixelY)
         end
     end
     for i = 0, BasicMap.MapSize.y - 1 do
-        local tmpx, tmpy = BasicMap.Coornidate2Pixel(0, i)
+        local tmpx, tmpy = BasicMap.Coordinate2Pixel(0, i)
+        -- print(
+        --     tmpx - BasicMap.edgeLength / 2,
+        --     pixelX,
+        --     tmpx + BasicMap.edgeLength / 2
+        -- )
         if
             tmpx - BasicMap.edgeLength / 2 < pixelX and
                 pixelX < tmpx + BasicMap.edgeLength / 2
@@ -47,7 +61,7 @@ function BasicMap.Pixel2Coornidate(pixelX, pixelY)
 end
 
 function BasicMap.DrawNode(x, y)
-    local pixelX, pixelY = BasicMap.Coornidate2Pixel(x, y)
+    local pixelX, pixelY = BasicMap.Coordinate2Pixel(x, y)
     Picture.DrawNode(
         pixelX,
         pixelY,

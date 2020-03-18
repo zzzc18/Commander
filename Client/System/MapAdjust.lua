@@ -1,56 +1,40 @@
 MapAdjust = {}
 
-local focusNeedUpdate = false
+MapAdjust.focusNeedUpdate = false
+MapAdjust.mousePrePos = nil
 
--- function MapAdjust.ChangeFocus(mouseState)
---     if
---         (love.keyboard.isDown("rctrl") or love.keyboard.isDown("lctrl")) and
---             love.mouse.isDown(1)
---      then
---         local x, y = love.mouse.getPosition()
---         local det = {}
---         det["X"] = x - mouseState["X"]
---         det["Y"] = y - mouseState["Y"]
---         mouseState["X"] = x
---         mouseState["Y"] = y
---         Focus["PixelX"] = Focus["PixelX"] + det["X"]
---         Focus["PixelY"] = Focus["PixelY"] + det["Y"]
---         focusNeedUpdate = true
---     elseif focusNeedUpdate then
---         -- update focusX,foucsY
---         focusNeedUpdate = false
---         local center = {}
---         center["PixelX"], center["PixelY"] = love.graphics.getDimensions()
---         center["PixelX"] = center["PixelX"] / 2
---         center["PixelY"] = center["PixelY"] / 2
---         local x, y =
---             CMap.Pixel2Coordinate(
---             center["PixelX"],
---             center["PixelY"],
---             Focus["X"],
---             Focus["Y"],
---             Focus["PixelX"],
---             Focus["PixelY"],
---             Radius
---         )
---         -- (x,y)<->(pixelX, pixelY)
---         local pixelX, pixelY =
---             CMap.Coordinate2Pixel(
---             x,
---             y,
---             Focus["X"],
---             Focus["Y"],
---             Focus["PixelX"],
---             Focus["PixelY"],
---             Radius
---         )
---         Focus["X"], Focus["Y"] = x, y
---         Focus["PixelX"], Focus["PixelY"] = pixelX, pixelY
---     end
---     return mouseState["X"], mouseState["Y"]
--- end
+function MapAdjust.ChangeFocusUpdate()
+    if MapAdjust.mousePrePos == nil then
+        return
+    end
+    if
+        (love.keyboard.isDown("rctrl") or love.keyboard.isDown("lctrl")) and
+            love.mouse.isDown(1)
+     then
+        local x, y = love.mouse.getPosition()
+        local det = {}
+        det.x = x - MapAdjust.mousePrePos.x
+        det.y = y - MapAdjust.mousePrePos.y
+        BasicMap.Focus.pixelX = BasicMap.Focus.pixelX + det.x
+        BasicMap.Focus.pixelY = BasicMap.Focus.pixelY + det.y
+        MapAdjust.focusNeedUpdate = true
+    elseif MapAdjust.focusNeedUpdate then
+        -- update focusX,foucsY
+        MapAdjust.focusNeedUpdate = false
+        local center = {}
+        center.pixelX, center.pixelY = love.graphics.getDimensions()
+        center.pixelX, center.pixelY = center.pixelX / 2, center.pixelY / 2
+        local x, y = BasicMap.Pixel2Coordinate(center.pixelX, center.pixelY)
 
-function MapAdjust.ChangeSize()
+        print(x, y)
+        -- (x,y)<->(pixelX, pixelY)
+        local pixelX, pixelY = BasicMap.Coordinate2Pixel(x, y)
+        BasicMap.Focus.x, BasicMap.Focus.y = x, y
+        BasicMap.Focus.pixelX, BasicMap.Focus.pixelY = pixelX, pixelY
+    end
+end
+
+function MapAdjust.ChangeSizeUpdate()
     BasicMap.edgeLength = BasicMap.edgeLength * BasicMap.ratio
     if BasicMap.edgeLength > 100 then
         BasicMap.edgeLength = 100
@@ -75,6 +59,21 @@ function MapAdjust.Catchwheelmoved(x, y)
         elseif y < 0 then
             BasicMap.ratio = 0.9 ^ BasicMap.ratio
         end
+    end
+end
+
+function MapAdjust.Update()
+    MapAdjust.ChangeSizeUpdate()
+    MapAdjust.ChangeFocusUpdate()
+    if
+        (love.keyboard.isDown("rctrl") or love.keyboard.isDown("lctrl")) and
+            love.mouse.isDown(1)
+     then
+        MapAdjust.mousePrePos = {}
+        MapAdjust.mousePrePos.x, MapAdjust.mousePrePos.y =
+            love.mouse.getPosition()
+    else
+        MapAdjust.mousePrePos = nil
     end
 end
 
