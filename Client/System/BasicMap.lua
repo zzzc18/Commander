@@ -22,12 +22,6 @@ function BasicMap.Pixel2Coordinate(pixelX, pixelY)
     local retX, retY
     for i = 0, BasicMap.MapSize.x - 1 do
         local tmpx, tmpy = BasicMap.Coordinate2Pixel(i, 0)
-        print(tmpx, tmpy)
-        -- print(
-        --     tmpy - BasicMap.edgeLength / 2,
-        --     pixelY,
-        --     tmpy + BasicMap.edgeLength / 2
-        -- )
         if
             tmpy - BasicMap.edgeLength / 2 < pixelY and
                 pixelY < tmpy + BasicMap.edgeLength / 2
@@ -38,11 +32,6 @@ function BasicMap.Pixel2Coordinate(pixelX, pixelY)
     end
     for i = 0, BasicMap.MapSize.y - 1 do
         local tmpx, tmpy = BasicMap.Coordinate2Pixel(0, i)
-        -- print(
-        --     tmpx - BasicMap.edgeLength / 2,
-        --     pixelX,
-        --     tmpx + BasicMap.edgeLength / 2
-        -- )
         if
             tmpx - BasicMap.edgeLength / 2 < pixelX and
                 pixelX < tmpx + BasicMap.edgeLength / 2
@@ -60,8 +49,23 @@ function BasicMap.Pixel2Coordinate(pixelX, pixelY)
     return retX, retY
 end
 
+function BasicMap.SetNodeColor(x, y)
+    local unitNum = CGameMap.GetUnitNum(x, y)
+    local belong = CGameMap.GetBelong(x, y)
+    if belong == 0 then
+        if CGameMap.GetVision(x, y) then
+            love.graphics.setColor(Color.Army(0))
+        else
+            love.graphics.setColor(1, 1, 1, 0.2)
+        end
+    else
+        love.graphics.setColor(Color.Army(belong))
+    end
+end
+
 function BasicMap.DrawNode(x, y)
     local pixelX, pixelY = BasicMap.Coordinate2Pixel(x, y)
+    BasicMap.SetNodeColor(x, y)
     Picture.DrawNode(
         pixelX,
         pixelY,

@@ -1,11 +1,15 @@
 PlayGame = {}
 
+PlayGame.GameState = "READY"
+PlayGame.ArmyID = nil
+
 function PlayGame.Init(MapMode)
     Picture.Init()
     CGameMap.RandomGenMap()
-    CGameMap.WriteMap()
+    -- CGameMap.WriteMap()
     -- CGameMap.LoadMap()
     BasicMap.Init()
+    CVerify.Register(1)
 end
 
 function PlayGame.wheelmoved(x, y)

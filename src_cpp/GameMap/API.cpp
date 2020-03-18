@@ -1,5 +1,7 @@
-#include "GameMap.h"
 #include <string>
+
+#include "GameMap.h"
+#include "Verify.h"
 using namespace std;
 
 static int RandomGenMap(lua_State* L) {
@@ -9,7 +11,6 @@ static int RandomGenMap(lua_State* L) {
 }
 
 static int GetSize(lua_State* L) {
-    if (MainMap == NULL || MainMap == nullptr) cerr << "GG" << endl;
     pair<int, int> ret = MainMap->GetSize();
     lua_pushnumber(L, ret.first);
     lua_pushnumber(L, ret.second);
@@ -28,15 +29,42 @@ static int WriteMap(lua_State* L) {
     return 0;
 }
 
+static int GetUnitNum(lua_State* L) {
+    int x = lua_tonumber(L, 1);
+    int y = lua_tonumber(L, 2);
+    lua_pushnumber(L, MainMap->GetUnitNum(x, y));
+    return 1;
+}
+
+static int GetBelong(lua_State* L) {
+    int x = lua_tonumber(L, 1);
+    int y = lua_tonumber(L, 2);
+    lua_pushnumber(L, MainMap->GetBelong(x, y));
+    return 1;
+}
+
+static int GetVision(lua_State* L) {
+    int x = lua_tonumber(L, 1);
+    int y = lua_tonumber(L, 2);
+    int armyID = GetArmyID();
+    lua_pushboolean(L, GetVision({x, y}, armyID));
+    return 1;
+}
+
 static int LoadMap(lua_State* L) {
     LoadMap();
     return 0;
 }
 
-static const luaL_Reg functions[] = {
-    {"RandomGenMap", RandomGenMap}, {"GetSize", GetSize},
-    {"GetNodeType", GetNodeType},   {"WriteMap", WriteMap},
-    {"LoadMap", LoadMap},           {NULL, NULL}};
+static const luaL_Reg functions[] = {{"RandomGenMap", RandomGenMap},
+                                     {"GetSize", GetSize},
+                                     {"GetNodeType", GetNodeType},
+                                     {"WriteMap", WriteMap},
+                                     {"LoadMap", LoadMap},
+                                     {"GetUnitNum", GetUnitNum},
+                                     {"GetBelong", GetBelong},
+                                     {"GetVision", GetVision},
+                                     {NULL, NULL}};
 
 extern "C" {
 int luaopen_lib_GameMap(lua_State* L) {

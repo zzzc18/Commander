@@ -1,10 +1,11 @@
 #ifndef GameMap_H
 #define GameMap_H
 
-#include <utility>
-#include <string>
-#include <iostream>
 #include <fstream>
+#include <iostream>
+#include <string>
+#include <utility>
+
 #include "LuaAPI.h"
 
 enum NODE_TYPE {
@@ -53,7 +54,11 @@ class MAP {
     bool InMap(std::pair<int, int> pos);
     std::pair<int, int> GetSize() const;
     MAP(int x, int y);
+
     NODE GetNode(int x, int y) const;
+    int GetBelong(int x, int y) const;
+    int GetUnitNum(int x, int y) const;
+
     void ModifyNode(int x, int y, NODE node);
 
    private:
@@ -64,6 +69,8 @@ class MAP {
 void LoadMap();
 void RandomGenMap(int playerNum = 0, int level = 0);
 void WriteMap();
+
+bool GetVision(std::pair<int, int> node, int armyID);
 
 std::ifstream& operator>>(std::ifstream& _ifstream, NODE& node);
 std::ofstream& operator<<(std::ofstream& _ofstream, const NODE& node);

@@ -26,7 +26,6 @@ function MapAdjust.ChangeFocusUpdate()
         center.pixelX, center.pixelY = center.pixelX / 2, center.pixelY / 2
         local x, y = BasicMap.Pixel2Coordinate(center.pixelX, center.pixelY)
 
-        print(x, y)
         -- (x,y)<->(pixelX, pixelY)
         local pixelX, pixelY = BasicMap.Coordinate2Pixel(x, y)
         BasicMap.Focus.x, BasicMap.Focus.y = x, y

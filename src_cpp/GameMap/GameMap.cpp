@@ -114,6 +114,26 @@ void RandomGenMap(int playerNum, int level) {
     }
 }
 
+bool GetVision(pair<int, int> node, int armyID) {
+    pair<int, int> direct[8];
+    direct[0] = {1, 0};
+    direct[1] = {0, 1};
+    direct[2] = {-1, 0};
+    direct[3] = {0, -1};
+    direct[4] = {1, 1};
+    direct[5] = {1, -1};
+    direct[6] = {-1, 1};
+    direct[7] = {-1, -1};
+    for (int i = 0; i < 8; i++) {
+        pair<int, int> nex = node + direct[i];
+        if (!MainMap->InMap(nex)) continue;
+        if (MainMap->GetBelong(nex.first, nex.second) == armyID) {
+            return true;
+        }
+    }
+    return false;
+}
+
 #include <fstream>
 
 void LoadMap() {

@@ -1,6 +1,7 @@
-#include "GameMap.h"
 #include <cstdlib>
 #include <iostream>
+
+#include "GameMap.h"
 using namespace std;
 
 // NODE_TYPE _type = NODE_TYPE_BLANK, int _unitNum = 0, int _belong = 0
@@ -113,5 +114,7 @@ void MAP::SetKingPos(int id, pair<int, int> pos) {
 }
 
 NODE MAP::GetNode(int x, int y) const { return mat[x][y]; }
+int MAP::GetBelong(int x, int y) const { return mat[x][y].GetBelong(); }
+int MAP::GetUnitNum(int x, int y) const { return mat[x][y].GetUnitNum(); }
 
 void MAP::ModifyNode(int x, int y, NODE node) { mat[x][y] = node; }
