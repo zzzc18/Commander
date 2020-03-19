@@ -10,6 +10,12 @@ static int RandomGenMap(lua_State* L) {
     return 0;
 }
 
+/**
+ * @brief 获得地图大小sizeX,sizeY
+ *
+ * @param L
+ * @return int
+ */
 static int GetSize(lua_State* L) {
     pair<int, int> ret = MainMap->GetSize();
     lua_pushnumber(L, ret.first);
