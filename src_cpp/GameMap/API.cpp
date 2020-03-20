@@ -62,19 +62,6 @@ static int LoadMap(lua_State* L) {
     return 0;
 }
 
-static const luaL_Reg functions[] = {{"RandomGenMap", RandomGenMap},
-                                     {"GetSize", GetSize},
-                                     {"GetNodeType", GetNodeType},
-                                     {"WriteMap", WriteMap},
-                                     {"LoadMap", LoadMap},
-                                     {"GetUnitNum", GetUnitNum},
-                                     {"GetBelong", GetBelong},
-                                     {"GetVision", GetVision},
-                                     {NULL, NULL}};
-
-extern "C" {
-int luaopen_lib_GameMap(lua_State* L) {
-    luaL_register(L, "GameMap", functions);
-    return 1;
-}
-}
+LUA_REG_FUNC(GameMap, C_API(RandomGenMap), C_API(GetSize), C_API(GetNodeType),
+             C_API(WriteMap), C_API(LoadMap), C_API(GetUnitNum),
+             C_API(GetBelong), C_API(GetVision));
