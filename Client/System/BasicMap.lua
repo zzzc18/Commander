@@ -40,16 +40,17 @@ function BasicMap.Pixel2Coordinate(pixelX, pixelY)
             break
         end
     end
-    if retX == nil then
-        retX = -1
+    if retY == nil then
+        retX = 1
     end
     if retY == nil then
-        retY = -1
+        retY = 1
     end
     return retX, retY
 end
 
 function BasicMap.SetNodeColor(x, y)
+    local unitNum = CGameMap.GetUnitNum(x, y)
     local belong = CGameMap.GetBelong(x, y)
     if belong == 0 then
         if CGameMap.GetVision(x, y) then
@@ -65,8 +66,12 @@ end
 function BasicMap.DrawNode(x, y)
     local pixelX, pixelY = BasicMap.Coordinate2Pixel(x, y)
     BasicMap.SetNodeColor(x, y)
-    Picture.DrawNode(pixelX, pixelY, BasicMap.Map[x][y].nodeType)
-    local unitNum = CGameMap.GetUnitNum(x, y)
+    Picture.DrawNode(
+        pixelX,
+        pixelY,
+        BasicMap.Map[x][y].nodeType,
+        BasicMap.ratio
+    )
 end
 
 function BasicMap.DrawMap()

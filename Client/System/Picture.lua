@@ -1,64 +1,36 @@
 Picture = {}
 
 NodeImageSet = {}
-SelectImage = {}
 
-function NodeImageSet:Load()
-    self.center = {}
-    self.center.x = 97
-    self.center.y = 97
-    self.divRatio = 195
-    self["NODE_TYPE_BLANK"] =
+function Picture.Init()
+    NodeImageSet.center = {}
+    NodeImageSet.center.x = 97
+    NodeImageSet.center.y = 97
+    NodeImageSet.ratio = 20 / 195
+    NodeImageSet["NODE_TYPE_BLANK"] =
         love.graphics.newImage("data/Picture/NODE_TYPE_BLANK.png")
-    self["NODE_TYPE_HILL"] =
+    NodeImageSet["NODE_TYPE_HILL"] =
         love.graphics.newImage("data/Picture/NODE_TYPE_HILL.png")
-    self["NODE_TYPE_FORT"] =
+    NodeImageSet["NODE_TYPE_FORT"] =
         love.graphics.newImage("data/Picture/NODE_TYPE_FORT.png")
-    self["NODE_TYPE_KING"] =
+    NodeImageSet["NODE_TYPE_KING"] =
         love.graphics.newImage("data/Picture/NODE_TYPE_KING.png")
-    self["NODE_TYPE_OBSTACLE"] =
+    NodeImageSet["NODE_TYPE_OBSTACLE"] =
         love.graphics.newImage("data/Picture/NODE_TYPE_OBSTACLE.png")
-    self["NODE_TYPE_MARSH"] =
+    NodeImageSet["NODE_TYPE_MARSH"] =
         love.graphics.newImage("data/Picture/NODE_TYPE_MARSH.png")
 end
 
-function SelectImage:Load()
-    self.center = {}
-    self.center.x = 113
-    self.center.y = 113
-    self.divRatio = 195
-    self.image = love.graphics.newImage("data/Picture/Select.png")
-end
-
-function Picture.Init()
-    NodeImageSet:Load()
-    SelectImage:Load()
-end
-
-function Picture.DrawNode(pixelX, pixelY, nodeType)
+function Picture.DrawNode(pixelX, pixelY, nodeType, ratio)
     love.graphics.draw(
         NodeImageSet[nodeType],
         pixelX,
         pixelY,
         0,
-        BasicMap.edgeLength / NodeImageSet.divRatio,
-        BasicMap.edgeLength / NodeImageSet.divRatio,
+        BasicMap.edgeLength / 195,
+        BasicMap.edgeLength / 195,
         NodeImageSet.center.x,
         NodeImageSet.center.y
-    )
-end
-
-function Picture.DrawSelect(pixelX, pixelY)
-    love.graphics.setColor(1, 1, 1)
-    love.graphics.draw(
-        SelectImage.image,
-        pixelX,
-        pixelY,
-        0,
-        BasicMap.edgeLength / SelectImage.divRatio,
-        BasicMap.edgeLength / SelectImage.divRatio,
-        SelectImage.center.x,
-        SelectImage.center.y
     )
 end
 

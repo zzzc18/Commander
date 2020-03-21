@@ -22,10 +22,9 @@ endif()
 #add source files to variable xxx_SOURCE_FILES
 aux_source_directory(GameMap GameMap_SOURCE_FILES)
 aux_source_directory(System System_SOURCE_FILES)
-aux_source_directory(Tools Tools_SOURCE_FILES)
 aux_source_directory(Verify Verify_SOURCE_FILES)
 #generate .so/.dll files
-add_library(GameMap SHARED ${GameMap_SOURCE_FILES} ${Tools_SOURCE_FILES})
+add_library(GameMap SHARED ${GameMap_SOURCE_FILES})
 add_library(System SHARED ${System_SOURCE_FILES})
 add_library(Verify SHARED ${Verify_SOURCE_FILES})
 if(WINDOWS)
