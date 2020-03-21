@@ -19,4 +19,11 @@ static int Update(lua_State* L) {
     return 0;
 }
 
-LUA_REG_FUNC(System, C_API(Update));
+static const luaL_Reg functions[] = {{"Update", Update}, {NULL, NULL}};
+
+extern "C" {
+int luaopen_lib_System(lua_State* L) {
+    luaL_register(L, "System", functions);
+    return 1;
+}
+}

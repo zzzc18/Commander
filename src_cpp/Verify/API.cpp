@@ -7,4 +7,11 @@ static int Register(lua_State* L) {
     return 1;
 }
 
-LUA_REG_FUNC(Verify, C_API(Register));
+static const luaL_Reg functions[] = {{"Register", Register}, {NULL, NULL}};
+
+extern "C" {
+int luaopen_lib_Verify(lua_State* L) {
+    luaL_register(L, "Verify", functions);
+    return 1;
+}
+}

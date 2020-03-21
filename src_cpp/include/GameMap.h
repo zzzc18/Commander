@@ -24,8 +24,7 @@ class NODE {
     // 每25秒大更新
     void BigUpdate();
 
-    std::string GetType() const;  // for Lua
-    NODE_TYPE Type() const;
+    std::string GetType() const;
     int GetUnitNum() const;
     int GetBelong() const;
 
@@ -48,11 +47,11 @@ class MAP {
     // 每25秒大更新
     void BigUpdate();
 
-    std::string GetNodeType(int x, int y) const;
+    std::string GetNodeType(int x, int y);
     void InitNode(int x, int y, NODE_TYPE type);
     void SetKingPos(int id, std::pair<int, int> pos);
-    bool InMap(int x, int y) const;
-    bool InMap(std::pair<int, int> pos) const;
+    bool InMap(int x, int y);
+    bool InMap(std::pair<int, int> pos);
     std::pair<int, int> GetSize() const;
     MAP(int x, int y);
 

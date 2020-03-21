@@ -2,8 +2,6 @@
 #include <iostream>
 
 #include "GameMap.h"
-#include "Tools.h"
-#include "Verify.h"
 using namespace std;
 
 // NODE_TYPE _type = NODE_TYPE_BLANK, int _unitNum = 0, int _belong = 0
@@ -50,7 +48,7 @@ void NODE::BigUpdate() {
 }
 
 string NODE::GetType() const {
-    switch (Type()) {
+    switch (type) {
         case NODE_TYPE_BLANK:
             return "NODE_TYPE_BLANK";
         case NODE_TYPE_HILL:
@@ -64,11 +62,10 @@ string NODE::GetType() const {
         case NODE_TYPE_MARSH:
             return "NODE_TYPE_MARSH";
         default:
-            break;  //或许return空串更好？
+            break;
     }
 }
 
-NODE_TYPE NODE::Type() const { return type; }
 int NODE::GetUnitNum() const { return unitNum; }
 int NODE::GetBelong() const { return belong; }
 
@@ -99,29 +96,14 @@ void MAP::InitNode(int x, int y, NODE_TYPE type) {
     }
 }
 
-string MAP::GetNodeType(int x, int y) const {
-    if (IsViewable(*this, x, y, GetArmyID()))
-        return mat[x][y].GetType();
-    else
-        switch (mat[x][y].Type()) {  //用了switch的直落
-            default:
-                return "NODE_TYPE_HILL";
-            case NODE_TYPE_BLANK:
-            case NODE_TYPE_KING:
-            case NODE_TYPE_OBSTACLE:
-            case NODE_TYPE_MARSH:
-                return mat[x][y].GetType();
-        }
-}
+string MAP::GetNodeType(int x, int y) { return mat[x][y].GetType(); }
 
-bool MAP::InMap(int x, int y) const {
+bool MAP::InMap(int x, int y) {
     return x >= 0 && x < MainMap->GetSize().first && y >= 0 &&
            y < MainMap->GetSize().second;
 }
 
-bool MAP::InMap(pair<int, int> pos) const {
-    return InMap(pos.first, pos.second);
-}
+bool MAP::InMap(pair<int, int> pos) { return InMap(pos.first, pos.second); }
 
 pair<int, int> MAP::GetSize() const { return {sizeX, sizeY}; }
 
@@ -132,14 +114,7 @@ void MAP::SetKingPos(int id, pair<int, int> pos) {
 }
 
 NODE MAP::GetNode(int x, int y) const { return mat[x][y]; }
-
-int MAP::GetBelong(int x, int y) const {
-    if (IsViewable(*this, x, y, GetArmyID()))
-        return mat[x][y].GetBelong();
-    else
-        return 0;
-}
-
+int MAP::GetBelong(int x, int y) const { return mat[x][y].GetBelong(); }
 int MAP::GetUnitNum(int x, int y) const { return mat[x][y].GetUnitNum(); }
 
 void MAP::ModifyNode(int x, int y, NODE node) { mat[x][y] = node; }
