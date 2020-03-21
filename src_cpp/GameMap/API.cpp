@@ -26,7 +26,7 @@ static int GetSize(lua_State* L) {
 static int GetNodeType(lua_State* L) {
     int x = lua_tonumber(L, 1);
     int y = lua_tonumber(L, 2);
-    lua_pushstring(L, MainMap->GetNodeType(x, y).c_str());
+    lua_pushstring(L, GetNodeType(x, y).c_str());
     return 1;
 }
 
@@ -45,7 +45,7 @@ static int GetUnitNum(lua_State* L) {
 static int GetBelong(lua_State* L) {
     int x = lua_tonumber(L, 1);
     int y = lua_tonumber(L, 2);
-    lua_pushnumber(L, MainMap->GetBelong(x, y));
+    lua_pushnumber(L, GetBelong(x, y));
     return 1;
 }
 

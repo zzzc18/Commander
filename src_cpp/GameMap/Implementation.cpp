@@ -3,7 +3,6 @@
 
 #include "GameMap.h"
 #include "Tools.h"
-#include "Verify.h"
 using namespace std;
 
 // NODE_TYPE _type = NODE_TYPE_BLANK, int _unitNum = 0, int _belong = 0
@@ -99,20 +98,7 @@ void MAP::InitNode(int x, int y, NODE_TYPE type) {
     }
 }
 
-string MAP::GetNodeType(int x, int y) const {
-    if (IsViewable(*this, x, y, GetArmyID()))
-        return mat[x][y].GetType();
-    else
-        switch (mat[x][y].Type()) {  //用了switch的直落
-            default:
-                return "NODE_TYPE_HILL";
-            case NODE_TYPE_BLANK:
-            case NODE_TYPE_KING:
-            case NODE_TYPE_OBSTACLE:
-            case NODE_TYPE_MARSH:
-                return mat[x][y].GetType();
-        }
-}
+string MAP::GetNodeType(int x, int y) const { return mat[x][y].GetType(); }
 
 bool MAP::InMap(int x, int y) const {
     return x >= 0 && x < MainMap->GetSize().first && y >= 0 &&
@@ -133,12 +119,7 @@ void MAP::SetKingPos(int id, pair<int, int> pos) {
 
 NODE MAP::GetNode(int x, int y) const { return mat[x][y]; }
 
-int MAP::GetBelong(int x, int y) const {
-    if (IsViewable(*this, x, y, GetArmyID()))
-        return mat[x][y].GetBelong();
-    else
-        return 0;
-}
+int MAP::GetBelong(int x, int y) const { return mat[x][y].GetBelong(); }
 
 int MAP::GetUnitNum(int x, int y) const { return mat[x][y].GetUnitNum(); }
 

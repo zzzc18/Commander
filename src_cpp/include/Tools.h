@@ -16,14 +16,4 @@ inline std::pair<int, int> operator-(std::pair<int, int> x,
     return {x.first - y.first, x.second - y.second};
 }
 
-////////////////////////////////////////////////////////////
-
-inline constexpr std::pair<int, int> Direction4[] = {
-    {-1, 0}, {1, 0}, {0, -1}, {0, 1}};
-inline constexpr std::pair<int, int> Direction8[] = {
-    {-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1}};
-
-//判断map中的(x,y)对于playerID是否可见
-bool IsViewable(const MAP &map, int x, int y, int playerID);
-
 #endif
