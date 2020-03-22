@@ -33,6 +33,7 @@ class NODE {
     void ModifyType(std::string _type);
     void ModifyType(NODE_TYPE _type);
     NODE(NODE_TYPE _type = NODE_TYPE_BLANK, int _unitNum = 0, int _belong = 0);
+    NODE_TYPE Type() const;
 
    protected:
     NODE_TYPE type;
@@ -47,7 +48,7 @@ class MAP {
     // 每25秒大更新
     void BigUpdate();
 
-    std::string GetNodeType(int x, int y);
+    std::string GetNodeType(int x, int y) const;
     void InitNode(int x, int y, NODE_TYPE type);
     void SetKingPos(int id, std::pair<int, int> pos);
     bool InMap(int x, int y);

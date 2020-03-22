@@ -2,15 +2,14 @@
 #include <iostream>
 
 #include "GameMap.h"
-<<<<<<< HEAD
-== == == =
 #include "Tools.h"
->>>>>>> ZK_dev
-             using namespace std;
+using namespace std;
 
 // NODE_TYPE _type = NODE_TYPE_BLANK, int _unitNum = 0, int _belong = 0
 NODE::NODE(NODE_TYPE _type, int _unitNum, int _belong)
     : type(_type), unitNum(_unitNum), belong(_belong) {}
+
+NODE_TYPE NODE::Type() const { return type; }
 
 void NODE::ModifyBelong(int id) { belong = id; }
 void NODE::ModifyUnitNum(int _unitNum) { unitNum = _unitNum; }
