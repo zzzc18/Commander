@@ -7,4 +7,6 @@ extern "C" {
 #include <lualib.h>
 }
 
+#include <tuple>
+
 #endif
