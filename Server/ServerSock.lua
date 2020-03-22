@@ -6,7 +6,7 @@ function ServerSock.Init()
     Server:on(
         "connect",
         function(data, client)
-            client:send("armyID", client:getIndex())
+            client:send("ArmyID", client:getIndex())
         end
     )
 end

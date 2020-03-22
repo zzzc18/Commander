@@ -64,9 +64,6 @@ function MyColor.Army(k)
     if k == 2 then
         return MyColor.Cyan()
     end
-    if k == 4 then
-        return MyColor.Cyan()
-    end
 end
 
 function MyColor.ArmyWithA(armyID, k)
@@ -91,8 +88,32 @@ function MyColor.ArmyPath(k)
     return rgba
 end
 
-function MyColor.Yellow()
-    return MyColor.convert255(255, 215, 0)
+function MyColor.Yellow(k)
+    if k == 1 then
+        return 0.9607843137254902, 0.8705882352941177, 0.7019607843137254
+    end
+    if k == 2 then
+        return 0.7803921568627451, 0.3803921568627451, 0.0784313725490196
+    end
+    if k == 3 then
+        return 0.5450980392156862, 0.27058823529411763, 0.07450980392156863
+    end
+    if k >= 4 then
+        return 0.6078431372549019, 0.1843137254901961, 0.07058823529411765
+    end
+end
+
+function MyColor.Weapon(k)
+    if k == 1 then
+        return MyColor.Purple()
+    end
+    if k == 2 then
+        return MyColor.Blue()
+    end
+end
+
+function MyColor.BackGround()
+    return MyColor.Yellow(1)
 end
 
 function MyColor.Error()

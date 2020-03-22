@@ -4,9 +4,6 @@ package.cpath = package.cpath .. ";../?.so;..\\?.dll"
 Sock = require("sock")
 Bitser = require("spec.bitser")
 
-function love.load()
-end
-
 function love.mousepressed(x, y, button, istouch, presses)
 end
 
