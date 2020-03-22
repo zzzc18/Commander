@@ -1,8 +1,8 @@
 #ifndef Tools_H
 #define Tools_H
 
-#include <utility>
 #include <iostream>
+#include <utility>
 
 inline std::pair<int, int> operator+(std::pair<int, int> x,
                                      std::pair<int, int> y) {

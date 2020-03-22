@@ -2,7 +2,11 @@
 #include <iostream>
 
 #include "GameMap.h"
-using namespace std;
+<<<<<<< HEAD
+== == == =
+#include "Tools.h"
+>>>>>>> ZK_dev
+             using namespace std;
 
 // NODE_TYPE _type = NODE_TYPE_BLANK, int _unitNum = 0, int _belong = 0
 NODE::NODE(NODE_TYPE _type, int _unitNum, int _belong)
@@ -96,7 +100,7 @@ void MAP::InitNode(int x, int y, NODE_TYPE type) {
     }
 }
 
-string MAP::GetNodeType(int x, int y) { return mat[x][y].GetType(); }
+string MAP::GetNodeType(int x, int y) const { return mat[x][y].GetType(); }
 
 bool MAP::InMap(int x, int y) {
     return x >= 0 && x < MainMap->GetSize().first && y >= 0 &&
@@ -114,7 +118,9 @@ void MAP::SetKingPos(int id, pair<int, int> pos) {
 }
 
 NODE MAP::GetNode(int x, int y) const { return mat[x][y]; }
+
 int MAP::GetBelong(int x, int y) const { return mat[x][y].GetBelong(); }
+
 int MAP::GetUnitNum(int x, int y) const { return mat[x][y].GetUnitNum(); }
 
 void MAP::ModifyNode(int x, int y, NODE node) { mat[x][y] = node; }

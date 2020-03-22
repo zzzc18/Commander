@@ -71,6 +71,8 @@ void RandomGenMap(int playerNum = 0, int level = 0);
 void WriteMap();
 
 bool GetVision(std::pair<int, int> node, int armyID);
+int GetBelong(int x, int y);
+std::string GetNodeType(int x, int y);
 
 std::ifstream& operator>>(std::ifstream& _ifstream, NODE& node);
 std::ofstream& operator<<(std::ofstream& _ofstream, const NODE& node);

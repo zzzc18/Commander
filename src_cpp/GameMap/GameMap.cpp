@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "Tools.h"
+#include "Verify.h"
 using namespace std;
 
 MAP* MainMap;
@@ -132,6 +133,29 @@ bool GetVision(pair<int, int> node, int armyID) {
         }
     }
     return false;
+}
+
+int GetBelong(int x, int y) {
+    if (GetVision({x, y}, GetArmyID()))
+        return MainMap->GetBelong(x, y);
+    else
+        return 0;
+}
+
+string GetNodeType(int x, int y) {
+    if (GetVision({x, y}, GetArmyID()))
+        return MainMap->GetNodeType(x, y);
+    else
+        switch (NODE node = MainMap->GetNode(x, y);
+                node.Type()) {  //用了switch的直落
+            default:
+                return "NODE_TYPE_HILL";
+            case NODE_TYPE_BLANK:
+            case NODE_TYPE_KING:
+            case NODE_TYPE_OBSTACLE:
+            case NODE_TYPE_MARSH:
+                return node.GetType();
+        }
 }
 
 #include <fstream>
