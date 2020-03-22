@@ -6,7 +6,7 @@ function ClientSock.Init()
     Client:on(
         "SetArmyID",
         function(data)
-            PlayGame.ArmyID = data.armyID
+            PlayGame.armyID = data.armyID
         end
     )
 end

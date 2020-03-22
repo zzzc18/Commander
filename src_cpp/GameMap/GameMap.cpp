@@ -132,6 +132,7 @@ bool GetVision(pair<int, int> node, int armyID) {
             return true;
         }
     }
+    return MainMap->GetBelong(node.first, node.second) == armyID;
     return false;
 }
 
