@@ -3,23 +3,34 @@ PlayGame = {}
 local Operation = require("PlayGame.Operation")
 
 PlayGame.GameState = "READY"
--- 现在这里仅供测试，应赋初值nil
-PlayGame.armyID = 1
+PlayGame.armyID = nil
+PlayGame.timerTotal = 0
+PlayGame.timerSecond = 0
+PlayGame.timer25Second = 0
+
+function PlayGame.RunPermission()
+    return PlayGame.GameState == "Start"
+end
 
 function PlayGame.Init(MapMode)
-    CVerify.Register(1)
     Picture.Init()
-    CGameMap.RandomGenMap()
+    -- CGameMap.RandomGenMap()
     -- CGameMap.WriteMap()
-    -- CGameMap.LoadMap()
+    CGameMap.LoadMap()
     BasicMap.Init()
 end
 
 function PlayGame.wheelmoved(x, y)
+    if not PlayGame.RunPermission() then
+        return
+    end
     MapAdjust.Catchwheelmoved(x, y)
 end
 
 function PlayGame.mousepressed(pixelX, pixelY, button, istouch, presses)
+    if not PlayGame.RunPermission() then
+        return
+    end
     Operation.CatchMousePressed(pixelX, pixelY, button, istouch, presses)
 end
 
@@ -33,12 +44,20 @@ function PlayGame.keyreleased(key, scancode)
 end
 
 function PlayGame.draw()
+    if not PlayGame.RunPermission() then
+        return
+    end
     BasicMap.DrawMap()
-    Operation.DrawSelect()
     Operation.DrawSelect()
 end
 
+function PlayGame.UpdateTimerSecond(dt)
+end
+
 function PlayGame.update(dt)
+    if not PlayGame.RunPermission() then
+        return
+    end
     MapAdjust.Update()
 end
 

@@ -6,9 +6,19 @@ function ServerSock.Init()
     Server:on(
         "connect",
         function(data, client)
-            client:send("armyID", client:getIndex())
+            client:send("SetArmyID", {armyID = client:getIndex()})
         end
     )
+end
+
+function ServerSock.SendGameMapUpdate()
+    Server:sendToAll("GameMapUpdate")
+    CGameMap.Update()
+end
+
+function ServerSock.SendGameMapBigUpdate()
+    Server:sendToAll("GameMapBigUpdate")
+    CGameMap.BigUpdate()
 end
 
 return ServerSock
