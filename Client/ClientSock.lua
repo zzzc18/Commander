@@ -24,7 +24,17 @@ function ClientSock.Init()
             CGameMap.Update()
         end
     )
-    Client:on("GameMapBigUpdate")
+    Client:on(
+        "GameMapBigUpdate",
+        function()
+            CGameMap.BigUpdate()
+        end
+    )
+    Client:on(
+        "GameStart",
+        function()
+        end
+    )
 end
 
 -- srcX,Y是出发点 dstX,Y是目标点，显然二者应当四联通相连

@@ -2,7 +2,7 @@ Init = {}
 
 function Init()
     Picture.Init()
-    ClientSock.Init()
+    ServerSock.Init()
 end
 
 return Init
