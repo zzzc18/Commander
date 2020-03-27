@@ -115,7 +115,7 @@ void RandomGenMap(int playerNum, int level) {
     }
 }
 
-bool GetVision(pair<int, int> node, int armyID) {
+bool GetVision(pair<int, int> node, int armyID) {  // armyID = GetArmyID()
     pair<int, int> direct[8];
     direct[0] = {1, 0};
     direct[1] = {0, 1};
@@ -137,26 +137,35 @@ bool GetVision(pair<int, int> node, int armyID) {
 }
 
 int GetBelong(int x, int y) {
-    if (GetVision({x, y}, GetArmyID()))
+    if (GetVision({x, y}))
         return MainMap->GetBelong(x, y);
     else
         return 0;
 }
 
 string GetNodeType(int x, int y) {
-    if (GetVision({x, y}, GetArmyID()))
+    if (GetVision({x, y}))
         return MainMap->GetNodeType(x, y);
     else
-        switch (NODE node = MainMap->GetNode(x, y);
-                node.Type()) {  //用了switch的直落
+        switch (NODE node = MainMap->GetNode(x, y); node.Type()) {
             default:
                 return "NODE_TYPE_HILL";
             case NODE_TYPE_BLANK:
+                [[fallthrough]];
             case NODE_TYPE_KING:
+                [[fallthrough]];
             case NODE_TYPE_OBSTACLE:
+                [[fallthrough]];
             case NODE_TYPE_MARSH:
                 return node.GetType();
         }
+}
+
+int GetUnitNum(int x, int y) {
+    if (GetVision({x, y}))
+        return MainMap->GetUnitNum(x, y);
+    else
+        return 0;
 }
 
 #include <fstream>
