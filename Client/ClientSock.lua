@@ -20,6 +20,12 @@ function ClientSock.Init()
         end
     )
     Client:on(
+        "GameMapMoveUpdate",
+        function()
+            -- CGameMap.MoveUpdate()
+        end
+    )
+    Client:on(
         "GameMapUpdate",
         function()
             CGameMap.Update()

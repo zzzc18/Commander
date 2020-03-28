@@ -27,6 +27,11 @@ function ServerSock.Init()
     )
 end
 
+function ServerSock.SendGameMapMoveUpdate()
+    Server:sendToAll("GameMapMoveUpdate")
+    -- CGameMap.MoveUpdate()
+end
+
 function ServerSock.SendGameMapUpdate()
     Server:sendToAll("GameMapUpdate")
     CGameMap.Update()
