@@ -10,6 +10,7 @@ function ClientSock.Init()
         function(data)
             PlayGame.armyID = data.armyID
             CVerify.Register(data.armyID)
+            PlayGame.LoadMap()
         end
     )
     Client:on(
@@ -33,8 +34,11 @@ function ClientSock.Init()
     Client:on(
         "GameStart",
         function()
+            PlayGame.GameState = "Start"
         end
     )
+
+    Client:connect()
 end
 
 -- srcX,Y是出发点 dstX,Y是目标点，显然二者应当四联通相连

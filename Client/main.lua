@@ -14,6 +14,7 @@ require("System.Picture")
 require("System.BasicMap")
 require("System.MapAdjust")
 require("Init")
+require("ClientSock")
 
 Running = {}
 

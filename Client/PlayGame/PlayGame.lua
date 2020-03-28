@@ -12,8 +12,12 @@ function PlayGame.RunPermission()
     return PlayGame.GameState == "Start"
 end
 
-function PlayGame.Init(MapMode)
+function PlayGame.Init()
     Picture.Init()
+    ClientSock.Init()
+end
+
+function PlayGame.LoadMap()
     -- CGameMap.RandomGenMap()
     -- CGameMap.WriteMap()
     CGameMap.LoadMap()
@@ -55,6 +59,7 @@ function PlayGame.UpdateTimerSecond(dt)
 end
 
 function PlayGame.update(dt)
+    Client:update()
     if not PlayGame.RunPermission() then
         return
     end

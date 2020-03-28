@@ -78,6 +78,8 @@ static const luaL_Reg functions[] = {{"RandomGenMap", RandomGenMap},
                                      {"GetUnitNum", GetUnitNum},
                                      {"GetBelong", GetBelong},
                                      {"GetVision", GetVision},
+                                     {"Update", Update},
+                                     {"BigUpdate", BigUpdate},
                                      {NULL, NULL}};
 
 extern "C" {

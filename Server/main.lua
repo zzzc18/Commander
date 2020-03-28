@@ -14,9 +14,11 @@ require("System.BasicMap")
 require("System.MapAdjust")
 require("System.Timer")
 require("Init")
+require("ServerSock")
 
 function love.load()
     CVerify.Register(-1, 3)
+    ServerSock.Init()
 end
 
 function love.mousepressed(x, y, button, istouch, presses)
@@ -35,7 +37,8 @@ function love.draw()
 end
 
 function love.update(dt)
-    Timer.Update()
+    Server:update()
+    Timer.Update(dt)
     if Timer.second >= 1 then
         Timer.second = Timer.second - 1
         ServerSock.SendGameMapUpdate()
