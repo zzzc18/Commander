@@ -1,5 +1,6 @@
 #include <cstdlib>
 #include <iostream>
+#include <memory>
 
 #include "GameMap.h"
 #include "Tools.h"
@@ -90,6 +91,35 @@ void MAP::BigUpdate() {
     }
 }
 
+bool MAP::MoveUpdate() {
+    auto Move = [this](int armyID, int srcX, int srcY, int dstX,
+                       int dstY) -> bool {
+        if (GetBelong(srcX, srcY) != armyID || GetUnitNum(srcX, srcY) <= 1)
+            return false;
+        if (GetNodeType(dstX, dstY) == "NODE_TYPE_HILL") return false;
+        mat[dstX][dstY].ModifyUnitNum(
+            GetUnitNum(dstX, dstY) +
+            (GetBelong(dstX, dstY) == armyID ? 1 : -1) *
+                (GetUnitNum(srcX, srcY) - 1));
+        if (int num = GetUnitNum(dstX, dstY); num < 0) {
+            mat[dstX][dstY].ModifyUnitNum(-num);
+            mat[dstX][dstY].ModifyBelong(armyID);
+        }
+        return true;
+    };
+    bool ret = false;
+    for (int i = 1, cnt = GetKingCnt(); i <= cnt; ++i) {
+        if (moveCommands[i]) {
+            auto [srcX, srcY] = moveCommands[i]->first;
+            auto [dstX, dstY] = moveCommands[i]->second;
+            if (bool tmp = Move(i, srcX, srcY, dstX, dstY); i == GetArmyID())
+                ret = tmp;
+            moveCommands[i].reset();
+        }
+    }
+    return ret;
+}
+
 void MAP::InitNode(int x, int y, NODE_TYPE type) {
     if (type == NODE_TYPE_FORT) {
         int num = 40 + 1.0 * rand() / RAND_MAX * 10;
@@ -110,7 +140,8 @@ bool MAP::InMap(pair<int, int> pos) { return InMap(pos.first, pos.second); }
 
 pair<int, int> MAP::GetSize() const { return {sizeX, sizeY}; }
 
-MAP::MAP(int _sizeX, int _sizeY) : sizeX(_sizeX), sizeY(_sizeY) {}
+MAP::MAP(int _sizeX, int _sizeY)
+    : sizeX(_sizeX), sizeY(_sizeY), kingCnt(0), mat{} {}
 
 void MAP::SetKingPos(int id, pair<int, int> pos) {
     mat[pos.first][pos.second].ModifyBelong(id);
@@ -122,4 +153,15 @@ int MAP::GetBelong(int x, int y) const { return mat[x][y].GetBelong(); }
 
 int MAP::GetUnitNum(int x, int y) const { return mat[x][y].GetUnitNum(); }
 
-void MAP::ModifyNode(int x, int y, NODE node) { mat[x][y] = node; }
+int MAP::GetKingCnt() const { return kingCnt; }
+
+void MAP::ModifyNode(int x, int y, NODE node) {
+    kingCnt -= (mat[x][y].Type() == NODE_TYPE_KING);
+    mat[x][y] = node;
+    kingCnt += (mat[x][y].Type() == NODE_TYPE_KING);
+}
+
+void MAP::MoveNode(int armyID, int srcX, int srcY, int dstX, int dstY) {
+    if (!moveCommands[armyID])
+        moveCommands[armyID] = {{srcX, srcY}, {dstX, dstY}};
+}

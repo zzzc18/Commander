@@ -1,8 +1,10 @@
 #include <string>
 
 #include "GameMap.h"
+#include "Verify.h"
 using namespace std;
 
+//! 未来可能删除，有些地方与LoadMap行为不同，使用会出问题
 static int RandomGenMap(lua_State* L) {
     // TODO: player
     RandomGenMap(2);
@@ -70,6 +72,26 @@ static int BigUpdate(lua_State* L) {
     return 0;
 }
 
+static int Move(lua_State* L) {
+    int armyID = lua_tointeger(L, 1);
+    int srcX = lua_tointeger(L, 2);
+    int srcY = lua_tointeger(L, 3);
+    int dstX = lua_tointeger(L, 4);
+    int dstY = lua_tointeger(L, 5);
+    MainMap->MoveNode(armyID, srcX, srcY, dstX, dstY);
+    return 0;
+}
+
+static int MoveUpdate(lua_State* L) {
+    bool ret = MainMap->MoveUpdate();
+    if (GetArmyID() == -1)
+        return 0;
+    else {
+        lua_pushboolean(L, ret);
+        return 1;
+    }
+}
+
 static const luaL_Reg functions[] = {{"RandomGenMap", RandomGenMap},
                                      {"GetSize", GetSize},
                                      {"GetNodeType", GetNodeType},
@@ -80,6 +102,8 @@ static const luaL_Reg functions[] = {{"RandomGenMap", RandomGenMap},
                                      {"GetVision", GetVision},
                                      {"Update", Update},
                                      {"BigUpdate", BigUpdate},
+                                     {"Move", Move},
+                                     {"MoveUpdate", MoveUpdate},
                                      {NULL, NULL}};
 
 extern "C" {

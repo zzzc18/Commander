@@ -3,6 +3,8 @@
 
 #include <fstream>
 #include <iostream>
+#include <optional>
+#include <queue>
 #include <string>
 #include <utility>
 
@@ -48,6 +50,8 @@ class MAP {
     void Update();
     // 每25秒大更新
     void BigUpdate();
+    // 每半秒更新一次移动操作
+    bool MoveUpdate();
 
     std::string GetNodeType(int x, int y) const;
     void InitNode(int x, int y, NODE_TYPE type);
@@ -60,12 +64,19 @@ class MAP {
     NODE GetNode(int x, int y) const;
     int GetBelong(int x, int y) const;
     int GetUnitNum(int x, int y) const;
+    int GetKingCnt() const;
 
     void ModifyNode(int x, int y, NODE node);
+    void MoveNode(int armyID, int srcX, int srcY, int dstX, int dstY);
 
    private:
+    int kingCnt;
     NODE mat[50][50];
     int sizeX, sizeY;
+    // command<path<coordinate>>
+    std::optional<::pair<std::pair<int, int>, std::pair<int, int>>>
+        moveCommands[9];  // [0]不用
+    // TODO 常数拉出来放config里
 };
 
 void LoadMap();
