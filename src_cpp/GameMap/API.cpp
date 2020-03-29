@@ -1,7 +1,6 @@
 #include <string>
 
 #include "GameMap.h"
-#include "Verify.h"
 using namespace std;
 
 static int RandomGenMap(lua_State* L) {
@@ -38,7 +37,7 @@ static int WriteMap(lua_State* L) {
 static int GetUnitNum(lua_State* L) {
     int x = lua_tonumber(L, 1);
     int y = lua_tonumber(L, 2);
-    lua_pushnumber(L, MainMap->GetUnitNum(x, y));
+    lua_pushnumber(L, GetUnitNum(x, y));
     return 1;
 }
 
@@ -52,13 +51,22 @@ static int GetBelong(lua_State* L) {
 static int GetVision(lua_State* L) {
     int x = lua_tonumber(L, 1);
     int y = lua_tonumber(L, 2);
-    int armyID = GetArmyID();
-    lua_pushboolean(L, GetVision({x, y}, armyID));
+    lua_pushboolean(L, GetVision({x, y}));
     return 1;
 }
 
 static int LoadMap(lua_State* L) {
     LoadMap();
+    return 0;
+}
+
+static int Update(lua_State* L) {
+    MainMap->Update();
+    return 0;
+}
+
+static int BigUpdate(lua_State* L) {
+    MainMap->BigUpdate();
     return 0;
 }
 
@@ -70,6 +78,8 @@ static const luaL_Reg functions[] = {{"RandomGenMap", RandomGenMap},
                                      {"GetUnitNum", GetUnitNum},
                                      {"GetBelong", GetBelong},
                                      {"GetVision", GetVision},
+                                     {"Update", Update},
+                                     {"BigUpdate", BigUpdate},
                                      {NULL, NULL}};
 
 extern "C" {

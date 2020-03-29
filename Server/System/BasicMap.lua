@@ -68,11 +68,6 @@ function BasicMap.DrawNode(x, y)
     BasicMap.SetNodeColor(x, y)
     Picture.DrawNode(pixelX, pixelY, BasicMap.Map[x][y].nodeType)
     local unitNum = CGameMap.GetUnitNum(x, y)
-    -- TODO: 我觉得可能变成nil更合理
-    if unitNum ~= 0 then
-        love.graphics.setColor(Color.White())
-        love.graphics.print(unitNum, pixelX, pixelY, 0, 1, 1, 2, 2)
-    end
 end
 
 function BasicMap.DrawMap()

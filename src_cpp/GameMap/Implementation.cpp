@@ -76,7 +76,7 @@ int NODE::GetBelong() const { return belong; }
 
 void MAP::Update() {
     for (int i = 0; i < sizeX; i++) {
-        for (int j = 0; j < sizeY; i++) {
+        for (int j = 0; j < sizeY; j++) {
             mat[i][j].Update();
         }
     }
@@ -84,7 +84,7 @@ void MAP::Update() {
 
 void MAP::BigUpdate() {
     for (int i = 0; i < sizeX; i++) {
-        for (int j = 0; j < sizeY; i++) {
+        for (int j = 0; j < sizeY; j++) {
             mat[i][j].BigUpdate();
         }
     }
