@@ -48,11 +48,6 @@ bool CheckKingConnectivity(vector<pair<int, int>> kingPos) {
     bool inQue[50][50];
     memset(vis, 0, sizeof(vis));
     memset(inQue, 0, sizeof(inQue));
-    pair<int, int> direct[4];
-    direct[0] = {1, 0};
-    direct[1] = {0, 1};
-    direct[2] = {-1, 0};
-    direct[3] = {0, -1};
     queue<pair<int, int>> que;
     que.push(kingPos[0]);
     int kingNumFound = 0;
@@ -67,8 +62,10 @@ bool CheckKingConnectivity(vector<pair<int, int>> kingPos) {
             if (kingNumFound == kingPos.size()) return true;
         }
         vis[fro.first][fro.second] = 1;
-        for (int i = 0; i < 4; i++) {
-            pair<int, int> nex = fro + direct[i];
+        for (int i = 0; i < 6; i++) {
+            //判断是奇数行还是偶数行
+            int opt = fro.first & 1;
+            pair<int, int> nex = fro + direct[opt][i];
             if (MainMap->InMap(nex)) {
                 if (!vis[nex.first][nex.second] &&
                     !inQue[nex.first][nex.second] &&
@@ -116,17 +113,10 @@ void RandomGenMap(int playerNum, int level) {
 }
 
 bool GetVision(pair<int, int> node, int armyID) {  // armyID = GetArmyID()
-    pair<int, int> direct[8];
-    direct[0] = {1, 0};
-    direct[1] = {0, 1};
-    direct[2] = {-1, 0};
-    direct[3] = {0, -1};
-    direct[4] = {1, 1};
-    direct[5] = {1, -1};
-    direct[6] = {-1, 1};
-    direct[7] = {-1, -1};
-    for (int i = 0; i < 8; i++) {
-        pair<int, int> nex = node + direct[i];
+    //判断是奇数行还是偶数行
+    int opt = node.first & 1;
+    for (int i = 0; i < 6; i++) {
+        pair<int, int> nex = node + direct[opt][i];
         if (!MainMap->InMap(nex)) continue;
         if (MainMap->GetBelong(nex.first, nex.second) == armyID) {
             return true;
