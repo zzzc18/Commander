@@ -11,9 +11,6 @@ function BasicMap.Coordinate2Pixel(x, y)
     -- 而显示的时候，第一维是x轴（水平向右），第二维是y轴（竖直向下）
     -- 所以在这里要用Focus x,y（地图坐标）对应offset y,x（显示坐标）
     local retX, retY = BasicMap.Focus.pixelX, BasicMap.Focus.pixelY
-    --local offsetY, offsetX =
-    --     (x - BasicMap.Focus.x) * BasicMap.edgeLength,
-    --     (y - BasicMap.Focus.y) * BasicMap.edgeLength
     -- 两个格子的间距 0.5 * sqrt(3) * 边长
     local horizontalDis, verticalDis =    1.73205 * BasicMap.edgeLength,
     1.5 * BasicMap.edgeLength
@@ -21,6 +18,7 @@ function BasicMap.Coordinate2Pixel(x, y)
     local offsetY, offsetX = (x - BasicMap.Focus.x) * horizontalDis,
     (y - BasicMap.Focus.y) * verticalDis
 
+    -- 当前格子 与 基准格子 的 x坐标奇偶性不一致时，需要进行修正
     if (x - BasicMap.Focus.x) % 2 == 1 then
         offsetY = offsetY + horizontalDis / 2 - (BasicMap.Focus.x % 2) * horizontalDis
     end
