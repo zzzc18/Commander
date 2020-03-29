@@ -9,11 +9,21 @@ BasicMap.edgeLength = 40
 function BasicMap.Coordinate2Pixel(x, y)
     -- 注意地图坐标的第一维是横坐标，第二维是纵坐标
     -- 而显示的时候，第一维是x轴（水平向右），第二维是y轴（竖直向下）
-    -- 所以在这里要用Focus x,y（地图坐标）对应offset x,y（显示坐标）
+    -- 所以在这里要用Focus x,y（地图坐标）对应offset y,x（显示坐标）
     local retX, retY = BasicMap.Focus.pixelX, BasicMap.Focus.pixelY
-    local offsetY, offsetX =
-        (x - BasicMap.Focus.x) * BasicMap.edgeLength,
-        (y - BasicMap.Focus.y) * BasicMap.edgeLength
+    --local offsetY, offsetX =
+    --     (x - BasicMap.Focus.x) * BasicMap.edgeLength,
+    --     (y - BasicMap.Focus.y) * BasicMap.edgeLength
+    -- 两个格子的间距 0.5 * sqrt(3) * 边长
+    local horizontalDis, verticalDis =    1.73205 * BasicMap.edgeLength,
+    1.5 * BasicMap.edgeLength
+
+    local offsetY, offsetX = (x - BasicMap.Focus.x) * horizontalDis,
+    (y - BasicMap.Focus.y) * verticalDis
+
+    if (x - BasicMap.Focus.x) % 2 == 1 then
+        offsetY = offsetY + horizontalDis / 2 - (BasicMap.Focus.x % 2) * horizontalDis
+    end
     retX, retY = retX + offsetX, retY + offsetY
     return retX, retY
 end
@@ -23,9 +33,9 @@ function BasicMap.Pixel2Coordinate(pixelX, pixelY)
     for i = 0, BasicMap.MapSize.x - 1 do
         local tmpx, tmpy = BasicMap.Coordinate2Pixel(i, 0)
         if
-            tmpy - BasicMap.edgeLength / 2 < pixelY and
-                pixelY < tmpy + BasicMap.edgeLength / 2
-         then
+        tmpy - BasicMap.edgeLength / 2 < pixelY and
+        pixelY < tmpy + BasicMap.edgeLength / 2
+        then
             retX = i
             break
         end
@@ -33,9 +43,9 @@ function BasicMap.Pixel2Coordinate(pixelX, pixelY)
     for i = 0, BasicMap.MapSize.y - 1 do
         local tmpx, tmpy = BasicMap.Coordinate2Pixel(0, i)
         if
-            tmpx - BasicMap.edgeLength / 2 < pixelX and
-                pixelX < tmpx + BasicMap.edgeLength / 2
-         then
+        tmpx - BasicMap.edgeLength / 2 < pixelX and
+        pixelX < tmpx + BasicMap.edgeLength / 2
+        then
             retY = i
             break
         end
