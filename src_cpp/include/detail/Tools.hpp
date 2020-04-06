@@ -11,7 +11,7 @@
 #include "Tools.hpp"
 
 namespace detail {
-std::mt19937_64& RandomEngine() {
+inline std::mt19937_64& RandomEngine() {
     static std::mt19937_64 engine(std::random_device{}());
     return engine;
 }
@@ -29,8 +29,8 @@ auto Random(type l, type r)
 
 ///////////////////////////////////////////////////////////////////////////////
 
-skip::skip(char delim) : _delim(delim) {}
-std::istream& operator>>(std::istream& is, skip skipper) {
+inline skip::skip(char delim) : _delim(delim) {}
+inline std::istream& operator>>(std::istream& is, skip skipper) {
     return is.ignore(std::numeric_limits<std::streamsize>::max(),
                      skipper._delim);
 }

@@ -36,7 +36,7 @@ template <typename... types, std::size_t... indices>
 void APIparam_impl(lua_State *luaState, std::index_sequence<indices...>,
                    types &... args) {
     auto Get = [luaState](auto &arg, std::size_t index) -> void {
-        using type = decltype(arg);
+        using type = std::remove_reference_t<decltype(arg)>;
         // in order from: lua.h
         if constexpr (std::is_floating_point_v<type>)
             arg = lua_tonumber(luaState, index);
