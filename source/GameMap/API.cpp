@@ -51,10 +51,10 @@ static int BigUpdate(lua_State *luaState) {
 }
 
 static int Move(lua_State *luaState) {
-    int id, srcX, srcY, dstX, dstY;
-    APIparam(luaState, id, srcX, srcY, dstX, dstY);
-    return APIreturn(luaState,
-                     MAP::Singleton().MoveNode(id, {srcX, srcY}, {dstX, dstY}));
+    int armyID, srcX, srcY, dstX, dstY;
+    APIparam(luaState, armyID, srcX, srcY, dstX, dstY);
+    return APIreturn(luaState, MAP::Singleton().MoveNode(armyID, {srcX, srcY},
+                                                         {dstX, dstY}));
 }
 static int MoveUpdate(lua_State *luaState) {
     return APIreturn(luaState, MAP::Singleton().MoveUpdate());

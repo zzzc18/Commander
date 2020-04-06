@@ -53,9 +53,9 @@ class MAP final {
     void BigUpdate();   //每25秒大更新
     bool MoveUpdate();  //每半秒更新一次移动操作
 
-    bool MoveNode(int id, VECTOR src, VECTOR dst);
+    bool MoveNode(int armyID, VECTOR src, VECTOR dst);
 
-    void RandomGen(int playerCnt, int level);
+    void RandomGen(int armyCnt, int level);
     void Load(std::string_view file = "Input/map.map");
     void Save(std::string_view file = "Output/map.map");
 
@@ -71,9 +71,9 @@ class MAP final {
     MAP() = default;
 
     int _sizeX = 0, _sizeY = 0;
-    int _playerCnt = 0;
+    int _armyCnt = 0;
     //(source,target)
-    std::optional<std::pair<VECTOR, VECTOR>> _moveCommands[MAX_PLAYER_CNT + 1];
+    std::optional<std::pair<VECTOR, VECTOR>> _moveCommands[MAX_ARMY_CNT + 1];
     struct NODE {
         NODE_TYPE type = NODE_TYPE::BLANK;
         int unitNum = 0;

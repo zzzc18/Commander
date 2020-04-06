@@ -49,7 +49,7 @@ void APIparam_impl(lua_State *luaState, std::index_sequence<indices...>,
         else  // static_assert(false) is illegal, weird syntax...
             static_assert(std::is_void_v<type>, "argument has unknown type!");
     };  // TODO if-else is almost the same as what in APIreturn
-    (..., Get(args, indices));
+    (..., Get(args, indices + 1));
 }
 }  // namespace detail
 

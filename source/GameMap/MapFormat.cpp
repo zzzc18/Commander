@@ -23,7 +23,7 @@ std::ostream& operator<<(std::ostream& os, MAP::NODE node) {
 ///////////////////////////////////////////////////////////////////////////////
 
 std::istream& operator>>(std::istream& is, MAP& map) {
-    is >> skip(':') >> map._playerCnt;
+    is >> skip(':') >> map._armyCnt;
     is >> skip(':') >> map._sizeX >> map._sizeY;
     for (int i = 0; i < map._sizeX; ++i) {
         for (int j = 0; j < map._sizeY; ++j) is >> skip(':') >> map._mat[i][j];
@@ -31,7 +31,7 @@ std::istream& operator>>(std::istream& is, MAP& map) {
     return is;
 }
 std::ostream& operator<<(std::ostream& os, const MAP& map) {
-    os << "player : " << map._playerCnt << std::endl;
+    os << "army : " << map._armyCnt << std::endl;
     os << "size : " << map._sizeX << ' ' << map._sizeY << std::endl;
     for (int i = 0; i < map._sizeX; ++i) {
         for (int j = 0; j < map._sizeY; ++j)

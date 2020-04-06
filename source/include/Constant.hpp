@@ -7,7 +7,7 @@ inline constexpr int SERVER = 0;
 
 namespace GameMap {
 inline constexpr int MAX_GRAPH_SIZE = 50;
-inline constexpr int MAX_PLAYER_CNT = 8;
+inline constexpr int MAX_ARMY_CNT = 8;
 }  // namespace GameMap
 
 #endif  // Constant_hpp

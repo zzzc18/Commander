@@ -1,4 +1,4 @@
-player : 2
+army : 2
 size : 24 24
 0 0 : { NODE_TYPE_BLANK 0 0 }
 0 1 : { NODE_TYPE_HILL 0 0 }

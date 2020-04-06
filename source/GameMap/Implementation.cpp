@@ -8,6 +8,7 @@
 
 #include "GameMap.hpp"
 #include "Tools.hpp"
+#include "Verify.hpp"
 
 VECTOR VECTOR::operator-() const { return {-x, -y}; }
 
@@ -55,28 +56,28 @@ void MAP::BigUpdate() {
     }
 }
 bool MAP::MoveUpdate() {
-    auto Move = [this](int id, VECTOR _src, VECTOR _dst) -> bool {
+    auto Move = [this](int armyID, VECTOR _src, VECTOR _dst) -> bool {
         NODE &src = _mat[_src.x][_src.y], &dst = _mat[_dst.x][_dst.y];
-        if (src.belong != id || src.unitNum <= 1)
+        if (src.belong != armyID || src.unitNum <= 1)
             return false;  // FIXME 1 is magic number?
         if (src.type == NODE_TYPE::HILL) return false;
-        if (dst.belong == id)
+        if (dst.belong == armyID)
             dst.unitNum += src.unitNum - 1;  // FIXME 1 is magic number?
         else {
-            dst.unitNum -= src.unitNum - 1;  // FIXME
+            dst.unitNum -= src.unitNum - 1;  // FIXME magic number
             if (dst.unitNum < 0) {
                 dst.unitNum = -dst.unitNum;
-                dst.belong = id;
+                dst.belong = armyID;
             }
         }
-        src.unitNum = 1;  // FIXME
+        src.unitNum = 1;  // FIXME magic number
         return true;
     };
     bool ret = false;
-    for (int i = 1; i <= _playerCnt; ++i) {
+    for (int i = 1; i <= _armyCnt; ++i) {
         if (auto& cmd = _moveCommands[i]; cmd) {
             if (bool tmp = Move(i, cmd->first, cmd->second);
-                i)  // FIXME module verify need rewrite
+                i == VERIFY::Singleton().GetArmyID())
                 ret = tmp;
             cmd.reset();
         }
@@ -84,16 +85,16 @@ bool MAP::MoveUpdate() {
     return ret;
 }
 
-bool MAP::MoveNode(int id, VECTOR src, VECTOR dst) {
-    if (!_moveCommands[id]) {
-        _moveCommands[id] = {src, dst};
+bool MAP::MoveNode(int armyID, VECTOR src, VECTOR dst) {
+    if (!_moveCommands[armyID]) {
+        _moveCommands[armyID] = {src, dst};
         return true;
     }
     return false;
 }
 
-void MAP::RandomGen(int playerCnt, int level) {
-    _playerCnt = playerCnt;
+void MAP::RandomGen(int armyCnt, int level) {
+    _armyCnt = armyCnt;
     _sizeX = _sizeY = 24;  // FIXME magic number
     // set node types
     for (int i = 0; i < _sizeX; ++i) {
@@ -131,13 +132,13 @@ void MAP::RandomGen(int playerCnt, int level) {
         return true;  // always true, a magic short-circuit evaluation trick
     };
     do {
-        for (int i = 1; i <= _playerCnt; ++i) {
+        for (int i = 1; i <= _armyCnt; ++i) {
             VECTOR pos{Random(0, _sizeX - 1), Random(0, _sizeY - 1)};
             kings.emplace_back(pos, _mat[pos.x][pos.y].type);
             _mat[pos.x][pos.y].type = NODE_TYPE::KING;
         }
     } while (!ValidateConnectivity() && Recovery());
-    for (int i = 0; i < _playerCnt; ++i)
+    for (int i = 0; i < _armyCnt; ++i)
         _mat[kings[i].first.x][kings[i].first.y].belong = i + 1;
     // set other properties
     for (int i = 0; i < _sizeX; ++i) {
@@ -164,11 +165,12 @@ bool MAP::InMap(VECTOR pos) const {
     return 0 <= pos.x && pos.x <= _sizeX && 0 <= pos.y && pos.y <= _sizeY;
 }
 bool MAP::IsViewable(VECTOR pos) const {
-    int id;  // FIXME module verify need rewrite
-    if (_mat[pos.x][pos.y].belong == id) return true;
+    if (_mat[pos.x][pos.y].belong == VERIFY::Singleton().GetArmyID())
+        return true;
     for (auto dta : DIR[pos.x & 1]) {  //判断是奇数行还是偶数行
         if (VECTOR next = pos + dta; this->InMap(next)) {
-            if (_mat[next.x][next.y].belong == id) return true;
+            if (_mat[next.x][next.y].belong == VERIFY::Singleton().GetArmyID())
+                return true;
         }
     }
     return false;
