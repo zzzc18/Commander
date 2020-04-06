@@ -7,6 +7,9 @@ BasicMap.ratio = 1
 BasicMap.edgeLength = 40
 
 function BasicMap.Coordinate2Pixel(x, y)
+    if x >= BasicMap.MapSize.x or y >= BasicMap.MapSize.y or x < 0 or y < 0 then
+        return nil
+    end
     -- 注意地图坐标的第一维是横坐标，第二维是纵坐标
     -- 而显示的时候，第一维是x轴（水平向右），第二维是y轴（竖直向下）
     -- 所以在这里要用Focus x,y（地图坐标）对应offset y,x（显示坐标）
@@ -23,6 +26,10 @@ function BasicMap.Coordinate2Pixel(x, y)
     return math.floor(retX), math.floor(retY)
 end
 
+function BasicMap.getDisByPixel(x1, y1, x2, y2)
+    return math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2))
+end
+
 function BasicMap.Pixel2Coordinate(pixelX, pixelY)
     local retX, retY
     for i = 0, BasicMap.MapSize.x - 1 do
@@ -33,7 +40,7 @@ function BasicMap.Pixel2Coordinate(pixelX, pixelY)
         end
     end
     for i = 0, BasicMap.MapSize.y - 1 do
-        local tmpx, tmpy = BasicMap.Coordinate2Pixel(0, i)
+        local tmpx, tmpy = BasicMap.Coordinate2Pixel(retX, i)
         if
         tmpx - BasicMap.horizontalDis / 2 < pixelX and
         pixelX < tmpx + BasicMap.horizontalDis / 2
@@ -42,6 +49,19 @@ function BasicMap.Pixel2Coordinate(pixelX, pixelY)
             break
         end
     end
+
+    --- 上述步骤选取可能会错判在边角除的点，因此比对下一行该选定格子周围的几个格子，寻找是否有比当前选定的更合理的点
+    --- 即比对距离大小，若能找到距离更小的便更换选定格子坐标
+    if retX < BasicMap.MapSize.x - 1 then
+        for i = -1, 1 do
+            if BasicMap.getDisByCoordinate(BasicMap.Coordinate2Pixel(retX, retY), BasicMap.Coordinate2Pixel(retX + 1, retY + i)) then
+                retX = retX + 1
+                retY = retY + i
+                break       --- 不会有两个格子同时满足条件
+            end
+        end
+    end
+    -- TODO: 可能还需要后续进行测试
     if retY == nil then
         retX = -1
     end
