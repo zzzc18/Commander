@@ -28,12 +28,10 @@ end
 
 function BasicMap.Pixel2Coordinate(pixelX, pixelY)
     local retX, retY
+    local horizontalDis, verticalDis = math.sqrt(3) * BasicMap.edgeLength, 1.5 * BasicMap.edgeLength
     for i = 0, BasicMap.MapSize.x - 1 do
         local tmpx, tmpy = BasicMap.Coordinate2Pixel(i, 0)
-        if
-        tmpy - BasicMap.edgeLength / 2 < pixelY and
-        pixelY < tmpy + BasicMap.edgeLength / 2
-        then
+        if tmpy - verticalDis / 2 < pixelY and pixelY < tmpy + verticalDis / 2 then
             retX = i
             break
         end
@@ -41,8 +39,8 @@ function BasicMap.Pixel2Coordinate(pixelX, pixelY)
     for i = 0, BasicMap.MapSize.y - 1 do
         local tmpx, tmpy = BasicMap.Coordinate2Pixel(0, i)
         if
-        tmpx - BasicMap.edgeLength / 2 < pixelX and
-        pixelX < tmpx + BasicMap.edgeLength / 2
+        tmpx - BasicMap.horizontalDis / 2 < pixelX and
+        pixelX < tmpx + BasicMap.horizontalDis / 2
         then
             retY = i
             break
@@ -101,6 +99,7 @@ function BasicMap.Init()
     BasicMap.Focus.pixelY = BasicMap.Focus.pixelY / 2
     BasicMap.Focus.x = BasicMap.MapSize.x / 2
     BasicMap.Focus.y = BasicMap.MapSize.y / 2
+    
 end
 
 return BasicMap
