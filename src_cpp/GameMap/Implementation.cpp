@@ -60,7 +60,7 @@ bool MAP::MoveUpdate() {
         NODE &src = _mat[_src.x][_src.y], &dst = _mat[_dst.x][_dst.y];
         if (src.belong != armyID || src.unitNum <= 1)
             return false;  // FIXME 1 is magic number?
-        if (src.type == NODE_TYPE::HILL) return false;
+        if (dst.type == NODE_TYPE::HILL) return false;
         if (dst.belong == armyID)
             dst.unitNum += src.unitNum - 1;  // FIXME 1 is magic number?
         else {
@@ -89,8 +89,8 @@ bool MAP::MoveNode(int armyID, VECTOR src, VECTOR dst) {
     if (!_moveCommands[armyID]) {
         _moveCommands[armyID] = {src, dst};
         return true;
-    }
-    return false;
+    } else
+        return false;
 }
 
 void MAP::RandomGen(int armyCnt, int level) {
@@ -105,7 +105,7 @@ void MAP::RandomGen(int armyCnt, int level) {
     std::vector<std::pair<VECTOR, NODE_TYPE>> kings;  //(pos,pretype)
     auto ValidateConnectivity = [this, &kings]() -> bool {
         int kingFound = 0;
-        bool vis[_sizeX][_sizeY]{};
+        bool vis[_sizeX][_sizeY] = {};
         std::queue<VECTOR> que;
         que.push(kings.front().first);
         vis[kings.front().first.x][kings.front().first.y] = true;
@@ -133,7 +133,7 @@ void MAP::RandomGen(int armyCnt, int level) {
     };
     do {
         for (int i = 1; i <= _armyCnt; ++i) {
-            VECTOR pos{Random(0, _sizeX - 1), Random(0, _sizeY - 1)};
+            VECTOR pos = {Random(0, _sizeX - 1), Random(0, _sizeY - 1)};
             kings.emplace_back(pos, _mat[pos.x][pos.y].type);
             _mat[pos.x][pos.y].type = NODE_TYPE::KING;
         }
@@ -162,7 +162,7 @@ void MAP::Save(std::string_view file) {  // file = "Output/map.map"
 std::pair<int, int> MAP::GetSize() const { return {_sizeX, _sizeY}; }
 
 bool MAP::InMap(VECTOR pos) const {
-    return 0 <= pos.x && pos.x <= _sizeX && 0 <= pos.y && pos.y <= _sizeY;
+    return 0 <= pos.x && pos.x < _sizeX && 0 <= pos.y && pos.y < _sizeY;
 }
 bool MAP::IsViewable(VECTOR pos) const {
     if (_mat[pos.x][pos.y].belong == VERIFY::Singleton().GetArmyID())
