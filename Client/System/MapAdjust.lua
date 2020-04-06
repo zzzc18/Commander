@@ -48,6 +48,8 @@ function MapAdjust.ChangeSizeUpdate()
      then
         BasicMap.edgeLength = 50
     end
+    BasicMap.horizontalDis = math.sqrt(3) * BasicMap.edgeLength
+    BasicMap.verticalDis = 1.5 * BasicMap.edgeLength
 end
 
 function MapAdjust.Catchwheelmoved(x, y)
