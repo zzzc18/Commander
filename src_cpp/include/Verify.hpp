@@ -6,6 +6,8 @@
 #include <memory>
 
 class VERIFY {
+    friend std::default_delete<VERIFY>;
+
    public:
     VERIFY(const VERIFY&) = delete;
     VERIFY& operator=(const VERIFY&) = delete;
@@ -16,6 +18,7 @@ class VERIFY {
 
    private:
     VERIFY(int armyID, int privilege);
+    ~VERIFY() = default;
 
     inline static std::unique_ptr<VERIFY> singleton_;
 

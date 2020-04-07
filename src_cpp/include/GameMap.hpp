@@ -69,6 +69,7 @@ class MAP final {
 
    private:
     MAP() = default;
+    ~MAP() = default;
 
     int _sizeX = 0, _sizeY = 0;
     int _armyCnt = 0;
