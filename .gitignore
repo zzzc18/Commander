@@ -6,4 +6,4 @@ Client/Output
 Client/Input
 Server/Output
 Server/Input
-Commander.code-workspace
+*.code-workspace
