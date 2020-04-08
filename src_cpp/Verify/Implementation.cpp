@@ -2,15 +2,15 @@
 #include "Verify.hpp"
 
 int VERIFY::Register(int armyID, int privilege) {  // FIXME magic numbers
-    if (singleton_) return 1;
+    if (singletonPtr_) return 1;
     try {
-        singleton_.reset(new VERIFY(armyID, privilege));
+        singletonPtr_ = new VERIFY(armyID, privilege);
     } catch (int error) {
         return error;
     }
     return 0;
 }
-VERIFY& VERIFY::Singleton() { return *singleton_; }
+VERIFY& VERIFY::Singleton() { return *singletonPtr_; }
 
 int VERIFY::GetArmyID() const { return _armyID; }
 
@@ -32,3 +32,8 @@ VERIFY::VERIFY(int armyID, int privilege) {  // FIXME magic numbers
     }
     _privilege = privilege;
 }
+
+// FIXME
+// 如果是inline在hpp里好像会在GameMap.dll也有一个？然后delete两次，需要研究一下这个问题
+VERIFY::DELETER VERIFY::deleter_;
+VERIFY::DELETER::~DELETER() { delete singletonPtr_; }

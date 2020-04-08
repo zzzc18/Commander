@@ -3,11 +3,7 @@
 #ifndef Verify_hpp
 #define Verify_hpp
 
-#include <memory>
-
 class VERIFY {
-    friend std::default_delete<VERIFY>;
-
    public:
     VERIFY(const VERIFY&) = delete;
     VERIFY& operator=(const VERIFY&) = delete;
@@ -19,8 +15,11 @@ class VERIFY {
    private:
     VERIFY(int armyID, int privilege);
     ~VERIFY() = default;
-
-    inline static std::unique_ptr<VERIFY> singleton_;
+    inline static VERIFY* singletonPtr_;
+    struct DELETER {
+        ~DELETER();
+    };
+    static DELETER deleter_;
 
     int _armyID, _privilege;
 };
