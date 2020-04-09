@@ -1,3 +1,10 @@
+/**
+ * @file Tools.hpp
+ *
+ * @brief ../Tools.hpp 中的一些细节实现
+ *  @c detail 中的都是一些外部不应该使用的内容
+ */
+
 #pragma once
 
 #ifndef detail_Tools_hpp
