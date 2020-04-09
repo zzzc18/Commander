@@ -26,7 +26,7 @@ function BasicMap.Coordinate2Pixel(x, y)
     return math.floor(retX), math.floor(retY)
 end
 
-function BasicMap.getDisByPixel(x1, y1, x2, y2)
+function BasicMap.GetDisByPixel(x1, y1, x2, y2)
     return math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2))
 end
 
@@ -54,7 +54,7 @@ function BasicMap.Pixel2Coordinate(pixelX, pixelY)
     --- 即比对距离大小，若能找到距离更小的便更换选定格子坐标
     if retX < BasicMap.MapSize.x - 1 then
         for i = -1, 1 do
-            if BasicMap.getDisByCoordinate(BasicMap.Coordinate2Pixel(retX, retY), BasicMap.Coordinate2Pixel(retX + 1, retY + i)) then
+            if BasicMap.GetDisByPixel(BasicMap.Coordinate2Pixel(retX, retY), BasicMap.Coordinate2Pixel(retX + 1, retY + i)) then
                 retX = retX + 1
                 retY = retY + i
                 break       --- 不会有两个格子同时满足条件
