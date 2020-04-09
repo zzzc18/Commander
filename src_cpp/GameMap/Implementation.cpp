@@ -1,3 +1,9 @@
+/**
+ * @file Implementation.cpp
+ *
+ * @brief @c GameMap 模块类相关函数的定义
+ */
+
 #include <fstream>
 #include <queue>
 #include <stdexcept>
@@ -59,18 +65,18 @@ bool MAP::MoveUpdate() {
     auto Move = [this](int armyID, VECTOR _src, VECTOR _dst) -> bool {
         NODE &src = _mat[_src.x][_src.y], &dst = _mat[_dst.x][_dst.y];
         if (src.belong != armyID || src.unitNum <= 1)
-            return false;  // FIXME 1 is magic number?
+            return false;  // FIXME magic number 1
         if (dst.type == NODE_TYPE::HILL) return false;
         if (dst.belong == armyID)
-            dst.unitNum += src.unitNum - 1;  // FIXME 1 is magic number?
+            dst.unitNum += src.unitNum - 1;  // FIXME magic number 1
         else {
-            dst.unitNum -= src.unitNum - 1;  // FIXME magic number
+            dst.unitNum -= src.unitNum - 1;  // FIXME magic number 1
             if (dst.unitNum < 0) {
                 dst.unitNum = -dst.unitNum;
                 dst.belong = armyID;
             }
         }
-        src.unitNum = 1;  // FIXME magic number
+        src.unitNum = 1;  // FIXME magic number 1
         return true;
     };
     bool ret = false;
@@ -96,13 +102,14 @@ bool MAP::MoveNode(int armyID, VECTOR src, VECTOR dst) {
 void MAP::RandomGen(int armyCnt, int level) {
     _armyCnt = armyCnt;
     _sizeX = _sizeY = 24;  // FIXME magic number
-    // set node types
+    //设置每个点的类型
     for (int i = 0; i < _sizeX; ++i) {
         for (int j = 0; j < _sizeY; ++j)
             _mat[i][j].type = RandomNodeType(level);
     }
-    // set kings
-    std::vector<std::pair<VECTOR, NODE_TYPE>> kings;  //(pos,pretype)
+    //放置 king
+    std::vector<std::pair<VECTOR, NODE_TYPE>> kings;  //(pos,pre_type)
+    //检查 king 是否互相连通
     auto ValidateConnectivity = [this, &kings]() -> bool {
         int kingFound = 0;
         bool vis[_sizeX][_sizeY] = {};
@@ -127,20 +134,22 @@ void MAP::RandomGen(int armyCnt, int level) {
         }
         return false;
     };  // lambda ValidateConnectivity
+    // king 不连通时把摆 king 的点的属性恢复成之前的属性以供下一次随机放置 king
     auto Recovery = [this, &kings]() -> bool {
         for (auto [pos, type] : kings) _mat[pos.x][pos.y].type = type;
-        return true;  // always true, a magic short-circuit evaluation trick
+        return true;  //利用逻辑运算的短路求值特性
     };
-    do {
+    do {  //不断随机放置 king，直至合法
         for (int i = 1; i <= _armyCnt; ++i) {
             VECTOR pos = {Random(0, _sizeX - 1), Random(0, _sizeY - 1)};
             kings.emplace_back(pos, _mat[pos.x][pos.y].type);
             _mat[pos.x][pos.y].type = NODE_TYPE::KING;
         }
     } while (!ValidateConnectivity() && Recovery());
+    //设置 king 的所属军队
     for (int i = 0; i < _armyCnt; ++i)
         _mat[kings[i].first.x][kings[i].first.y].belong = i + 1;
-    // set other properties
+    // 设置点的其它属性
     for (int i = 0; i < _sizeX; ++i) {
         for (int j = 0; j < _sizeY; ++j) {
             if (_mat[i][j].type == NODE_TYPE::FORT)

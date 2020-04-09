@@ -1,3 +1,9 @@
+/**
+ * @file MapFormat.cpp
+ *
+ * @brief @c GameMap 模块中输入输出相关函数的定义
+ */
+
 #include <iostream>
 #include <limits>
 
