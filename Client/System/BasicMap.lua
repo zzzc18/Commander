@@ -39,6 +39,10 @@ function BasicMap.Pixel2Coordinate(pixelX, pixelY)
             break
         end
     end
+    if pixelX < BasicMap.Coordinate2Pixel(retX, 0) - BasicMap.horizontalDis / 2
+    or pixelX > BasicMap.Coordinate2Pixel(retX, BasicMap.MapSize - 1) + BasicMap.horizontalDis / 2 then
+        retX = retX + 1
+    end
     for i = 0, BasicMap.MapSize.y - 1 do
         local tmpx, tmpy = BasicMap.Coordinate2Pixel(retX, i)
         if
