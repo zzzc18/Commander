@@ -1,16 +1,26 @@
+/**
+ * @file LuaAPI.hpp
+ *
+ * @brief 面向 Lua 的 API 所需要的一些东西
+ */
+
 #pragma once
 
 #ifndef LuaAPI_hpp
 #define LuaAPI_hpp
 
+// Lua 官方的东西
 extern "C" {
 #include <lauxlib.h>
 #include <lua.h>
 #include <lualib.h>
 }
 
-// register C-API functions
-// usage: LUA_REG_FUNC(library,C_API(function1),C_API(function2),...)
+/**
+ * @brief 向 Lua 注册 API
+ *
+ * @example LUA_REG_FUNC(lib,C_API(func1),C_API(func2),...)
+ */
 #define C_API(function) \
     { #function, function }
 #define LUA_REG_FUNC(library, ...)                                 \
@@ -20,15 +30,28 @@ extern "C" {
         return 1;                                                  \
     }
 
-// helpful tool for C-API functions to return arguments to Lua
-// usage: at the end of a C-API function,
-//        just write "return APIreturn(L,ret_arg1,ret_arg2,...);"
+/**
+ * @brief 用于 API 函数向 Lua 返回值
+ *
+ * @tparam types 自动推断，无需考虑
+ * @param luaState API 函数的 @c lua_State* 参数
+ * @param args 零或任意多个要向 Lua 返回的值
+ * @return 返回给 Lua 的值的数量
+ *
+ * @example 在函数末尾 return APIreturn(luaState,ret1,ret2,...);
+ */
 template <typename... types>
 int APIreturn(lua_State *luaState, types... args);
-
-// helpful tools for C-API functions to get parameters from Lua
-// usage: declare the parameters first,
-//        then just write "APIparam(L,param1,param2,...);"
+/**
+ * @brief 用于 API 函数从 Lua 获取参数
+ *
+ * @tparam types 自动推断，无需考虑
+ * @param luaState API 函数的 @c lua_State* 参数
+ * @param args 零或任意多个要从 Lua 获取的参数
+ * @return @c void
+ *
+ * @example 先声明各参数，而后 APIparam(luaState,param1,param2,...);
+ */
 template <typename... types>
 void APIparam(lua_State *luaState, types &... args);
 

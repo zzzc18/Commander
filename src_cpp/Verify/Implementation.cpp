@@ -1,3 +1,9 @@
+/**
+ * @file Implementation.cpp
+ *
+ * @brief @c Verify 模块类相关函数的定义
+ */
+
 #include "Constant.hpp"
 #include "Verify.hpp"
 
@@ -17,7 +23,7 @@ int VERIFY::GetArmyID() const { return _armyID; }
 VERIFY::VERIFY(int armyID, int privilege) {  // FIXME magic numbers
     switch (privilege) {
         case 0:  // army commander
-            if (armyID == SERVER) throw -2;
+            if (armyID == SERVER) throw - 2;
             _armyID = armyID;
             break;
         case 1:  // army leader
@@ -28,7 +34,7 @@ VERIFY::VERIFY(int armyID, int privilege) {  // FIXME magic numbers
             _armyID = SERVER;
             break;
         default:  // invalid
-            throw -1;
+            throw - 1;
     }
     _privilege = privilege;
 }

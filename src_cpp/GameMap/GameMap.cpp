@@ -1,3 +1,9 @@
+/**
+ * @file GameMap.cpp
+ *
+ * @brief @c GameMap 模块中非类相关函数的定义
+ */
+
 #include "GameMap.hpp"
 
 #include <stdexcept>
@@ -20,7 +26,7 @@ NODE_TYPE StrToNodeType(std::string_view str) {
             return NODE_TYPE::OBSTACLE;
         case 'M':
             return NODE_TYPE::MARSH;
-        default:
+        default:  //为了避免 without return 的 warning
             [[unlikely]] throw std::invalid_argument(str.data());
     }
 }
@@ -38,12 +44,12 @@ std::string NodeTypeToStr(NODE_TYPE type) {
             return prefix + "OBSTACLE";
         case NODE_TYPE::MARSH:
             return prefix + "MARSH";
-        default:
+        default:  //为了避免 without return 的 warning
             [[unlikely]] throw std::invalid_argument(
                 std::to_string(static_cast<int>(type)));
     }
 }
-NODE_TYPE RandomNodeType(int level) {  // FIXME full of magic numbers
+NODE_TYPE RandomNodeType(int level) {  // FIXME magic numbers
     double ratio = Random(0.0, 1.0);
     if (level == 0) {
         if (ratio < 0.7)
@@ -63,6 +69,6 @@ NODE_TYPE RandomNodeType(int level) {  // FIXME full of magic numbers
             return NODE_TYPE::OBSTACLE;
         else
             return NODE_TYPE::MARSH;
-    } else
+    } else  //为了避免 without return 的 warning
         [[unlikely]] throw std::invalid_argument(std::to_string(level));
 }

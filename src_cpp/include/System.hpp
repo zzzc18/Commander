@@ -1,3 +1,9 @@
+/**
+ * @file System.hpp
+ *
+ * @brief @c System 模块非 API 部分的声明
+ */
+
 #pragma once
 
 #ifndef System_hpp
@@ -7,7 +13,7 @@
 #include <string_view>
 #include <vector>
 
-//可能以后有用的用于界面切换的场景树
+//用于界面切换的场景树（暂时弃置）
 class [[deprecated]] SCENE_TREE {
    public:
     void SwitchTo(std::string_view name);
