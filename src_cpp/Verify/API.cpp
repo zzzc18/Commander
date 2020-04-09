@@ -1,17 +1,10 @@
-#include "Verify.h"
+#include "LuaAPI.hpp"
+#include "Verify.hpp"
 
-static int Register(lua_State* L) {
-    int armyID = lua_tonumber(L, 1);
-    int privilege = lua_tonumber(L, 2);
-    lua_pushnumber(L, Register(armyID, privilege));
-    return 1;
+static int Register(lua_State *luaState) {
+    int armyID, privilege;
+    APIparam(luaState, armyID, privilege);
+    return APIreturn(luaState, VERIFY::Register(armyID, privilege));
 }
 
-static const luaL_Reg functions[] = {{"Register", Register}, {NULL, NULL}};
-
-extern "C" {
-int luaopen_lib_Verify(lua_State* L) {
-    luaL_register(L, "Verify", functions);
-    return 1;
-}
-}
+LUA_REG_FUNC(Verify, C_API(Register))

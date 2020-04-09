@@ -4,4 +4,6 @@ src_cpp/Build
 tmp
 Client/Output
 Client/Input
-Commander.code-workspace
+Server/Output
+Server/Input
+*.code-workspace

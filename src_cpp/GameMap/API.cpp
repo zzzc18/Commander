@@ -1,114 +1,66 @@
-#include <string>
+#include "GameMap.hpp"
+#include "LuaAPI.hpp"
 
-#include "GameMap.h"
-#include "Verify.h"
-using namespace std;
-
-//! 未来可能删除，有些地方与LoadMap行为不同，使用会出问题
-static int RandomGenMap(lua_State* L) {
-    // TODO: player
-    RandomGenMap(2);
-    return 0;
+static int RandomGenMap(lua_State *luaState) {
+    MAP::Singleton().RandomGen(2, 0);  // FIXME magic numbers
+    return APIreturn(luaState);
+}
+static int LoadMap(lua_State *luaState) {
+    MAP::Singleton().Load();
+    return APIreturn(luaState);
+}
+static int WriteMap(lua_State *luaState) {
+    MAP::Singleton().Save();
+    return APIreturn(luaState);
 }
 
-/**
- * @brief 获得地图大小sizeX,sizeY
- *
- * @param L
- * @return int
- */
-static int GetSize(lua_State* L) {
-    pair<int, int> ret = MainMap->GetSize();
-    lua_pushnumber(L, ret.first);
-    lua_pushnumber(L, ret.second);
-    return 2;
+static int GetSize(lua_State *luaState) {
+    auto [sizeX, sizeY] = MAP::Singleton().GetSize();
+    return APIreturn(luaState, sizeX, sizeY);
 }
 
-static int GetNodeType(lua_State* L) {
-    int x = lua_tonumber(L, 1);
-    int y = lua_tonumber(L, 2);
-    lua_pushstring(L, GetNodeType(x, y).c_str());
-    return 1;
+static int GetVision(lua_State *luaState) {
+    int x, y;
+    APIparam(luaState, x, y);
+    return APIreturn(luaState, MAP::Singleton().IsViewable({x, y}));
+}
+static int GetNodeType(lua_State *luaState) {
+    int x, y;
+    APIparam(luaState, x, y);
+    return APIreturn(luaState,
+                     NodeTypeToStr(MAP::Singleton().GetType({x, y})).c_str());
+}
+static int GetUnitNum(lua_State *luaState) {
+    int x, y;
+    APIparam(luaState, x, y);
+    return APIreturn(luaState, MAP::Singleton().GetUnitNum({x, y}));
+}
+static int GetBelong(lua_State *luaState) {
+    int x, y;
+    APIparam(luaState, x, y);
+    return APIreturn(luaState, MAP::Singleton().GetBelong({x, y}));
 }
 
-static int WriteMap(lua_State* L) {
-    WriteMap();
-    return 0;
+static int Update(lua_State *luaState) {
+    MAP::Singleton().Update();
+    return APIreturn(luaState);
+}
+static int BigUpdate(lua_State *luaState) {
+    MAP::Singleton().BigUpdate();
+    return APIreturn(luaState);
 }
 
-static int GetUnitNum(lua_State* L) {
-    int x = lua_tonumber(L, 1);
-    int y = lua_tonumber(L, 2);
-    lua_pushnumber(L, GetUnitNum(x, y));
-    return 1;
+static int Move(lua_State *luaState) {
+    int armyID, srcX, srcY, dstX, dstY;
+    APIparam(luaState, armyID, srcX, srcY, dstX, dstY);
+    return APIreturn(luaState, MAP::Singleton().MoveNode(armyID, {srcX, srcY},
+                                                         {dstX, dstY}));
+}
+static int MoveUpdate(lua_State *luaState) {
+    return APIreturn(luaState, MAP::Singleton().MoveUpdate());
 }
 
-static int GetBelong(lua_State* L) {
-    int x = lua_tonumber(L, 1);
-    int y = lua_tonumber(L, 2);
-    lua_pushnumber(L, GetBelong(x, y));
-    return 1;
-}
-
-static int GetVision(lua_State* L) {
-    int x = lua_tonumber(L, 1);
-    int y = lua_tonumber(L, 2);
-    lua_pushboolean(L, GetVision({x, y}));
-    return 1;
-}
-
-static int LoadMap(lua_State* L) {
-    LoadMap();
-    return 0;
-}
-
-static int Update(lua_State* L) {
-    MainMap->Update();
-    return 0;
-}
-
-static int BigUpdate(lua_State* L) {
-    MainMap->BigUpdate();
-    return 0;
-}
-
-static int Move(lua_State* L) {
-    int armyID = lua_tointeger(L, 1);
-    int srcX = lua_tointeger(L, 2);
-    int srcY = lua_tointeger(L, 3);
-    int dstX = lua_tointeger(L, 4);
-    int dstY = lua_tointeger(L, 5);
-    MainMap->MoveNode(armyID, srcX, srcY, dstX, dstY);
-    return 0;
-}
-
-static int MoveUpdate(lua_State* L) {
-    bool ret = MainMap->MoveUpdate();
-    if (GetArmyID() == -1)
-        return 0;
-    else {
-        lua_pushboolean(L, ret);
-        return 1;
-    }
-}
-
-static const luaL_Reg functions[] = {{"RandomGenMap", RandomGenMap},
-                                     {"GetSize", GetSize},
-                                     {"GetNodeType", GetNodeType},
-                                     {"WriteMap", WriteMap},
-                                     {"LoadMap", LoadMap},
-                                     {"GetUnitNum", GetUnitNum},
-                                     {"GetBelong", GetBelong},
-                                     {"GetVision", GetVision},
-                                     {"Update", Update},
-                                     {"BigUpdate", BigUpdate},
-                                     {"Move", Move},
-                                     {"MoveUpdate", MoveUpdate},
-                                     {NULL, NULL}};
-
-extern "C" {
-int luaopen_lib_GameMap(lua_State* L) {
-    luaL_register(L, "GameMap", functions);
-    return 1;
-}
-}
+LUA_REG_FUNC(GameMap, C_API(RandomGenMap), C_API(LoadMap), C_API(WriteMap),
+             C_API(GetSize), C_API(GetVision), C_API(GetNodeType),
+             C_API(GetUnitNum), C_API(GetBelong), C_API(Update),
+             C_API(BigUpdate), C_API(Move), C_API(MoveUpdate))

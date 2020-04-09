@@ -1,29 +1,21 @@
-#include "GameMap.h"
-#include "System.h"
-using namespace std;
+#include "GameMap.hpp"
+#include "LuaAPI.hpp"
 
-static int Update(lua_State* L) {
-    double dt = lua_tonumber(L, 1);
-    static double totalTime = 0;
-    static int cnt = 0;
+[[deprecated]] static int Update(lua_State* luaState) {
+    static int cnt;
+    static double totalTime;
+    double dt;
+    APIparam(luaState, dt);
     totalTime += dt;
     if (totalTime > 1) {
         totalTime -= 1;
-        cnt++;
-        MainMap->Update();
-        if (cnt == 25) {
+        if (++cnt == 25) {
             cnt = 0;
-            MainMap->BigUpdate();
-        }
+            MAP::Singleton().BigUpdate();
+        } else
+            MAP::Singleton().Update();
     }
-    return 0;
+    return APIreturn(luaState);
 }
 
-static const luaL_Reg functions[] = {{"Update", Update}, {NULL, NULL}};
-
-extern "C" {
-int luaopen_lib_System(lua_State* L) {
-    luaL_register(L, "System", functions);
-    return 1;
-}
-}
+LUA_REG_FUNC(System, C_API(Update))
