@@ -2,4 +2,4 @@
 mkdir Build
 cd Build
 cmake -G "MinGW Makefiles" ..
-mingw32-make -j7
+mingw32-make -j
