@@ -18,7 +18,7 @@
 
 template <typename... types>
 int APIreturn(lua_State *luaState, types... args) {
-    auto Push = [luaState](auto arg) -> void {
+    [[maybe_unused]] auto Push = [luaState](auto arg) -> void {
         using type = decltype(arg);
         //按照 <lua.h> 中的声明顺序
         if constexpr (std::is_floating_point_v<type>)
