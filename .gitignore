@@ -7,3 +7,4 @@ Client/Input
 Server/Output
 Server/Input
 *.code-workspace
+*.log

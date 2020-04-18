@@ -34,22 +34,22 @@ function MapAdjust.ChangeFocusUpdate()
 end
 
 function MapAdjust.ChangeSizeUpdate()
-    BasicMap.edgeLength = BasicMap.edgeLength * BasicMap.ratio
-    if BasicMap.edgeLength > 100 then
-        BasicMap.edgeLength = 100
+    BasicMap.radius = BasicMap.radius * BasicMap.ratio
+    if BasicMap.radius > 100 then
+        BasicMap.radius = 100
     end
-    if BasicMap.edgeLength < 20 then
-        BasicMap.edgeLength = 20
+    if BasicMap.radius < 20 then
+        BasicMap.radius = 20
     end
     BasicMap.ratio = 1
     if
         (love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl")) and
             (love.keyboard.isDown("0") or love.keyboard.isDown("kp0"))
      then
-        BasicMap.edgeLength = 50
+        BasicMap.radius = 50
     end
-    BasicMap.horizontalDis = math.sqrt(3) * BasicMap.edgeLength
-    BasicMap.verticalDis = 1.5 * BasicMap.edgeLength
+    BasicMap.horizontalDis = math.sqrt(3) * BasicMap.radius
+    BasicMap.verticalDis = 1.5 * BasicMap.radius
 end
 
 function MapAdjust.Catchwheelmoved(x, y)
