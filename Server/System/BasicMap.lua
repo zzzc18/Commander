@@ -4,16 +4,27 @@ BasicMap.Map = {}
 BasicMap.MapSize = {}
 BasicMap.Focus = {}
 BasicMap.ratio = 1
-BasicMap.edgeLength = 40
+--[[ 规定六边形相邻边从右上开始编号为1,顺时针增加
+BasicMap.radius为六边形半径
+BasicMap.horizontalDis为六边形与2或5号边相邻的六边形中心的距离，即水平距离，为半径sqrt(3)倍
+BasicMap.verticalDis为六边形与1、3、4或6号边相邻的六边形中心的 竖直距离，为半径1.5倍
+]]
+BasicMap.radius = 40
 
 function BasicMap.Coordinate2Pixel(x, y)
     -- 注意地图坐标的第一维是横坐标，第二维是纵坐标
     -- 而显示的时候，第一维是x轴（水平向右），第二维是y轴（竖直向下）
-    -- 所以在这里要用Focus x,y（地图坐标）对应offset x,y（显示坐标）
+    -- 所以在这里要用Focus x,y（地图坐标）对应offset y,x（显示坐标）
     local retX, retY = BasicMap.Focus.pixelX, BasicMap.Focus.pixelY
+
     local offsetY, offsetX =
-        (x - BasicMap.Focus.x) * BasicMap.edgeLength,
-        (y - BasicMap.Focus.y) * BasicMap.edgeLength
+        (x - BasicMap.Focus.x) * BasicMap.verticalDis,
+        (y - BasicMap.Focus.y) * BasicMap.horizontalDis
+
+    -- 当前格子 与 基准格子 的 x坐标奇偶性不一致时，需要进行修正
+    if (x - BasicMap.Focus.x) % 2 == 1 then
+        offsetX = offsetX + BasicMap.horizontalDis / 2
+    end
     retX, retY = retX + offsetX, retY + offsetY
     return retX, retY
 end
@@ -23,8 +34,8 @@ function BasicMap.Pixel2Coordinate(pixelX, pixelY)
     for i = 0, BasicMap.MapSize.x - 1 do
         local tmpx, tmpy = BasicMap.Coordinate2Pixel(i, 0)
         if
-            tmpy - BasicMap.edgeLength / 2 < pixelY and
-                pixelY < tmpy + BasicMap.edgeLength / 2
+            tmpy - BasicMap.verticalDis / 2 < pixelY and
+                pixelY < tmpy + BasicMap.verticalDis / 2
          then
             retX = i
             break
@@ -33,8 +44,8 @@ function BasicMap.Pixel2Coordinate(pixelX, pixelY)
     for i = 0, BasicMap.MapSize.y - 1 do
         local tmpx, tmpy = BasicMap.Coordinate2Pixel(0, i)
         if
-            tmpx - BasicMap.edgeLength / 2 < pixelX and
-                pixelX < tmpx + BasicMap.edgeLength / 2
+            tmpx - BasicMap.horizontalDis / 2 < pixelX and
+                pixelX < tmpx + BasicMap.horizontalDis / 2
          then
             retY = i
             break

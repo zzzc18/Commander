@@ -7,7 +7,7 @@ function NodeImageSet:Load()
     self.center = {}
     self.center.x = 97
     self.center.y = 97
-    self.divRatio = 195
+    self.divRatio = 135
     self["NODE_TYPE_BLANK"] =
         love.graphics.newImage("data/Picture/NODE_TYPE_BLANK.png")
     self["NODE_TYPE_HILL"] =
@@ -26,7 +26,7 @@ function SelectImage:Load()
     self.center = {}
     self.center.x = 113
     self.center.y = 113
-    self.divRatio = 195
+    self.divRatio = 135
     self.image = love.graphics.newImage("data/Picture/Select.png")
 end
 
@@ -41,8 +41,8 @@ function Picture.DrawNode(pixelX, pixelY, nodeType)
         pixelX,
         pixelY,
         0,
-        BasicMap.edgeLength / NodeImageSet.divRatio,
-        BasicMap.edgeLength / NodeImageSet.divRatio,
+        BasicMap.radius / NodeImageSet.divRatio, --- scale factor x
+        BasicMap.radius / NodeImageSet.divRatio, --- scale factor y
         NodeImageSet.center.x,
         NodeImageSet.center.y
     )
@@ -55,8 +55,8 @@ function Picture.DrawSelect(pixelX, pixelY)
         pixelX,
         pixelY,
         0,
-        BasicMap.edgeLength / SelectImage.divRatio,
-        BasicMap.edgeLength / SelectImage.divRatio,
+        BasicMap.radius / SelectImage.divRatio,
+        BasicMap.radius / SelectImage.divRatio,
         SelectImage.center.x,
         SelectImage.center.y
     )

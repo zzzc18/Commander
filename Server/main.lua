@@ -18,7 +18,7 @@ require("ServerSock")
 require("PlayGame.PlayGame")
 
 function love.load()
-    CVerify.Register(-1, 3)
+    CVerify.Register(0, 3)
     ServerSock.Init()
     Running = PlayGame
     Running.Init()

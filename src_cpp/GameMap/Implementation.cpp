@@ -1,125 +1,234 @@
-#include <cstdlib>
-#include <iostream>
+/**
+ * @file Implementation.cpp
+ *
+ * @brief @c GameMap 模块类相关函数的定义
+ */
 
-#include "GameMap.h"
-#include "Tools.h"
-using namespace std;
+#include <fstream>
+#include <queue>
+#include <stdexcept>
+#include <string>
+#include <string_view>
+#include <utility>
+#include <vector>
 
-// NODE_TYPE _type = NODE_TYPE_BLANK, int _unitNum = 0, int _belong = 0
-NODE::NODE(NODE_TYPE _type, int _unitNum, int _belong)
-    : type(_type), unitNum(_unitNum), belong(_belong) {}
+#include "GameMap.hpp"
+#include "Tools.hpp"
+#include "Verify.hpp"
 
-NODE_TYPE NODE::Type() const { return type; }
+VECTOR VECTOR::operator-() const { return {-x, -y}; }
 
-void NODE::ModifyBelong(int id) { belong = id; }
-void NODE::ModifyUnitNum(int _unitNum) { unitNum = _unitNum; }
-void NODE::ModifyType(NODE_TYPE _type) { type = _type; }
+VECTOR& VECTOR::operator+=(VECTOR other) {
+    x += other.x, y += other.y;
+    return *this;
+}
+VECTOR operator+(VECTOR lhs, VECTOR rhs) { return lhs += rhs; }
 
-void NODE::ModifyType(std::string _type) {
-    if (_type == "NODE_TYPE_BLANK") type = NODE_TYPE_BLANK;
-    if (_type == "NODE_TYPE_HILL") type = NODE_TYPE_HILL;
-    if (_type == "NODE_TYPE_FORT") type = NODE_TYPE_FORT;
-    if (_type == "NODE_TYPE_KING") type = NODE_TYPE_KING;
-    if (_type == "NODE_TYPE_OBSTACLE") type = NODE_TYPE_OBSTACLE;
-    if (_type == "NODE_TYPE_MARSH") type = NODE_TYPE_MARSH;
+VECTOR& VECTOR::operator-=(VECTOR other) {
+    x -= other.x, y -= other.y;
+    return *this;
+}
+VECTOR operator-(VECTOR lhs, VECTOR rhs) { return lhs -= rhs; }
+
+VECTOR& VECTOR::operator*=(int c) {
+    x *= c, y *= c;
+    return *this;
+}
+VECTOR operator*(VECTOR v, int c) { return v *= c; }
+VECTOR operator*(int c, VECTOR v) { return v *= c; }
+
+bool operator==(VECTOR lhs, VECTOR rhs) {
+    return lhs.x == rhs.x && lhs.y == rhs.y;
+}
+bool operator!=(VECTOR lhs, VECTOR rhs) {
+    return lhs.x != rhs.x || lhs.y != rhs.y;
 }
 
-void NODE::Update() {
-    if (!belong) return;
-    switch (type) {
-        case NODE_TYPE_FORT:
-            unitNum++;
-            break;
-        case NODE_TYPE_KING:
-            unitNum++;
-        default:
-            break;
-    }
+///////////////////////////////////////////////////////////////////////////////
+
+MAP& MAP::Singleton() {
+    static MAP singleton;
+    return singleton;
 }
-
-void NODE::BigUpdate() {
-    if (!belong) return;
-    switch (type) {
-        case NODE_TYPE_BLANK:
-            unitNum++;
-            break;
-        case NODE_TYPE_MARSH:
-            unitNum--;
-        default:
-            break;
-    }
-}
-
-string NODE::GetType() const {
-    switch (type) {
-        case NODE_TYPE_BLANK:
-            return "NODE_TYPE_BLANK";
-        case NODE_TYPE_HILL:
-            return "NODE_TYPE_HILL";
-        case NODE_TYPE_FORT:
-            return "NODE_TYPE_FORT";
-        case NODE_TYPE_KING:
-            return "NODE_TYPE_KING";
-        case NODE_TYPE_OBSTACLE:
-            return "NODE_TYPE_OBSTACLE";
-        case NODE_TYPE_MARSH:
-            return "NODE_TYPE_MARSH";
-        default:
-            break;
-    }
-}
-
-int NODE::GetUnitNum() const { return unitNum; }
-int NODE::GetBelong() const { return belong; }
-
-////////////////////////////////////////////////////////////
 
 void MAP::Update() {
-    for (int i = 0; i < sizeX; i++) {
-        for (int j = 0; j < sizeY; j++) {
-            mat[i][j].Update();
-        }
+    for (int i = 0; i < _sizeX; ++i) {
+        for (int j = 0; j < _sizeY; ++j) _mat[i][j].Update();
     }
 }
-
 void MAP::BigUpdate() {
-    for (int i = 0; i < sizeX; i++) {
-        for (int j = 0; j < sizeY; j++) {
-            mat[i][j].BigUpdate();
+    for (int i = 0; i < _sizeX; ++i) {
+        for (int j = 0; j < _sizeY; ++j) _mat[i][j].BigUpdate();
+    }
+}
+bool MAP::MoveUpdate() {
+    auto Move = [this](int armyID, VECTOR _src, VECTOR _dst) -> bool {
+        NODE &src = _mat[_src.x][_src.y], &dst = _mat[_dst.x][_dst.y];
+        if (src.belong != armyID || src.unitNum <= 1)
+            return false;  // FIXME magic number 1
+        if (dst.type == NODE_TYPE::HILL) return false;
+        if (dst.belong == armyID)
+            dst.unitNum += src.unitNum - 1;  // FIXME magic number 1
+        else {
+            dst.unitNum -= src.unitNum - 1;  // FIXME magic number 1
+            if (dst.unitNum < 0) {
+                dst.unitNum = -dst.unitNum;
+                dst.belong = armyID;
+            }
+        }
+        src.unitNum = 1;  // FIXME magic number 1
+        return true;
+    };
+    bool ret = false;
+    for (int i = 1; i <= _armyCnt; ++i) {
+        if (auto& cmd = _moveCommands[i]; cmd) {
+            if (bool tmp = Move(i, cmd->first, cmd->second);
+                i == VERIFY::Singleton().GetArmyID())
+                ret = tmp;
+            cmd.reset();
+        }
+    }
+    return ret;
+}
+
+bool MAP::MoveNode(int armyID, VECTOR src, VECTOR dst) {
+    if (!_moveCommands[armyID]) {
+        _moveCommands[armyID] = {src, dst};
+        return true;
+    } else
+        return false;
+}
+
+void MAP::RandomGen(int armyCnt, int level) {
+    _armyCnt = armyCnt;
+    _sizeX = _sizeY = 24;  // FIXME magic number
+    //设置每个点的类型
+    for (int i = 0; i < _sizeX; ++i) {
+        for (int j = 0; j < _sizeY; ++j)
+            _mat[i][j].type = RandomNodeType(level);
+    }
+    //放置 king
+    std::vector<std::pair<VECTOR, NODE_TYPE>> kings;  //(pos,pre_type)
+    //检查 king 是否互相连通
+    auto ValidateConnectivity = [this, &kings]() -> bool {
+        int kingFound = 0;
+        bool vis[_sizeX][_sizeY] = {};
+        std::queue<VECTOR> que;
+        que.push(kings.front().first);
+        vis[kings.front().first.x][kings.front().first.y] = true;
+        while (!que.empty()) {
+            VECTOR u = que.front();
+            que.pop();
+            if (_mat[u.x][u.y].type == NODE_TYPE::KING) {
+                if (++kingFound == kings.size()) return true;
+            }
+            for (auto dta : DIR[u.x & 1]) {  //判断是奇数行还是偶数行
+                if (VECTOR v = u + dta; this->InMap(v)) {
+                    if (!vis[v.x][v.y] &&
+                        _mat[v.x][v.y].type != NODE_TYPE::HILL) {
+                        vis[v.x][v.y] = true;
+                        que.push(v);
+                    }
+                }
+            }
+        }
+        return false;
+    };  // lambda ValidateConnectivity
+    // king 不连通时把摆 king 的点的属性恢复成之前的属性以供下一次随机放置 king
+    auto Recovery = [this, &kings]() -> bool {
+        for (auto [pos, type] : kings) _mat[pos.x][pos.y].type = type;
+        return true;  //利用逻辑运算的短路求值特性
+    };
+    do {  //不断随机放置 king，直至合法
+        for (int i = 1; i <= _armyCnt; ++i) {
+            VECTOR pos = {Random(0, _sizeX - 1), Random(0, _sizeY - 1)};
+            kings.emplace_back(pos, _mat[pos.x][pos.y].type);
+            _mat[pos.x][pos.y].type = NODE_TYPE::KING;
+        }
+    } while (!ValidateConnectivity() && Recovery());
+    //设置 king 的所属军队
+    for (int i = 0; i < _armyCnt; ++i)
+        _mat[kings[i].first.x][kings[i].first.y].belong = i + 1;
+    // 设置点的其它属性
+    for (int i = 0; i < _sizeX; ++i) {
+        for (int j = 0; j < _sizeY; ++j) {
+            if (_mat[i][j].type == NODE_TYPE::FORT)
+                _mat[i][j].unitNum = Random(40, 50);  // FIXME magic number
         }
     }
 }
+void MAP::Load(std::string_view file) {  // file = "Input/map.map"
+    std::ifstream fin(file.data());
+    fin >> *this;
+    fin.close();
+}
+void MAP::Save(std::string_view file) {  // file = "Output/map.map"
+    std::ofstream fout(file.data());
+    fout << *this;
+    fout.close();
+}
 
-void MAP::InitNode(int x, int y, NODE_TYPE type) {
-    if (type == NODE_TYPE_FORT) {
-        int num = 40 + 1.0 * rand() / RAND_MAX * 10;
-        mat[x][y] = NODE(type, num);
-    } else {
-        mat[x][y] = NODE(type);
+std::pair<int, int> MAP::GetSize() const { return {_sizeX, _sizeY}; }
+
+bool MAP::InMap(VECTOR pos) const {
+    return 0 <= pos.x && pos.x < _sizeX && 0 <= pos.y && pos.y < _sizeY;
+}
+bool MAP::IsViewable(VECTOR pos) const {
+    if (_mat[pos.x][pos.y].belong == VERIFY::Singleton().GetArmyID())
+        return true;
+    for (auto dta : DIR[pos.x & 1]) {  //判断是奇数行还是偶数行
+        if (VECTOR next = pos + dta; this->InMap(next)) {
+            if (_mat[next.x][next.y].belong == VERIFY::Singleton().GetArmyID())
+                return true;
+        }
+    }
+    return false;
+}
+
+NODE_TYPE MAP::GetType(VECTOR pos) const {
+    NODE_TYPE type = _mat[pos.x][pos.y].type;
+    if (this->IsViewable(pos)) return type;
+    switch (type) {
+        default:
+            return NODE_TYPE::HILL;
+        case NODE_TYPE::BLANK:
+            [[fallthrough]];
+        case NODE_TYPE::KING:
+            [[fallthrough]];
+        case NODE_TYPE::OBSTACLE:
+            [[fallthrough]];
+        case NODE_TYPE::MARSH:
+            return NODE_TYPE::BLANK;
     }
 }
-
-string MAP::GetNodeType(int x, int y) const { return mat[x][y].GetType(); }
-
-bool MAP::InMap(int x, int y) {
-    return x >= 0 && x < MainMap->GetSize().first && y >= 0 &&
-           y < MainMap->GetSize().second;
+int MAP::GetUnitNum(VECTOR pos) const {
+    return this->IsViewable(pos) ? _mat[pos.x][pos.y].unitNum : 0;
+}
+int MAP::GetBelong(VECTOR pos) const {
+    return this->IsViewable(pos) ? _mat[pos.x][pos.y].belong : SERVER;
 }
 
-bool MAP::InMap(pair<int, int> pos) { return InMap(pos.first, pos.second); }
-
-pair<int, int> MAP::GetSize() const { return {sizeX, sizeY}; }
-
-MAP::MAP(int _sizeX, int _sizeY) : sizeX(_sizeX), sizeY(_sizeY) {}
-
-void MAP::SetKingPos(int id, pair<int, int> pos) {
-    mat[pos.first][pos.second].ModifyBelong(id);
+void MAP::NODE::Update() {
+    if (belong == SERVER) return;
+    switch (type) {
+        default:
+            break;
+        case NODE_TYPE::FORT:
+            [[fallthrough]];
+        case NODE_TYPE::KING:
+            ++unitNum;
+    }
 }
-
-NODE MAP::GetNode(int x, int y) const { return mat[x][y]; }
-
-int MAP::GetBelong(int x, int y) const { return mat[x][y].GetBelong(); }
-
-int MAP::GetUnitNum(int x, int y) const { return mat[x][y].GetUnitNum(); }
-
-void MAP::ModifyNode(int x, int y, NODE node) { mat[x][y] = node; }
+void MAP::NODE::BigUpdate() {
+    if (belong == SERVER) return;
+    switch (type) {
+        default:
+            break;
+        case NODE_TYPE::BLANK:
+            ++unitNum;
+            break;
+        case NODE_TYPE::MARSH:
+            --unitNum;
+            break;
+    }
+}

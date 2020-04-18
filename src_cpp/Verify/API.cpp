@@ -1,17 +1,26 @@
-#include "Verify.h"
+/**
+ * @file API.cpp
+ *
+ * @brief @c Verify 模块对 Lua 提供的 API
+ */
 
-static int Register(lua_State* L) {
-    int armyID = lua_tonumber(L, 1);
-    int privilege = lua_tonumber(L, 2);
-    lua_pushnumber(L, Register(armyID, privilege));
-    return 1;
+#include "LuaAPI.hpp"
+#include "Verify.hpp"
+
+/**
+ * @brief 注册当前军队的各个属性
+ *
+ * @param armyID @c int 军队编号
+ * @param privilege @c int 军队权限
+ * @return @c void
+ */
+static int Register(lua_State *luaState) {
+    int armyID, privilege;
+    APIparam(luaState, armyID, privilege);
+    return APIreturn(luaState, VERIFY::Register(armyID, privilege));
 }
 
-static const luaL_Reg functions[] = {{"Register", Register}, {NULL, NULL}};
-
-extern "C" {
-int luaopen_lib_Verify(lua_State* L) {
-    luaL_register(L, "Verify", functions);
-    return 1;
-}
-}
+/**
+ * @brief 向 Lua 注册 API，模块名为 lib/Verify.dll
+ */
+LUA_REG_FUNC(Verify, C_API(Register))

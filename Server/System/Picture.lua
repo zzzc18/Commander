@@ -41,8 +41,8 @@ function Picture.DrawNode(pixelX, pixelY, nodeType)
         pixelX,
         pixelY,
         0,
-        BasicMap.edgeLength / NodeImageSet.divRatio,
-        BasicMap.edgeLength / NodeImageSet.divRatio,
+        BasicMap.radius / NodeImageSet.divRatio,
+        BasicMap.radius / NodeImageSet.divRatio,
         NodeImageSet.center.x,
         NodeImageSet.center.y
     )
@@ -55,8 +55,8 @@ function Picture.DrawSelect(pixelX, pixelY)
         pixelX,
         pixelY,
         0,
-        BasicMap.edgeLength / SelectImage.divRatio,
-        BasicMap.edgeLength / SelectImage.divRatio,
+        BasicMap.radius / SelectImage.divRatio,
+        BasicMap.radius / SelectImage.divRatio,
         SelectImage.center.x,
         SelectImage.center.y
     )

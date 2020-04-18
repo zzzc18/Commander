@@ -4,18 +4,89 @@ BasicMap.Map = {}
 BasicMap.MapSize = {}
 BasicMap.Focus = {}
 BasicMap.ratio = 1
-BasicMap.edgeLength = 40
+--[[ 
+规定六边形相邻边从右上开始编号为1,顺时针增加
+规定六边形顶点从正上方开始编号为1,顺时针增加
+BasicMap.radius为六边形半径
+BasicMap.horizontalDis为六边形与2或5号边相邻的六边形中心的距离，即水平距离，为半径sqrt(3)倍
+BasicMap.verticalDis为六边形与1、3、4或6号边相邻的六边形中心的 竖直距离，为半径1.5倍
+]]
+BasicMap.radius = 40
+--[[
+六边形相邻格数组，偶数行是 BasicMap.direction[1][edgeID] 奇数行是 BasicMap.direction[2][edgeID]
+]]
+BasicMap.direction = {
+    {{-1, 0}, {0, 1}, {1, 0}, {1, -1}, {0, -1}, {-1, -1}},
+    {{-1, 1}, {0, 1}, {1, 1}, {1, 0}, {0, -1}, {-1, 0}}
+}
+
+function BasicMap.GetHexagonBesideByEdge(x, y, edgeID)
+    local opt = x % 2 + 1
+    return x + BasicMap.direction[opt][edgeID][1], y +
+        BasicMap.direction[opt][edgeID][2]
+end
+
+function BasicMap.InsideHexagon(pixelX, pixelY, x, y)
+    local centerPixelX, centerPixelY = BasicMap.Coordinate2Pixel(x, y)
+    local node = {}
+    node[1] = {centerPixelX, centerPixelY - BasicMap.radius}
+    node[2] = {
+        centerPixelX + math.sqrt(3) * BasicMap.radius,
+        centerPixelY - BasicMap.radius / 2
+    }
+    node[3] = {
+        centerPixelX + math.sqrt(3) * BasicMap.radius,
+        centerPixelY + BasicMap.radius / 2
+    }
+    node[4] = {centerPixelX, centerPixelY + BasicMap.radius}
+    node[5] = {
+        centerPixelX - math.sqrt(3) * BasicMap.radius,
+        centerPixelY + BasicMap.radius / 2
+    }
+    node[6] = {
+        centerPixelX - math.sqrt(3) * BasicMap.radius,
+        centerPixelY - BasicMap.radius / 2
+    }
+    -- 向量叉积的方式判断是否在六边形内
+    for i = 1, 6 do
+        local u = i
+        local v = i + 1
+        if v == 7 then
+            v = 1
+        end
+        local vecEdge = {node[v][1] - node[u][1], node[v][2] - node[u][2]}
+        local vecPixel = {pixelX - node[u][1], pixelY - node[u][2]}
+        local crossVal = vecEdge[1] * vecPixel[2] - vecEdge[2] * vecPixel[1]
+        if crossVal < 0 then
+            return false
+        end
+    end
+    return true
+end
 
 function BasicMap.Coordinate2Pixel(x, y)
     -- 注意地图坐标的第一维是横坐标，第二维是纵坐标
     -- 而显示的时候，第一维是x轴（水平向右），第二维是y轴（竖直向下）
-    -- 所以在这里要用Focus x,y（地图坐标）对应offset x,y（显示坐标）
+    -- 所以在这里要用Focus x,y（地图坐标）对应offset y,x（显示坐标）
     local retX, retY = BasicMap.Focus.pixelX, BasicMap.Focus.pixelY
+
     local offsetY, offsetX =
-        (x - BasicMap.Focus.x) * BasicMap.edgeLength,
-        (y - BasicMap.Focus.y) * BasicMap.edgeLength
+        (x - BasicMap.Focus.x) * BasicMap.verticalDis,
+        (y - BasicMap.Focus.y) * BasicMap.horizontalDis
+
+    -- 当前格子 与 基准格子 的 x坐标奇偶性不一致时，需要进行修正
+    if (x - BasicMap.Focus.x) % 2 == 1 then
+        offsetX = offsetX + BasicMap.horizontalDis / 2
+        if BasicMap.Focus.x % 2 == 1 then
+            offsetX = offsetX - BasicMap.horizontalDis
+        end
+    end
     retX, retY = retX + offsetX, retY + offsetY
-    return retX, retY
+    return math.floor(retX), math.floor(retY)
+end
+
+function BasicMap.GetDisByPixel(x1, y1, x2, y2)
+    return math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2))
 end
 
 function BasicMap.Pixel2Coordinate(pixelX, pixelY)
@@ -23,30 +94,48 @@ function BasicMap.Pixel2Coordinate(pixelX, pixelY)
     for i = 0, BasicMap.MapSize.x - 1 do
         local tmpx, tmpy = BasicMap.Coordinate2Pixel(i, 0)
         if
-            tmpy - BasicMap.edgeLength / 2 < pixelY and
-                pixelY < tmpy + BasicMap.edgeLength / 2
+            tmpy - BasicMap.verticalDis / 2 < pixelY and
+                pixelY < tmpy + BasicMap.verticalDis / 2
          then
             retX = i
             break
         end
     end
+    if retX == nil then
+        return -1, -1
+    end
+
     for i = 0, BasicMap.MapSize.y - 1 do
-        local tmpx, tmpy = BasicMap.Coordinate2Pixel(0, i)
+        local tmpx, tmpy = BasicMap.Coordinate2Pixel(retX, i)
         if
-            tmpx - BasicMap.edgeLength / 2 < pixelX and
-                pixelX < tmpx + BasicMap.edgeLength / 2
+            tmpx - BasicMap.horizontalDis / 2 < pixelX and
+                pixelX < tmpx + BasicMap.horizontalDis / 2
          then
             retY = i
             break
         end
     end
     if retY == nil then
-        retX = -1
+        return -1, -1
     end
-    if retY == nil then
-        retY = -1
+
+    if BasicMap.InsideHexagon(pixelX, pixelY, retX, retY) then
+        return retX, retY
     end
-    return retX, retY
+    -- 上述步骤选取可能会错判在边角除的点，因此比对下一行该选定格子周围的几个格子，
+    -- 寻找是否有比当前选定的更合理的点
+
+    -- TODO: 似乎用距离比叉积速度快，而且好像没毛病
+    local direct = {1, 3, 4, 6}
+    for i = 1, 4 do
+        local tmpX, tmpY =
+            BasicMap.GetHexagonBesideByEdge(retX, retY, direct[i])
+        if BasicMap.InsideHexagon(pixelX, pixelY, tmpX, tmpY) then
+            return tmpX, tmpY
+        end
+    end
+    -- TODO: 可能还需要后续进行测试
+    return -1, -1
 end
 
 function BasicMap.SetNodeColor(x, y)
@@ -98,6 +187,8 @@ function BasicMap.Init()
     BasicMap.Focus.pixelY = BasicMap.Focus.pixelY / 2
     BasicMap.Focus.x = BasicMap.MapSize.x / 2
     BasicMap.Focus.y = BasicMap.MapSize.y / 2
+    BasicMap.horizontalDis = math.sqrt(3) * BasicMap.radius
+    BasicMap.verticalDis = 1.5 * BasicMap.radius
 end
 
 return BasicMap

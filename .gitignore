@@ -3,4 +3,8 @@ src_cpp/Build
 .vscode
 tmp
 Client/Output
-Commander.code-workspace
+Client/Input
+Server/Output
+Server/Input
+*.code-workspace
+*.log
