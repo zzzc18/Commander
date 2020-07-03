@@ -27,7 +27,7 @@ function Operation.Queue:Size()
 end
 
 function Operation.Select(x, y)
-    if CGameMap.GetBelong(x, y) == PlayGame.armyID then
+    if true or CGameMap.GetBelong(x, y) == PlayGame.armyID then -- TODO: fix true
         Operation.SelectPos = {}
         Operation.SelectPos.x = x
         Operation.SelectPos.y = y
@@ -52,6 +52,7 @@ end
 function Operation.MoveTo(x, y)
 
     if not Operation.IsConnected(Operation.SelectPos.x, Operation.SelectPos.y, x, y) then
+        print("!! NOT Connected")
         return
     end
     print("Connected")
@@ -80,6 +81,9 @@ function Operation.CatchMousePressed(pixelX, pixelY, button, istouch, presses)
         Operation.Select(x, y)
     else -- 选择后的情况要移动
         Operation.MoveTo(x, y)
+        -- TODO: delete debug
+        Operation.Select(x, y)
+        print(string.format("Current select: %d,%d", Operation.SelectPos.x, Operation.SelectPos.y))
     end
 end
 
