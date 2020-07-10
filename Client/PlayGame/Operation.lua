@@ -1,6 +1,6 @@
 Operation = {}
 
--- 这是一个记录移动操作的队列（先进后出）
+-- 这是一个记录移动操作的队列（先进先出）
 -- 对于队列中的以及所有的移动指令格式全部固定
 -- 为一个表 data={...} 其中有 armyID,srcX,srcY,dstX,dstY 5个元素
 Operation.Queue = {}
@@ -16,6 +16,12 @@ end
 
 function Operation.Queue:Pop()
     table.remove(self, 1)
+end
+
+function Operation.Queue.Clear()
+    while self[1] ~= nil do
+        table.remove(self, 1)
+    end
 end
 
 function Operation.Queue:Empty()
@@ -52,19 +58,20 @@ end
 function Operation.MoveTo(x, y)
 
     if not Operation.IsConnected(Operation.SelectPos.x, Operation.SelectPos.y, x, y) then
-        print("!! NOT Connected")
         return
     end
-    print("Connected")
-    Operation.Queue:Push(
-    {
+
+    local newRequest = {
         armyID = PlayGame.armyID,
         srcX = Operation.SelectPos.x,
         srcY = Operation.SelectPos.y,
         dstX = x,
         dstY = y
     }
-    )
+    --debug--
+    Core.Move(newRequest)
+    ---------
+    print(newRequest.srcX)
 end
 
 function Operation.CatchMousePressed(pixelX, pixelY, button, istouch, presses)
@@ -83,7 +90,8 @@ function Operation.CatchMousePressed(pixelX, pixelY, button, istouch, presses)
         Operation.MoveTo(x, y)
         -- TODO: delete debug
         Operation.Select(x, y)
-        print(string.format("Current select: %d,%d", Operation.SelectPos.x, Operation.SelectPos.y))
+
+        --print(string.format("Current select: %d,%d", Operation.SelectPos.x, Operation.SelectPos.y))
     end
 end
 

@@ -6,42 +6,43 @@ function ClientSock.Init()
     Client = Sock.newClient("localhost", 22122)
     Client:setSerialization(Bitser.dumps, Bitser.loads)
     Client:on(
-        "SetArmyID",
-        function(data)
-            PlayGame.armyID = data.armyID
-            CVerify.Register(data.armyID)
-            PlayGame.LoadMap()
-        end
+    "SetArmyID",
+    function(data)
+        print("Received Data")
+        PlayGame.armyID = data.armyID
+        CVerify.Register(data.armyID)
+        PlayGame.LoadMap()
+    end
     )
     Client:on(
-        "Move",
-        function(data)
-            PlayGameCore.Move(data)
-        end
+    "Move",
+    function(data)
+        PlayGameCore.Move(data)
+    end
     )
     Client:on(
-        "GameMapMoveUpdate",
-        function()
-            -- CGameMap.MoveUpdate()
-        end
+    "GameMapMoveUpdate",
+    function()
+        -- CGameMap.MoveUpdate()
+    end
     )
     Client:on(
-        "GameMapUpdate",
-        function()
-            CGameMap.Update()
-        end
+    "GameMapUpdate",
+    function()
+        CGameMap.Update()
+    end
     )
     Client:on(
-        "GameMapBigUpdate",
-        function()
-            CGameMap.BigUpdate()
-        end
+    "GameMapBigUpdate",
+    function()
+        CGameMap.BigUpdate()
+    end
     )
     Client:on(
-        "GameStart",
-        function()
-            PlayGame.GameState = "Start"
-        end
+    "GameStart",
+    function()
+        PlayGame.GameState = "Start"
+    end
     )
 
     Client:connect()

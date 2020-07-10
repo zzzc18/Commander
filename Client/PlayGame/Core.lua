@@ -4,6 +4,8 @@
 Core = {}
 
 function Core.Move(data)
+    str = string.format("%d, (%d, %d) -> (%d, %d)\n", data.armyID, data.srcX, data.srcY, data.dstX, data.dstY)
+    print(str)
     CGameMap.Move(data.armyID, data.srcX, data.srcY, data.dstX, data.dstY)
 end
 
