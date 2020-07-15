@@ -8,6 +8,7 @@ function ClientSock.Init()
     Client:on(
         "SetArmyID",
         function(data)
+            print("Received Data")
             PlayGame.armyID = data.armyID
             CVerify.Register(data.armyID)
             PlayGame.LoadMap()
@@ -22,7 +23,7 @@ function ClientSock.Init()
     Client:on(
         "GameMapMoveUpdate",
         function()
-            -- CGameMap.MoveUpdate()
+            CGameMap.MoveUpdate()
         end
     )
     Client:on(
@@ -47,7 +48,7 @@ function ClientSock.Init()
     Client:connect()
 end
 
--- srcX,Y是出发点 dstX,Y是目标点，显然二者应当四联通相连
+-- srcX,Y是出发点 dstX,Y是目标点，显然二者应当相邻
 function ClientSock.SendMove(data)
     Client:send("Move", data)
 end

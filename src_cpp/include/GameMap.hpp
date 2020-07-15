@@ -76,7 +76,7 @@ class MAP final {
 
     //以 level 为参数随机生成有 armyCnt 个军队的地图
     void RandomGen(int armyCnt, int level);
-    void Load(std::string_view file = "Input/map.map");  //从 file 读取地图
+    void Load(std::string_view file = "../Data/map.map");  //从 file 读取地图
     void Save(std::string_view file = "Output/map.map");  //将地图保存至 file
 
     std::pair<int, int> GetSize() const;  //获取地图大小 (行数，列数)
