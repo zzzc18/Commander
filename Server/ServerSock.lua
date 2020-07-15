@@ -22,6 +22,7 @@ function ServerSock.Init()
     Server:on(
         "Move",
         function(data)
+            Server:sendToAll("Move", data)
             PlayGameCore.Move(data)
         end
     )
@@ -29,7 +30,7 @@ end
 
 function ServerSock.SendGameMapMoveUpdate()
     Server:sendToAll("GameMapMoveUpdate")
-    -- CGameMap.MoveUpdate()
+    CGameMap.MoveUpdate()
 end
 
 function ServerSock.SendGameMapUpdate()

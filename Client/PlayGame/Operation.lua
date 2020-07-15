@@ -18,7 +18,7 @@ function Operation.Queue:Pop()
     table.remove(self, 1)
 end
 
-function Operation.Queue.Clear()
+function Operation.Queue:Clear()
     while self[1] ~= nil do
         table.remove(self, 1)
     end
@@ -48,15 +48,18 @@ function Operation.IsConnected(posX1, posY1, posX2, posY2)
     end
 
     if posX1 % 2 == 1 then
-        if (posX1 == posX2 + 1 or posX1 == posX2 - 1) and (posY1 == posY2 or posY1 == posY2 - 1) then return true end
+        if (posX1 == posX2 + 1 or posX1 == posX2 - 1) and (posY1 == posY2 or posY1 == posY2 - 1) then
+            return true
+        end
     else
-        if (posX1 == posX2 + 1 or posX1 == posX2 - 1) and (posY1 == posY2 or posY1 == posY2 + 1) then return true end
+        if (posX1 == posX2 + 1 or posX1 == posX2 - 1) and (posY1 == posY2 or posY1 == posY2 + 1) then
+            return true
+        end
     end
     return false
 end
 
 function Operation.MoveTo(x, y)
-
     if not Operation.IsConnected(Operation.SelectPos.x, Operation.SelectPos.y, x, y) then
         return
     end
@@ -69,9 +72,9 @@ function Operation.MoveTo(x, y)
         dstY = y
     }
     --debug--
-    Core.Move(newRequest)
+    ClientSock.SendMove(newRequest)
+    -- Core.Move(newRequest)
     ---------
-    print(newRequest.srcX)
 end
 
 function Operation.CatchMousePressed(pixelX, pixelY, button, istouch, presses)
@@ -87,11 +90,10 @@ function Operation.CatchMousePressed(pixelX, pixelY, button, istouch, presses)
     if Operation.SelectPos == nil then -- 没有选择的情况下要选择
         Operation.Select(x, y)
     else -- 选择后的情况要移动
+        --print(string.format("Current select: %d,%d", Operation.SelectPos.x, Operation.SelectPos.y))
         Operation.MoveTo(x, y)
         -- TODO: delete debug
         Operation.Select(x, y)
-
-        --print(string.format("Current select: %d,%d", Operation.SelectPos.x, Operation.SelectPos.y))
     end
 end
 
@@ -99,7 +101,7 @@ function Operation.DrawSelect()
     if Operation.SelectPos == nil then
         return
     end
-    local pixelX, pixelY =    BasicMap.Coordinate2Pixel(Operation.SelectPos.x, Operation.SelectPos.y)
+    local pixelX, pixelY = BasicMap.Coordinate2Pixel(Operation.SelectPos.x, Operation.SelectPos.y)
     Picture.DrawSelect(pixelX, pixelY)
 end
 
