@@ -1,55 +1,30 @@
 ClientSock = {}
-
+local socket = require "socket"
+local address, port = "localhost", 22122
+local updaterate = 0 --unset
+local t = 0
 local PlayGameCore = require("PlayGame.Core")
 
 function ClientSock.Init()
     Client = Sock.newClient("localhost", 22122)
-    Client:setSerialization(Bitser.dumps, Bitser.loads)
-    Client:on(
-        "SetArmyID",
-        function(data)
-            PlayGame.armyID = data.armyID
-            CVerify.Register(data.armyID)
-            PlayGame.LoadMap()
-        end
-    )
-    Client:on(
-        "Move",
-        function(data)
-            PlayGameCore.Move(data)
-        end
-    )
-    Client:on(
-        "GameMapMoveUpdate",
-        function()
-            -- CGameMap.MoveUpdate()
-        end
-    )
-    Client:on(
-        "GameMapUpdate",
-        function()
-            CGameMap.Update()
-        end
-    )
-    Client:on(
-        "GameMapBigUpdate",
-        function()
-            CGameMap.BigUpdate()
-        end
-    )
-    Client:on(
-        "GameStart",
-        function()
-            PlayGame.GameState = "Start"
-        end
-    )
-
-    Client:connect()
+    udp = socket:udp()
+    udp:settimeout(0)
+    udp:setpeername(address, port)
+    local dg = "connect " -- 单个词指令后面要加一个空格
+    udp:send(dg)
 end
 
--- srcX,Y是出发点 dstX,Y是目标点，显然二者应当四联通相连
-function ClientSock.SendMove(data)
-    Client:send("Move", data)
+function ClientSock.SendMove(Tdata)
+    local data =
+        tostring(Tdata.armyID) ..
+        " " ..
+            tostring(Tdata.srcX) ..
+                " " ..
+                    tostring(Tdata.srcY) ..
+                        " " ..
+                            tostring(Tdata.dstX) .. " " .. tostring(Tdata.dstY)
+    local dg = "Move" .. " " .. data
+    udp:send(dg)
 end
 
 return ClientSock

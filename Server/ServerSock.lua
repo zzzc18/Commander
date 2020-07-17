@@ -1,44 +1,30 @@
 ServerSock = {}
 
-local PlayGameCore = require("PlayGame.Core")
+local socket = require "socket"
 
-ServerSock.clientNum = 0
-
-function ServerSock.Init()
-    Server = Sock.newServer("*", 22122, 2)
-    Server:setSerialization(Bitser.dumps, Bitser.loads)
-    Server:on(
-        "connect",
-        function(data, client)
-            client:send("SetArmyID", {armyID = client:getIndex()})
-            ServerSock.clientNum = ServerSock.clientNum + 1
-            -- TODO为了前期调试方便用的2个而不是自动加载的个数
-            if ServerSock.clientNum == 2 then
-                Server:sendToAll("GameStart")
-                Timer.Begin()
-            end
-        end
-    )
-    Server:on(
-        "Move",
-        function(data)
-            PlayGameCore.Move(data)
-        end
-    )
+function ServerSock.Init() --maxPeers are not set
+    ServerSock.clientNum = 0 -- number of connected client
+    udp = socket.udp()
+    Server = Sock.newServer("localhost", 22122) 
+    udp:settimeout(0)
+    udp:setsockname("*", 22122)
 end
 
 function ServerSock.SendGameMapMoveUpdate()
-    Server:sendToAll("GameMapMoveUpdate")
     -- CGameMap.MoveUpdate()
+    udp:sendto("GameMapMoveUpdate ", Client_ip.first, Client_port.first)
+    udp:sendto("GameMapMoveUpdate ", Client_ip.second, Client_port.second)
 end
 
 function ServerSock.SendGameMapUpdate()
-    Server:sendToAll("GameMapUpdate")
+    udp:sendto("GameMapUpdate ", Client_ip.first, Client_port.first)
+    udp:sendto("GameMapUpdate ", Client_ip.second, Client_port.second)
     CGameMap.Update()
 end
 
 function ServerSock.SendGameMapBigUpdate()
-    Server:sendToAll("GameMapBigUpdate")
+    udp:sendto("GameMapBigUpdate ", Client_ip.first, Client_port.first)
+    udp:sendto("GameMapBigUpdate ", Client_ip.second, Client_port.second)
     CGameMap.BigUpdate()
 end
 
