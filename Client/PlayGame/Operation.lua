@@ -77,6 +77,34 @@ function Operation.MoveTo(x, y)
     ---------
 end
 
+function Operation.CatchKeyPressed(key)
+    print("DEBUG__1")
+    if Operation.SelectPos == nil then
+        return
+    end
+
+    print("DEBUG__2")
+    local x = Operation.SelectPos.x
+    local y = Operation.SelectPos.y
+    local mode = x % 2 + 1
+    local moveOp = {["q"] = { BasicMap.direction[mode][6][1], BasicMap.direction[mode][6][2] },
+    ["e"] = { BasicMap.direction[mode][1][1], BasicMap.direction[mode][1][2] },
+    ["d"] = { BasicMap.direction[mode][2][1], BasicMap.direction[mode][2][2] },
+    ["c"] = { BasicMap.direction[mode][3][1], BasicMap.direction[mode][3][2] },
+    ["z"] = { BasicMap.direction[mode][4][1], BasicMap.direction[mode][4][2] },
+    ["a"] = { BasicMap.direction[mode][5][1], BasicMap.direction[mode][5][2] } }
+    print("Caught key pressed (Move operation): ", moveOp[key])
+
+    if (moveOp[key] == nil) then
+        return
+    end
+    x = x + moveOp[key][1]
+    y = y + moveOp[key][2]
+    -- Operation.MoveTo(x, y)
+    Operation.SendMove(x, y)
+    Operation.Select(x, y)
+end
+
 function Operation.CatchMousePressed(pixelX, pixelY, button, istouch, presses)
     -- 鼠标坐标转换为地图坐标
     local x, y = BasicMap.Pixel2Coordinate(pixelX, pixelY)
@@ -91,8 +119,8 @@ function Operation.CatchMousePressed(pixelX, pixelY, button, istouch, presses)
         Operation.Select(x, y)
     else -- 选择后的情况要移动
         --print(string.format("Current select: %d,%d", Operation.SelectPos.x, Operation.SelectPos.y))
-        Operation.MoveTo(x, y)
-        -- TODO: delete debug
+        -- Operation.MoveTo(x, y)
+        Operation.SendMove(x, y)
         Operation.Select(x, y)
     end
 end
@@ -105,11 +133,8 @@ function Operation.DrawSelect()
     Picture.DrawSelect(pixelX, pixelY)
 end
 
-function Operation.SendMove()
-    if not Operation.Queue:Empty() then
-        ClientSock.SendMove(Operation.Queue:Top())
-        Operation.Queue:Pop()
-    end
+function Operation.SendMove(x, y)
+
 end
 
 return Operation
