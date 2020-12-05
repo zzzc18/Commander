@@ -15,9 +15,9 @@ function ClientSock.Init()
         end
     )
     Client:on(
-        "Move",
+        "PushMove",
         function(data)
-            PlayGameCore.Move(data)
+            PlayGameCore.PushMove(data)
         end
     )
     Client:on(
@@ -50,7 +50,7 @@ end
 
 -- srcX,Y是出发点 dstX,Y是目标点，显然二者应当相邻
 function ClientSock.SendMove(data)
-    Client:send("Move", data)
+    Client:send("PushMove", data)
 end
 
 return ClientSock

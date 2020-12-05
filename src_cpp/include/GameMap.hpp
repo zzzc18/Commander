@@ -11,9 +11,11 @@
 
 #include <iostream>
 #include <optional>
+#include <queue>
 #include <string>
 #include <string_view>
 #include <utility>
+#include <vector>
 
 #include "Constant.hpp"
 
@@ -71,8 +73,8 @@ class MAP final {
     void BigUpdate();   //地图每 25 秒的兵力大更新
     bool MoveUpdate();  //地图每 0.5 秒的移动兵力操作更新
 
-    //将军队 armyID 在 src 的兵移动到相邻点 dst
-    bool MoveNode(int armyID, VECTOR src, VECTOR dst);
+    //添加军队 armyID 从 src 的兵移动到相邻点 dst的指令
+    bool PushMove(int armyID, VECTOR src, VECTOR dst);
 
     //以 level 为参数随机生成有 armyCnt 个军队的地图
     void RandomGen(int armyCnt, int level);
@@ -94,7 +96,7 @@ class MAP final {
     int _sizeX = 0, _sizeY = 0;  //地图行数、列数
     int _armyCnt = 0;            //地图军队数
     //暂存的移动操作，(src,dst)
-    std::optional<std::pair<VECTOR, VECTOR>> _moveCommands[MAX_ARMY_CNT + 1];
+    std::queue<std::pair<VECTOR, VECTOR>> moveCommands[MAX_ARMY_CNT + 1];
     //描述地图中的点
     struct NODE {
         NODE_TYPE type = NODE_TYPE::BLANK;  //点的类型
