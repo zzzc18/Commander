@@ -20,10 +20,10 @@ function ServerSock.Init()
         end
     )
     Server:on(
-        "Move",
+        "PushMove",
         function(data)
-            Server:sendToAll("Move", data)
-            PlayGameCore.Move(data)
+            Server:sendToAll("PushMove", data)
+            PlayGameCore.PushMove(data)
         end
     )
 end

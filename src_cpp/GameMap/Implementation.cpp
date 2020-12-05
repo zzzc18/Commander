@@ -12,6 +12,7 @@
 #include <utility>
 #include <vector>
 
+#include "Debug.hpp"
 #include "GameMap.hpp"
 #include "Tools.hpp"
 #include "Verify.hpp"
@@ -81,22 +82,19 @@ bool MAP::MoveUpdate() {
     };
     bool ret = false;
     for (int i = 1; i <= _armyCnt; ++i) {
-        if (auto& cmd = _moveCommands[i]; cmd) {
-            if (bool tmp = Move(i, cmd->first, cmd->second);
-                i == VERIFY::Singleton().GetArmyID())
-                ret = tmp;
-            cmd.reset();
+        while (!moveCommands[i].empty()) {
+            auto& cmd = moveCommands[i].front();
+            // cerr << cmd.first << cmd.second << endl;
+            moveCommands[i].pop();
+            if (Move(i, cmd.first, cmd.second)) break;
         }
     }
     return ret;
 }
 
-bool MAP::MoveNode(int armyID, VECTOR src, VECTOR dst) {
-    if (!_moveCommands[armyID]) {
-        _moveCommands[armyID] = {src, dst};
-        return true;
-    } else
-        return false;
+bool MAP::PushMove(int armyID, VECTOR src, VECTOR dst) {
+    moveCommands[armyID].push({src, dst});
+    return true;
 }
 
 void MAP::RandomGen(int armyCnt, int level) {

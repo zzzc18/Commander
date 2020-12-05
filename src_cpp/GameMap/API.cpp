@@ -131,10 +131,10 @@ static int BigUpdate(lua_State *luaState) {
  * @param dstY @c int 目标点所在列号
  * @return @c bool 操作是否合法
  */
-static int Move(lua_State *luaState) {
+static int PushMove(lua_State *luaState) {
     int armyID, srcX, srcY, dstX, dstY;
     APIparam(luaState, armyID, srcX, srcY, dstX, dstY);
-    return APIreturn(luaState, MAP::Singleton().MoveNode(armyID, {srcX, srcY},
+    return APIreturn(luaState, MAP::Singleton().PushMove(armyID, {srcX, srcY},
                                                          {dstX, dstY}));
 }
 /**
@@ -153,4 +153,4 @@ static int MoveUpdate(lua_State *luaState) {
 LUA_REG_FUNC(GameMap, C_API(RandomGenMap), C_API(LoadMap), C_API(WriteMap),
              C_API(GetSize), C_API(GetVision), C_API(GetNodeType),
              C_API(GetUnitNum), C_API(GetBelong), C_API(Update),
-             C_API(BigUpdate), C_API(Move), C_API(MoveUpdate))
+             C_API(BigUpdate), C_API(PushMove), C_API(MoveUpdate))

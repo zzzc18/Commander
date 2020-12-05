@@ -7,6 +7,8 @@ elseif(CMAKE_HOST_APPLE)
 elseif(CMAKE_HOST_UNIX)
     set(LINUX 1)
 endif()
+
+add_definitions(-DDEBUG)
 set(CMAKE_CXX_STANDARD 17)
 # more warnings
 if (CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")

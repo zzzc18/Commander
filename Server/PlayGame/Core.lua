@@ -3,8 +3,8 @@
 -- Core 则将指令具体执行
 Core = {}
 
-function Core.Move(data)
-    CGameMap.Move(data.armyID, data.srcX, data.srcY, data.dstX, data.dstY)
+function Core.PushMove(data)
+    CGameMap.PushMove(data.armyID, data.srcX, data.srcY, data.dstX, data.dstY)
 end
 
 return Core
