@@ -83,9 +83,9 @@ bool MAP::MoveUpdate() {
     bool ret = false;
     for (int i = 1; i <= _armyCnt; ++i) {
         while (!moveCommands[i].empty()) {
-            auto& cmd = moveCommands[i].front();
+            auto& cmd = moveCommands[i].back();
             // cerr << cmd.first << cmd.second << endl;
-            moveCommands[i].erase(moveCommands[i].begin());
+            moveCommands[i].pop_back();
             if (Move(i, cmd.first, cmd.second)) break;
         }
     }
@@ -93,7 +93,7 @@ bool MAP::MoveUpdate() {
 }
 
 bool MAP::PushMove(int armyID, VECTOR src, VECTOR dst) {
-    moveCommands[armyID].push_back({src, dst});
+    moveCommands[armyID].insert(moveCommands[armyID].begin(), {src, dst});
     return true;
 }
 
