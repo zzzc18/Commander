@@ -15,6 +15,7 @@ function ServerSock.Init()
             -- TODO为了前期调试方便用的2个而不是自动加载的个数
             if ServerSock.clientNum == 2 then
                 Server:sendToAll("GameStart")
+                PlayGame.GameState = "Start"
                 Timer.Begin()
             end
         end
