@@ -44,7 +44,7 @@ function love.keyreleased(key, scancode)
 end
 
 function love.draw()
-    -- Running.draw()
+    Running.draw()
 end
 
 function love.update(dt)
