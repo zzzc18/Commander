@@ -99,6 +99,23 @@ static int GetBelong(lua_State *luaState) {
     APIparam(luaState, x, y);
     return APIreturn(luaState, MAP::Singleton().GetBelong({x, y}));
 }
+/**
+ * @brief 某只军队的计划路径
+ *
+ * @param armyID @c int 军队ID
+ * @param step @c int 军队路径步数
+ * @return @c int 某一步的开始坐标，结束坐标
+ */
+static int GetArmyPath(lua_State *luaState) {
+    int armyID, step;
+    APIparam(luaState, armyID, step);
+    std::pair<VECTOR, VECTOR> data = MAP::Singleton().GetArmyPath(armyID, step);
+    int srcX = data.first.x;
+    int srcY = data.first.y;
+    int dstX = data.second.x;
+    int dstY = data.second.y;
+    return APIreturn(luaState, srcX, srcY, dstX, dstY);
+}
 
 /**
  * @brief 地图每秒的兵力更新
@@ -152,5 +169,6 @@ static int MoveUpdate(lua_State *luaState) {
  */
 LUA_REG_FUNC(GameMap, C_API(RandomGenMap), C_API(LoadMap), C_API(WriteMap),
              C_API(GetSize), C_API(GetVision), C_API(GetNodeType),
-             C_API(GetUnitNum), C_API(GetBelong), C_API(Update),
-             C_API(BigUpdate), C_API(PushMove), C_API(MoveUpdate))
+             C_API(GetUnitNum), C_API(GetBelong), C_API(GetArmyPath),
+             C_API(Update), C_API(BigUpdate), C_API(PushMove),
+             C_API(MoveUpdate))

@@ -83,9 +83,9 @@ bool MAP::MoveUpdate() {
     bool ret = false;
     for (int i = 1; i <= _armyCnt; ++i) {
         while (!moveCommands[i].empty()) {
-            auto& cmd = moveCommands[i].front();
+            auto& cmd = moveCommands[i].back();
             // cerr << cmd.first << cmd.second << endl;
-            moveCommands[i].pop();
+            moveCommands[i].pop_back();
             if (Move(i, cmd.first, cmd.second)) break;
         }
     }
@@ -93,7 +93,7 @@ bool MAP::MoveUpdate() {
 }
 
 bool MAP::PushMove(int armyID, VECTOR src, VECTOR dst) {
-    moveCommands[armyID].push({src, dst});
+    moveCommands[armyID].insert(moveCommands[armyID].begin(), {src, dst});
     return true;
 }
 
@@ -204,6 +204,13 @@ int MAP::GetUnitNum(VECTOR pos) const {
 }
 int MAP::GetBelong(VECTOR pos) const {
     return this->IsViewable(pos) ? _mat[pos.x][pos.y].belong : SERVER;
+}
+std::pair<VECTOR, VECTOR> MAP::GetArmyPath(int armyID, int step) const {
+    if (!moveCommands[armyID].empty() && step < moveCommands[armyID].size()) {
+        return moveCommands[armyID][step];
+    } else {
+        return {{-1, -1}, {-1, -1}};
+    }
 }
 
 void MAP::NODE::Update() {

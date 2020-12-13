@@ -88,6 +88,8 @@ class MAP final {
     NODE_TYPE GetType(VECTOR pos) const;  //当前军队看到 pos 的类型
     int GetUnitNum(VECTOR pos) const;     //当前军队看到 pos 的兵数
     int GetBelong(VECTOR pos) const;  //当前军队看到 pos 的所属军队
+    std::pair<VECTOR, VECTOR> GetArmyPath(
+        int armyID, int step) const;  //当前军队看到pos的计划路径
 
    private:
     MAP() = default;
@@ -96,7 +98,7 @@ class MAP final {
     int _sizeX = 0, _sizeY = 0;  //地图行数、列数
     int _armyCnt = 0;            //地图军队数
     //暂存的移动操作，(src,dst)
-    std::queue<std::pair<VECTOR, VECTOR>> moveCommands[MAX_ARMY_CNT + 1];
+    std::vector<std::pair<VECTOR, VECTOR>> moveCommands[MAX_ARMY_CNT + 1];
     //描述地图中的点
     struct NODE {
         NODE_TYPE type = NODE_TYPE::BLANK;  //点的类型
