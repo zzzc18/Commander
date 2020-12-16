@@ -93,6 +93,13 @@ bool MAP::MoveUpdate() {
 }
 
 bool MAP::PushMove(int armyID, VECTOR src, VECTOR dst) {
+    VECTOR j = {-1, -1};
+    if (src == j && dst == j) {
+        if (!moveCommands[armyID].empty()) {
+            moveCommands[armyID].erase(moveCommands[armyID].begin());
+            return true;
+        }
+    }
     moveCommands[armyID].insert(moveCommands[armyID].begin(), {src, dst});
     return true;
 }
