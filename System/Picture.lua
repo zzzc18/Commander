@@ -2,6 +2,7 @@ Picture = {}
 
 NodeImageSet = {}
 SelectImage = {}
+ArrowImage = {}
 
 function NodeImageSet:Load()
     self.center = {}
@@ -30,9 +31,16 @@ function SelectImage:Load()
     self.image = love.graphics.newImage("data/Picture/Select.png")
 end
 
+function ArrowImage:Load()
+    self.image = love.graphics.newImage("data/Picture/arrow.png")
+    self.center = {x = 0, y = 25}
+    self.divRatio = 50
+end
+
 function Picture.Init()
     NodeImageSet:Load()
     SelectImage:Load()
+    ArrowImage:Load()
 end
 
 function Picture.DrawNode(pixelX, pixelY, nodeType)
@@ -64,8 +72,23 @@ end
 
 function Picture.DrawArrow(pixelX, pixelY, targetX, targetY)
     love.graphics.setColor(1, 1, 1)
-    love.graphics.setLineWidth(10)
-    love.graphics.line(pixelX, pixelY, targetX, targetY)
+    -- love.graphics.setLineWidth(10)
+    -- love.graphics.line(pixelX, pixelY, targetX, targetY)
+    local theta
+    theta = math.atan((targetY - pixelY) / (targetX - pixelX))
+    if (targetX - pixelX) < 0 then
+        theta = theta + math.pi
+    end
+    love.graphics.draw(
+        ArrowImage.image,
+        pixelX,
+        pixelY,
+        theta,
+        BasicMap.radius / ArrowImage.divRatio,
+        BasicMap.radius / ArrowImage.divRatio,
+        ArrowImage.center.x,
+        ArrowImage.center.y
+    )
 end
 
 return Picture

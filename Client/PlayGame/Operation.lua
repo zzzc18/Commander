@@ -48,11 +48,17 @@ function Operation.IsConnected(posX1, posY1, posX2, posY2)
     end
 
     if posX1 % 2 == 1 then
-        if (posX1 == posX2 + 1 or posX1 == posX2 - 1) and (posY1 == posY2 or posY1 == posY2 - 1) then
+        if
+            (posX1 == posX2 + 1 or posX1 == posX2 - 1) and
+                (posY1 == posY2 or posY1 == posY2 - 1)
+         then
             return true
         end
     else
-        if (posX1 == posX2 + 1 or posX1 == posX2 - 1) and (posY1 == posY2 or posY1 == posY2 + 1) then
+        if
+            (posX1 == posX2 + 1 or posX1 == posX2 - 1) and
+                (posY1 == posY2 or posY1 == posY2 + 1)
+         then
             return true
         end
     end
@@ -60,7 +66,26 @@ function Operation.IsConnected(posX1, posY1, posX2, posY2)
 end
 
 function Operation.MoveTo(x, y)
-    if not Operation.IsConnected(Operation.SelectPos.x, Operation.SelectPos.y, x, y) then
+    if x == -1 and y == -1 then --撤销移动
+        local newRequest = {
+            armyID = PlayGame.armyID,
+            srcX = -1,
+            srcY = -1,
+            dstX = -1,
+            dstY = -1
+        }
+        ClientSock.SendMove(newRequest)
+        return
+    end
+
+    if
+        not Operation.IsConnected(
+            Operation.SelectPos.x,
+            Operation.SelectPos.y,
+            x,
+            y
+        )
+     then
         return
     end
 
@@ -78,6 +103,11 @@ function Operation.MoveTo(x, y)
 end
 
 function Operation.CatchKeyPressed(key)
+    if key == "escape" then
+        Operation.MoveTo(-1, -1)
+        return
+    end
+
     print("DEBUG__1")
     if Operation.SelectPos == nil then
         return
@@ -131,7 +161,8 @@ function Operation.DrawSelect()
     if Operation.SelectPos == nil then
         return
     end
-    local pixelX, pixelY = BasicMap.Coordinate2Pixel(Operation.SelectPos.x, Operation.SelectPos.y)
+    local pixelX, pixelY =
+        BasicMap.Coordinate2Pixel(Operation.SelectPos.x, Operation.SelectPos.y)
     Picture.DrawSelect(pixelX, pixelY)
 end
 
