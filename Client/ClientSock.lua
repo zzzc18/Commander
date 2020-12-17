@@ -55,7 +55,7 @@ function ClientSock.Init()
         function(data)
             -- 说明所在部队的王死了
             if PlayGame.armyID == data.armyID then
-                Picture.DrawLose()
+                PlayGame.judgementState = "Lose"
             end
         end
     )
@@ -64,7 +64,7 @@ function ClientSock.Init()
         function(data)
             -- 说明所在部队获胜了
             if PlayGame.armyID == data.armyID then
-                Picture.DrawWin()
+                PlayGame.judgementState = "Win"
             end
         end
     )

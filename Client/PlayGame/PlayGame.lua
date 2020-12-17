@@ -3,6 +3,7 @@ PlayGame = {}
 local Operation = require("PlayGame.Operation")
 
 PlayGame.GameState = "READY"
+PlayGame.judgementState = "Running"
 PlayGame.armyID = nil
 PlayGame.timerTotal = 0
 PlayGame.timerSecond = 0
@@ -54,6 +55,7 @@ function PlayGame.draw()
     end
     BasicMap.DrawMap()
     Operation.DrawSelect()
+    Picture.DrawJudgement(PlayGame.judgementState)
 end
 
 function PlayGame.UpdateTimerSecond(dt)

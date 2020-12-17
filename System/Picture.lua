@@ -67,6 +67,7 @@ function Picture.DrawWin()
     x, y = love.graphics.getDimensions()
     x, y = x / 2, y / 2
     love.graphics.setColor(1, 0, 0)
+    print(x, y)
     love.graphics.rectangle("fill", x - 200, y - 100, 400, 200)
 end
 
@@ -75,7 +76,19 @@ function Picture.DrawLose()
     x, y = love.graphics.getDimensions()
     x, y = x / 2, y / 2
     love.graphics.setColor(1, 1, 1)
+    print(x, y)
     love.graphics.rectangle("fill", x - 200, y - 100, 400, 200)
+end
+
+function Picture.DrawJudgement(judgementState)
+    if judgementState == "Win" then
+        Picture.DrawWin()
+        return
+    end
+    if judgementState == "Lose" then
+        Picture.DrawLose()
+        return
+    end
 end
 
 return Picture
