@@ -1,5 +1,7 @@
 PlayGame = {}
 
+require("PlayGame.Judgement")
+
 PlayGame.GameState = "READY"
 PlayGame.armyID = nil
 PlayGame.armyNum = 0
@@ -54,6 +56,7 @@ function PlayGame.update(dt)
         return
     end
     MapAdjust.Update()
+    Judgement.Judge()
 end
 
 return PlayGame

@@ -43,7 +43,6 @@ end
 
 function PlayGame.keypressed(key, scancode, isrepeat)
     Operation.CatchKeyPressed(key)
-
 end
 
 function PlayGame.keyreleased(key, scancode)

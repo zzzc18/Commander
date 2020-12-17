@@ -47,7 +47,7 @@ function ClientSock.Init()
     Client:on(
         "GameOver",
         function()
-            PlayGame.GameState = "Over"
+            -- PlayGame.GameState = "Over"
         end
     )
     Client:on(

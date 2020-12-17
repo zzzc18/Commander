@@ -72,13 +72,14 @@ class MAP final {
     void Update();      //地图每秒的兵力更新
     void BigUpdate();   //地图每 25 秒的兵力大更新
     bool MoveUpdate();  //地图每 0.5 秒的移动兵力操作更新
+    int Judge(int);     //判断胜负
 
     //添加军队 armyID 从 src 的兵移动到相邻点 dst的指令
     bool PushMove(int armyID, VECTOR src, VECTOR dst);
 
     //以 level 为参数随机生成有 armyCnt 个军队的地图
     void RandomGen(int armyCnt, int level);
-    void Load(std::string_view file = "../Data/map.map");  //从 file 读取地图
+    int Load(std::string_view file = "../Data/map.map");  //从 file 读取地图
     void Save(std::string_view file = "Output/map.map");  //将地图保存至 file
 
     std::pair<int, int> GetSize() const;  //获取地图大小 (行数，列数)
@@ -97,8 +98,13 @@ class MAP final {
 
     int _sizeX = 0, _sizeY = 0;  //地图行数、列数
     int _armyCnt = 0;            //地图军队数
+    int kingNum = 0;             //王的数量
     //暂存的移动操作，(src,dst)
     std::vector<std::pair<VECTOR, VECTOR>> moveCommands[MAX_ARMY_CNT + 1];
+    struct KINGSTATE {
+        VECTOR kingPos[MAX_ARMY_CNT + 1];  //每个王所在的位置
+        int kingBelong[MAX_ARMY_CNT + 1];  //该位置的王的归属
+    } kingState;
     //描述地图中的点
     struct NODE {
         NODE_TYPE type = NODE_TYPE::BLANK;  //点的类型

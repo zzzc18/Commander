@@ -32,7 +32,15 @@ std::istream& operator>>(std::istream& is, MAP& map) {
     is >> skip(':') >> map._armyCnt;
     is >> skip(':') >> map._sizeX >> map._sizeY;
     for (int i = 0; i < map._sizeX; ++i) {
-        for (int j = 0; j < map._sizeY; ++j) is >> skip(':') >> map._mat[i][j];
+        for (int j = 0; j < map._sizeY; ++j) {
+            is >> skip(':') >> map._mat[i][j];
+            if (map._mat[i][j].type == NODE_TYPE::KING) {
+                map.kingNum++;
+                map.kingState.kingPos[map.kingNum].x = i;
+                map.kingState.kingPos[map.kingNum].y = j;
+                map.kingState.kingBelong[map.kingNum] = map._mat[i][j].belong;
+            }
+        }
     }
     return is;
 }
