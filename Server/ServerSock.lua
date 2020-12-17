@@ -44,4 +44,16 @@ function ServerSock.SendGameMapBigUpdate()
     CGameMap.BigUpdate()
 end
 
+function ServerSock.SendGameOver()
+    Server:sendToAll("GameOver")
+end
+
+function ServerSock.SendLose(armyID)
+    Server:sendToAll("Lose", {armyID = armyID})
+end
+
+function ServerSock.SendWin(armyID)
+    Server:sendToAll("Win", {armyID = armyID})
+end
+
 return ServerSock

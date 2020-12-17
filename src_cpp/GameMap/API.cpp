@@ -24,8 +24,7 @@ static int RandomGenMap(lua_State *luaState) {
  * @return @c void
  */
 static int LoadMap(lua_State *luaState) {
-    MAP::Singleton().Load();
-    return APIreturn(luaState);
+    return APIreturn(luaState, MAP::Singleton().Load());
 }
 /**
  * @brief 保存地图至文件
@@ -163,7 +162,11 @@ static int PushMove(lua_State *luaState) {
 static int MoveUpdate(lua_State *luaState) {
     return APIreturn(luaState, MAP::Singleton().MoveUpdate());
 }
-
+static int Judge(lua_State *luaState) {
+    int armyID;
+    APIparam(luaState, armyID);
+    return APIreturn(luaState, MAP::Singleton().Judge(armyID));
+}
 /**
  * @brief 向 Lua 注册 API，模块名为 lib/GameMap.dll
  */
@@ -171,4 +174,4 @@ LUA_REG_FUNC(GameMap, C_API(RandomGenMap), C_API(LoadMap), C_API(WriteMap),
              C_API(GetSize), C_API(GetVision), C_API(GetNodeType),
              C_API(GetUnitNum), C_API(GetBelong), C_API(GetArmyPath),
              C_API(Update), C_API(BigUpdate), C_API(PushMove),
-             C_API(MoveUpdate))
+             C_API(MoveUpdate), C_API(Judge))

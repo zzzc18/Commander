@@ -73,6 +73,9 @@ bool MAP::MoveUpdate() {
         else {
             dst.unitNum -= src.unitNum - 1;  // FIXME magic number 1
             if (dst.unitNum < 0) {
+                if (dst.type == NODE_TYPE::KING) {
+                    // return ;
+                }  //如果被占的是对方的KING，则结束
                 dst.unitNum = -dst.unitNum;
                 dst.belong = armyID;
             }
@@ -162,10 +165,11 @@ void MAP::RandomGen(int armyCnt, int level) {
         }
     }
 }
-void MAP::Load(std::string_view file) {  // file = "Input/map.map"
+int MAP::Load(std::string_view file) {  // file = "Input/map.map"
     std::ifstream fin(file.data());
     fin >> *this;
     fin.close();
+    return kingNum;
 }
 void MAP::Save(std::string_view file) {  // file = "Output/map.map"
     std::ofstream fout(file.data());
@@ -188,6 +192,16 @@ bool MAP::IsViewable(VECTOR pos) const {
         }
     }
     return false;
+}
+
+int MAP::Judge(int armyID) {
+    int x = MAP::Singleton().kingState.kingPos[armyID].x;
+    int y = MAP::Singleton().kingState.kingPos[armyID].y;
+    if (MAP::Singleton()._mat[x][y].belong !=
+        MAP::Singleton().kingState.kingBelong[armyID]) {
+        return 0;
+    }
+    return 1;
 }
 
 NODE_TYPE MAP::GetType(VECTOR pos) const {

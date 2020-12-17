@@ -9,18 +9,12 @@ function NodeImageSet:Load()
     self.center.x = 97
     self.center.y = 97
     self.divRatio = 135
-    self["NODE_TYPE_BLANK"] =
-        love.graphics.newImage("data/Picture/NODE_TYPE_BLANK.png")
-    self["NODE_TYPE_HILL"] =
-        love.graphics.newImage("data/Picture/NODE_TYPE_HILL.png")
-    self["NODE_TYPE_FORT"] =
-        love.graphics.newImage("data/Picture/NODE_TYPE_FORT.png")
-    self["NODE_TYPE_KING"] =
-        love.graphics.newImage("data/Picture/NODE_TYPE_KING.png")
-    self["NODE_TYPE_OBSTACLE"] =
-        love.graphics.newImage("data/Picture/NODE_TYPE_OBSTACLE.png")
-    self["NODE_TYPE_MARSH"] =
-        love.graphics.newImage("data/Picture/NODE_TYPE_MARSH.png")
+    self["NODE_TYPE_BLANK"] = love.graphics.newImage("data/Picture/NODE_TYPE_BLANK.png")
+    self["NODE_TYPE_HILL"] = love.graphics.newImage("data/Picture/NODE_TYPE_HILL.png")
+    self["NODE_TYPE_FORT"] = love.graphics.newImage("data/Picture/NODE_TYPE_FORT.png")
+    self["NODE_TYPE_KING"] = love.graphics.newImage("data/Picture/NODE_TYPE_KING.png")
+    self["NODE_TYPE_OBSTACLE"] = love.graphics.newImage("data/Picture/NODE_TYPE_OBSTACLE.png")
+    self["NODE_TYPE_MARSH"] = love.graphics.newImage("data/Picture/NODE_TYPE_MARSH.png")
 end
 
 function SelectImage:Load()
@@ -89,6 +83,35 @@ function Picture.DrawArrow(pixelX, pixelY, targetX, targetY)
         ArrowImage.center.x,
         ArrowImage.center.y
     )
+end
+
+function Picture.DrawWin()
+    local x, y
+    x, y = love.graphics.getDimensions()
+    x, y = x / 2, y / 2
+    love.graphics.setColor(1, 0, 0)
+    print(x, y)
+    love.graphics.rectangle("fill", x - 200, y - 100, 400, 200)
+end
+
+function Picture.DrawLose()
+    local x, y
+    x, y = love.graphics.getDimensions()
+    x, y = x / 2, y / 2
+    love.graphics.setColor(1, 1, 1)
+    print(x, y)
+    love.graphics.rectangle("fill", x - 200, y - 100, 400, 200)
+end
+
+function Picture.DrawJudgement(judgementState)
+    if judgementState == "Win" then
+        Picture.DrawWin()
+        return
+    end
+    if judgementState == "Lose" then
+        Picture.DrawLose()
+        return
+    end
 end
 
 return Picture

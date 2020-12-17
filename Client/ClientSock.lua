@@ -44,6 +44,30 @@ function ClientSock.Init()
             PlayGame.GameState = "Start"
         end
     )
+    Client:on(
+        "GameOver",
+        function()
+            -- PlayGame.GameState = "Over"
+        end
+    )
+    Client:on(
+        "Lose",
+        function(data)
+            -- 说明所在部队的王死了
+            if PlayGame.armyID == data.armyID then
+                PlayGame.judgementState = "Lose"
+            end
+        end
+    )
+    Client:on(
+        "Win",
+        function(data)
+            -- 说明所在部队获胜了
+            if PlayGame.armyID == data.armyID then
+                PlayGame.judgementState = "Win"
+            end
+        end
+    )
 
     Client:connect()
 end
