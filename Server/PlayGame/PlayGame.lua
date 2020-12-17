@@ -2,6 +2,7 @@ PlayGame = {}
 
 PlayGame.GameState = "READY"
 PlayGame.armyID = nil
+PlayGame.armyNum = 0
 
 function PlayGame.RunPermission()
     return PlayGame.GameState == "Start"
@@ -11,8 +12,9 @@ function PlayGame.Init(MapMode)
     Picture.Init()
     -- CGameMap.RandomGenMap()
     -- CGameMap.WriteMap()
-    CGameMap.LoadMap()
+    PlayGame.armyNum = CGameMap.LoadMap()
     BasicMap.Init()
+    Judgement.Init()
 end
 
 function PlayGame.wheelmoved(x, y)
