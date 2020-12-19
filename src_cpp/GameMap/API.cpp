@@ -117,23 +117,13 @@ static int GetArmyPath(lua_State *luaState) {
 }
 
 /**
- * @brief 地图每秒的兵力更新
+ * @brief 地图每步的兵力更新
  *
  * @param @c void
  * @return @c void
  */
 static int Update(lua_State *luaState) {
     MAP::Singleton().Update();
-    return APIreturn(luaState);
-}
-/**
- * @brief 地图每 25 秒的兵力大更新
- *
- * @param @c void
- * @return @c void
- */
-static int BigUpdate(lua_State *luaState) {
-    MAP::Singleton().BigUpdate();
     return APIreturn(luaState);
 }
 
@@ -153,15 +143,7 @@ static int PushMove(lua_State *luaState) {
     return APIreturn(luaState, MAP::Singleton().PushMove(armyID, {srcX, srcY},
                                                          {dstX, dstY}));
 }
-/**
- * @brief 地图每 0.5 秒的移动兵力操作更新
- *
- * @param @c void
- * @return @c bool 当前军队是否移动成功
- */
-static int MoveUpdate(lua_State *luaState) {
-    return APIreturn(luaState, MAP::Singleton().MoveUpdate());
-}
+
 static int Judge(lua_State *luaState) {
     int armyID;
     APIparam(luaState, armyID);
@@ -173,5 +155,4 @@ static int Judge(lua_State *luaState) {
 LUA_REG_FUNC(GameMap, C_API(RandomGenMap), C_API(LoadMap), C_API(WriteMap),
              C_API(GetSize), C_API(GetVision), C_API(GetNodeType),
              C_API(GetUnitNum), C_API(GetBelong), C_API(GetArmyPath),
-             C_API(Update), C_API(BigUpdate), C_API(PushMove),
-             C_API(MoveUpdate), C_API(Judge))
+             C_API(Update), C_API(PushMove), C_API(Judge))
