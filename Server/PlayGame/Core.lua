@@ -5,6 +5,7 @@ Core = {}
 
 function Core.PushMove(data)
     CGameMap.PushMove(data.armyID, data.srcX, data.srcY, data.dstX, data.dstY)
+    CGameMap.SaveStep(data.armyID, data.srcX, data.srcY, data.dstX, data.dstY)
 end
 
 return Core

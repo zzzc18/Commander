@@ -106,8 +106,8 @@ void MAP::Update() {
     if (step % MoveUpdateStep == 0) {
         MoveUpdate();
     }
-    if (step == StepCommonMultiple) {
-        step -= StepCommonMultiple;
+    if (step % SaveMapStep == 0) {
+        SaveMap();
     }
     return;
 }
@@ -182,16 +182,31 @@ void MAP::RandomGen(int armyCnt, int level) {
         }
     }
 }
-int MAP::Load(std::string_view file) {  // file = "Input/map.map"
+int MAP::LoadMap(std::string_view file) {  // file = "Input/map.map"
     std::ifstream fin(file.data());
     fin >> *this;
     fin.close();
+    std::ofstream fout("../Output/steps.txt");
+    fout.close();
     return kingNum;
 }
-void MAP::Save(std::string_view file) {  // file = "Output/map.map"
-    std::ofstream fout(file.data());
+void MAP::SaveMap(std::string_view file) {  // file="../Output/map.map"
+    // file = file + std::to_string(step) + ".map";
+    // std::ofstream fout(file.data());
+    std::ofstream fout(file.data() + std::to_string(step) + ".map");
     fout << *this;
     fout.close();
+}
+void MAP::SaveStep(int armyID, VECTOR src, VECTOR dst) {
+    std::ofstream outfile;
+    outfile.open("../Output/steps.txt", std::ios::app);
+    if (outfile.is_open()) {
+        outfile << "\n" << step << "\n";
+        outfile << armyID << " " << src.x << " " << src.y << " " << dst.x << " "
+                << dst.y << "\n";
+        outfile.close();
+    }
+    return;
 }
 
 std::pair<int, int> MAP::GetSize() const { return {_sizeX, _sizeY}; }

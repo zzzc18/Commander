@@ -36,6 +36,9 @@ function PlayGame.mousereleased(pixelX, pixelY, button, istouch, presses)
 end
 
 function PlayGame.keypressed(key, scancode, isrepeat)
+    if key == "s" then
+        CGameMap.WriteMap()
+    end
 end
 
 function PlayGame.keyreleased(key, scancode)
