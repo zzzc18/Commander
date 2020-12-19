@@ -52,7 +52,7 @@ MAP& MAP::Singleton() {
     return singleton;
 }
 
-void MAP::Update() {
+void MAP::TroopsUpdate() {
     for (int i = 0; i < _sizeX; ++i) {
         for (int j = 0; j < _sizeY; ++j) _mat[i][j].Update();
     }
@@ -93,6 +93,23 @@ bool MAP::MoveUpdate() {
         }
     }
     return ret;
+}
+
+void MAP::Update() {
+    step++;
+    if (step % TroopsUpdateStep == 0) {
+        TroopsUpdate();
+    }
+    if (step % BigUpdateStep == 0) {
+        BigUpdate();
+    }
+    if (step % MoveUpdateStep == 0) {
+        MoveUpdate();
+    }
+    if (step == StepCommonMultiple) {
+        step -= StepCommonMultiple;
+    }
+    return;
 }
 
 bool MAP::PushMove(int armyID, VECTOR src, VECTOR dst) {
