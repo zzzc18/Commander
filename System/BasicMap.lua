@@ -184,6 +184,7 @@ end
 function BasicMap.DrawMap()
     for i = 0, BasicMap.MapSize.x - 1 do
         for j = 0, BasicMap.MapSize.y - 1 do
+            BasicMap.Map[i][j].nodeType = CGameMap.GetNodeType(i, j)
             BasicMap.DrawNode(i, j)
             BasicMap.DrawPath(i, j)
         end

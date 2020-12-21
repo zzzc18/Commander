@@ -73,9 +73,6 @@ bool MAP::MoveUpdate() {
         else {
             dst.unitNum -= src.unitNum - 1;  // FIXME magic number 1
             if (dst.unitNum < 0) {
-                if (dst.type == NODE_TYPE::KING) {
-                    // return ;
-                }  //如果被占的是对方的KING，则结束
                 dst.unitNum = -dst.unitNum;
                 dst.belong = armyID;
             }
@@ -104,6 +101,68 @@ bool MAP::PushMove(int armyID, VECTOR src, VECTOR dst) {
         }
     }
     moveCommands[armyID].insert(moveCommands[armyID].begin(), {src, dst});
+    return true;
+}
+
+bool MAP::IncreaseOrDecrease(VECTOR aim, int mode) {
+    if (_mat[aim.x][aim.y].type != NODE_TYPE::HILL) {
+        if (mode == 1) {
+            _mat[aim.x][aim.y].unitNum++;
+        } else {
+            if (mode == 2) {
+                if (_mat[aim.x][aim.y].unitNum > 1) {
+                    _mat[aim.x][aim.y].unitNum--;
+                }
+            }
+        }
+    }
+    return true;
+}
+bool MAP::ChangeType(VECTOR aim, int type) {
+    switch (type) {
+        case 1:
+            _mat[aim.x][aim.y].type = NODE_TYPE::HILL;
+            _mat[aim.x][aim.y].unitNum = 0;
+            _mat[aim.x][aim.y].belong = SERVER;
+            break;
+        case 2:
+            _mat[aim.x][aim.y].type = NODE_TYPE::BLANK;
+            _mat[aim.x][aim.y].unitNum = 0;
+            break;
+        case 3:
+            _mat[aim.x][aim.y].type = NODE_TYPE::KING;
+            _mat[aim.x][aim.y].unitNum = 1;
+            break;
+        case 4:
+            _mat[aim.x][aim.y].type = NODE_TYPE::FORT;
+            _mat[aim.x][aim.y].unitNum = 1;
+            break;
+        case 5:
+            _mat[aim.x][aim.y].type = NODE_TYPE::OBSTACLE;
+            _mat[aim.x][aim.y].unitNum = 1;
+            break;
+        case 6:
+            _mat[aim.x][aim.y].type = NODE_TYPE::MARSH;
+            _mat[aim.x][aim.y].unitNum = 1;
+            break;
+        default:
+            break;
+    }
+    return true;
+}
+bool MAP::ChangeBelong(VECTOR aim) {
+    if (_mat[aim.x][aim.y].type == NODE_TYPE::HILL) {
+        return false;
+    }
+    _mat[aim.x][aim.y].belong++;
+    if (_mat[aim.x][aim.y].belong > 2) {
+        _mat[aim.x][aim.y].belong = SERVER;
+    }
+    if (_mat[aim.x][aim.y].belong == SERVER &&
+        _mat[aim.x][aim.y].type == NODE_TYPE::KING) {
+        _mat[aim.x][aim.y].unitNum = 0;
+        _mat[aim.x][aim.y].type = NODE_TYPE::BLANK;
+    }
     return true;
 }
 
