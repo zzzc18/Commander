@@ -5,5 +5,4 @@ function love.conf(this)
     this.window.resizable = true
     this.modules.joystick = false
     this.modules.physics = false
-    this.window.title = "Client"
 end

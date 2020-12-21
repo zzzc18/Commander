@@ -27,6 +27,16 @@ static int LoadMap(lua_State *luaState) {
     return APIreturn(luaState, MAP::Singleton().Load());
 }
 /**
+ * @brief 保存地图
+ *
+ * @param @c void
+ * @return @c void
+ */
+static int SaveMap(lua_State *luaState) {
+    MAP::Singleton().Save();
+    return APIreturn(luaState);
+}
+/**
  * @brief 保存地图至文件
  *
  * @param @c void
@@ -154,6 +164,44 @@ static int PushMove(lua_State *luaState) {
                                                          {dstX, dstY}));
 }
 /**
+ * @brief 将目标点的兵数加一或减一
+ *
+ * @param aimX @c int 目标点所在行号
+ * @param aimY @c int 目标点所在列号
+ * @param mode @c int 1为加，2为减
+ */
+static int IncreaseOrDecrease(lua_State *luaState) {
+    int aimX, aimY, mode;
+    APIparam(luaState, aimX, aimY, mode);
+    return APIreturn(luaState,
+                     MAP::Singleton().IncreaseOrDecrease({aimX, aimY}, mode));
+    // return APIreturn(luaState, true);
+}
+/**
+ * @brief 改变目标格点的类型
+ *
+ * @param aimX @c int 目标点所在行号
+ * @param aimY @c int 目标点所在列号
+ * @param type @c char 要转换成的类型
+ */
+static int ChangeType(lua_State *luaState) {
+    int aimX, aimY;
+    int type;
+    APIparam(luaState, aimX, aimY, type);
+    return APIreturn(luaState, MAP::Singleton().ChangeType({aimX, aimY}, type));
+}
+/**
+ * @brief 改变目标格点的归属
+ *
+ * @param aimX @c int 目标点所在行号
+ * @param aimY @c int 目标点所在列号
+ */
+static int ChangeBelong(lua_State *luaState) {
+    int aimX, aimY;
+    APIparam(luaState, aimX, aimY);
+    return APIreturn(luaState, MAP::Singleton().ChangeBelong({aimX, aimY}));
+}
+/**
  * @brief 地图每 0.5 秒的移动兵力操作更新
  *
  * @param @c void
@@ -170,8 +218,9 @@ static int Judge(lua_State *luaState) {
 /**
  * @brief 向 Lua 注册 API，模块名为 lib/GameMap.dll
  */
-LUA_REG_FUNC(GameMap, C_API(RandomGenMap), C_API(LoadMap), C_API(WriteMap),
-             C_API(GetSize), C_API(GetVision), C_API(GetNodeType),
-             C_API(GetUnitNum), C_API(GetBelong), C_API(GetArmyPath),
-             C_API(Update), C_API(BigUpdate), C_API(PushMove),
-             C_API(MoveUpdate), C_API(Judge))
+LUA_REG_FUNC(GameMap, C_API(RandomGenMap), C_API(LoadMap), C_API(SaveMap),
+             C_API(WriteMap), C_API(GetSize), C_API(GetVision),
+             C_API(GetNodeType), C_API(GetUnitNum), C_API(GetBelong),
+             C_API(GetArmyPath), C_API(Update), C_API(BigUpdate),
+             C_API(PushMove), C_API(MoveUpdate), C_API(Judge),
+             C_API(IncreaseOrDecrease), C_API(ChangeType), C_API(ChangeBelong))
