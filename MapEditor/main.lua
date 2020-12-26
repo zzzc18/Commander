@@ -13,8 +13,7 @@ require("System.Color")
 require("System.Picture")
 require("System.BasicMap")
 require("System.MapAdjust")
-require("Init")
-require("EditorSock")
+require("System.Buttons")
 
 Running = {}
 

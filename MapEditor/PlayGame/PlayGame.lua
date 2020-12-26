@@ -13,7 +13,7 @@ function PlayGame.Init()
     CVerify.Register(0, 3)
     PlayGame.LoadMap()
     Picture.Init()
-    EditorSock.Init()
+    Buttons.Init()
 end
 
 function PlayGame.LoadMap()
@@ -32,6 +32,7 @@ function PlayGame.mousepressed(pixelX, pixelY, button, istouch, presses)
 end
 
 function PlayGame.mousereleased(pixelX, pixelY, button, istouch, presses)
+    Operation.CatchMouseReleased()
 end
 
 function PlayGame.keypressed(key, scancode, isrepeat)
@@ -45,13 +46,13 @@ function PlayGame.UpdateTimerSecond(dt)
 end
 
 function PlayGame.update(dt)
-    Editor:update()
     MapAdjust.Update()
 end
 
 function PlayGame.draw()
     BasicMap.DrawMap()
     Operation.DrawSelect()
+    Operation.DrawButtons()
 end
 
 return PlayGame

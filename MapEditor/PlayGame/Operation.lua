@@ -40,71 +40,8 @@ function Operation.Select(x, y)
     end
 end
 
--- function Operation.IsConnected(posX1, posY1, posX2, posY2)
---     if posX1 == posX2 then
---         if posY1 - posY2 == 1 or posY2 - posY1 == 1 then
---             return true
---         end
---     end
-
---     if posX1 % 2 == 1 then
---         if
---             (posX1 == posX2 + 1 or posX1 == posX2 - 1) and
---                 (posY1 == posY2 or posY1 == posY2 - 1)
---          then
---             return true
---         end
---     else
---         if
---             (posX1 == posX2 + 1 or posX1 == posX2 - 1) and
---                 (posY1 == posY2 or posY1 == posY2 + 1)
---          then
---             return true
---         end
---     end
---     return false
--- end
-
--- function Operation.MoveTo(x, y)
---     if x == -1 and y == -1 then --撤销移动
---         local newRequest = {
---             armyID = PlayGame.armyID,
---             srcX = -1,
---             srcY = -1,
---             dstX = -1,
---             dstY = -1
---         }
---         EditorSock.SendMove(newRequest)
---         return
---     end
-
---     if
---         not Operation.IsConnected(
---             Operation.SelectPos.x,
---             Operation.SelectPos.y,
---             x,
---             y
---         )
---      then
---         return
---     end
-
---     local newRequest = {
---         armyID = PlayGame.armyID,
---         srcX = Operation.SelectPos.x,
---         srcY = Operation.SelectPos.y,
---         dstX = x,
---         dstY = y
---     }
---     --debug--
---     EditorSock.SendMove(newRequest)
---     -- Core.Move(newRequest)
---     ---------
--- end
-
 function Operation.CatchKeyPressed(key)
     if key == "escape" then
-        -- Operation.MoveTo(-1, -1)
         return
     end
 
@@ -171,9 +108,12 @@ end
 function Operation.CatchMousePressed(pixelX, pixelY, button, istouch, presses)
     -- 鼠标坐标转换为地图坐标
     local x, y = BasicMap.Pixel2Coordinate(pixelX, pixelY)
-    print("mouse_pressed")
 
     -- 说明鼠标点的位置不在地图中
+    if Buttons:ButtonsClick(pixelX, pixelY) ~= nil then
+        return
+    end
+    print("mouse pressed")
     if x == -1 and y == -1 then
         return
     end
@@ -195,6 +135,10 @@ function Operation.CatchMousePressed(pixelX, pixelY, button, istouch, presses)
     end
 end
 
+function Operation.CatchMouseReleased()
+    Buttons.ButtonsRelease()
+end
+
 function Operation.DrawSelect()
     if Operation.SelectPos == nil then
         return
@@ -204,12 +148,16 @@ function Operation.DrawSelect()
     Picture.DrawSelect(pixelX, pixelY)
 end
 
+function Operation.DrawButtons()
+    Buttons.DrawButtons()
+end
+
 function Operation.Increase(x, y)
     local newRequest = {
         aimX = x,
         aimY = y
     }
-    EditorSock.Increase(newRequest)
+    CGameMap.IncreaseOrDecrease(newRequest.aimX, newRequest.aimY, 1)
 end
 
 function Operation.Decrease(x, y)
@@ -217,7 +165,7 @@ function Operation.Decrease(x, y)
         aimX = x,
         aimY = y
     }
-    EditorSock.Decrease(newRequest)
+    CGameMap.IncreaseOrDecrease(newRequest.aimX, newRequest.aimY, 2)
 end
 
 return Operation
