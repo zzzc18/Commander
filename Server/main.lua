@@ -12,7 +12,6 @@ require("System.Color")
 require("System.Picture")
 require("System.BasicMap")
 require("System.MapAdjust")
-require("System.Timer")
 require("Init")
 require("ServerSock")
 require("PlayGame.PlayGame")
@@ -52,7 +51,6 @@ function love.update(dt)
     -- dt = dt * 10
     Server:update()
     Running.update(dt)
-    Timer.Update(dt)
 end
 
 function love.quit()

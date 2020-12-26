@@ -62,6 +62,7 @@ function PlayGame.update(dt)
     end
     MapAdjust.Update()
     Judgement.Judge()
+    ServerSock.SendUpdate(dt)
 end
 
 return PlayGame

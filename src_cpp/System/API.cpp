@@ -9,26 +9,19 @@
 
 /**
  * @brief 地图更新触发器
- *  Lua 每 @c dt 秒调用一次，该函数计数达到阈值时触发地图更新
- *
- * @note 暂时弃置
+ *  Lua 每 @c dt 秒调用一次，该函数计数达到0.5秒时触发地图更新
  *
  * @param dt @c double Lua 调用的时间间隔，单位：秒
  * @return @c void
  */
-[[deprecated]] static int Update(lua_State* luaState) {
-    static int cnt;
+static int Update(lua_State* luaState) {
     static double totalTime;
     double dt;
     APIparam(luaState, dt);
     totalTime += dt;
-    if (totalTime > 1) {
-        totalTime -= 1;
-        if (++cnt == 25) {
-            cnt = 0;
-            MAP::Singleton().BigUpdate();
-        } else
-            MAP::Singleton().Update();
+    if (totalTime > 0.5) {
+        totalTime -= 0.5;
+        MAP::Singleton().Update();
     }
     return APIreturn(luaState);
 }
