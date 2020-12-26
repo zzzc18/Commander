@@ -78,12 +78,21 @@ class MAP final {
 
     //添加军队 armyID 从 src 的兵移动到相邻点 dst的指令
     bool PushMove(int armyID, VECTOR src, VECTOR dst);
+    // MapEditor:令fort的兵数加一或减一,mode==1为加，2为减
+    bool IncreaseOrDecrease(VECTOR aim, int mode);
+    // MapEditor:改变格点类型
+    bool ChangeType(VECTOR aim, int type);
+    // MapEditor:改变格点归属
+    bool ChangeBelong(VECTOR aim);
 
     //以 level 为参数随机生成有 armyCnt 个军队的地图
     void RandomGen(int armyCnt, int level);
     int LoadMap(std::string_view file = "../Data/map.map");  //从 file 读取地图
-    void SaveMap(std::string_view file = "../Output/");  //将地图保存至 file
+    void SaveMap(std::string_view file = "../Savedata/");  //将地图保存至 file
     void SaveStep(int armyID, VECTOR src, VECTOR dst);  //保存当前步数的操作
+    void Save(std::string_view file = "../Output/map.map");  //保存生成的地图
+
+    std::string StartTime;
 
     std::pair<int, int> GetSize() const;  //获取地图大小 (行数，列数)
 

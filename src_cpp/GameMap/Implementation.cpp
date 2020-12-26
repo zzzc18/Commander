@@ -5,6 +5,7 @@
  */
 
 #include <cstdlib>
+#include <ctime>
 #include <fstream>
 #include <queue>
 #include <stdexcept>
@@ -77,9 +78,6 @@ bool MAP::MoveUpdate() {
         else {
             dst.unitNum -= src.unitNum - 1;  // FIXME magic number 1
             if (dst.unitNum < 0) {
-                if (dst.type == NODE_TYPE::KING) {
-                    // return ;
-                }  //如果被占的是对方的KING，则结束
                 dst.unitNum = -dst.unitNum;
                 dst.belong = armyID;
             }
@@ -125,6 +123,68 @@ bool MAP::PushMove(int armyID, VECTOR src, VECTOR dst) {
         }
     }
     moveCommands[armyID].insert(moveCommands[armyID].begin(), {src, dst});
+    return true;
+}
+
+bool MAP::IncreaseOrDecrease(VECTOR aim, int mode) {
+    if (_mat[aim.x][aim.y].type != NODE_TYPE::HILL) {
+        if (mode == 1) {
+            _mat[aim.x][aim.y].unitNum++;
+        } else {
+            if (mode == 2) {
+                if (_mat[aim.x][aim.y].unitNum > 1) {
+                    _mat[aim.x][aim.y].unitNum--;
+                }
+            }
+        }
+    }
+    return true;
+}
+bool MAP::ChangeType(VECTOR aim, int type) {
+    switch (type) {
+        case 1:
+            _mat[aim.x][aim.y].type = NODE_TYPE::HILL;
+            _mat[aim.x][aim.y].unitNum = 0;
+            _mat[aim.x][aim.y].belong = SERVER;
+            break;
+        case 2:
+            _mat[aim.x][aim.y].type = NODE_TYPE::BLANK;
+            _mat[aim.x][aim.y].unitNum = 0;
+            break;
+        case 3:
+            _mat[aim.x][aim.y].type = NODE_TYPE::KING;
+            _mat[aim.x][aim.y].unitNum = 1;
+            break;
+        case 4:
+            _mat[aim.x][aim.y].type = NODE_TYPE::FORT;
+            _mat[aim.x][aim.y].unitNum = 1;
+            break;
+        case 5:
+            _mat[aim.x][aim.y].type = NODE_TYPE::OBSTACLE;
+            _mat[aim.x][aim.y].unitNum = 1;
+            break;
+        case 6:
+            _mat[aim.x][aim.y].type = NODE_TYPE::MARSH;
+            _mat[aim.x][aim.y].unitNum = 1;
+            break;
+        default:
+            break;
+    }
+    return true;
+}
+bool MAP::ChangeBelong(VECTOR aim) {
+    if (_mat[aim.x][aim.y].type == NODE_TYPE::HILL) {
+        return false;
+    }
+    _mat[aim.x][aim.y].belong++;
+    if (_mat[aim.x][aim.y].belong > 2) {
+        _mat[aim.x][aim.y].belong = SERVER;
+    }
+    if (_mat[aim.x][aim.y].belong == SERVER &&
+        _mat[aim.x][aim.y].type == NODE_TYPE::KING) {
+        _mat[aim.x][aim.y].unitNum = 0;
+        _mat[aim.x][aim.y].type = NODE_TYPE::BLANK;
+    }
     return true;
 }
 
@@ -186,23 +246,25 @@ void MAP::RandomGen(int armyCnt, int level) {
         }
     }
 }
-int MAP::LoadMap(std::string_view file) {  // file = "Input/map.map"
+int MAP::LoadMap(std::string_view file) {  // file = "../Data/map.map"
     std::ifstream fin(file.data());
     fin >> *this;
     fin.close();
-    system("cd ..&mkdir Output");
+
+    std::time_t t;
+    StartTime = std::to_string(std::time(&t));
+    system(("cd ..&mkdir -p Savedata/" + StartTime).c_str());
     return kingNum;
 }
-void MAP::SaveMap(std::string_view file) {  // file="../Output/map.map"
-    // file = file + std::to_string(step) + ".map";
-    // std::ofstream fout(file.data());
-    std::ofstream fout(file.data() + std::to_string(step) + ".map");
+void MAP::SaveMap(std::string_view file) {  // file="../Savedata/"
+    std::ofstream fout(file.data() + StartTime + "/" + std::to_string(step) +
+                       ".map");
     fout << *this;
     fout.close();
 }
 void MAP::SaveStep(int armyID, VECTOR src, VECTOR dst) {
     std::ofstream outfile;
-    outfile.open("../Output/steps.txt", std::ios::app);
+    outfile.open("../Savedata/" + StartTime + "/steps.txt", std::ios::app);
     if (outfile.is_open()) {
         outfile << "\n" << step << "\n";
         outfile << armyID << " " << src.x << " " << src.y << " " << dst.x << " "
@@ -210,6 +272,11 @@ void MAP::SaveStep(int armyID, VECTOR src, VECTOR dst) {
         outfile.close();
     }
     return;
+}
+void MAP::Save(std::string_view file) {  // file = "../Output/map.map"
+    std::ofstream fout(file.data());
+    fout << *this;
+    fout.close();
 }
 
 std::pair<int, int> MAP::GetSize() const { return {_sizeX, _sizeY}; }
