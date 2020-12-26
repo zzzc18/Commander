@@ -109,7 +109,7 @@ function Operation.CatchKeyPressed(key)
     end
 
     if key == "return" then
-        CGameMap.SaveMap()
+        CGameMap.SaveEdit()
         return
     end
 

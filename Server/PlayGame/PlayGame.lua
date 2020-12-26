@@ -15,6 +15,7 @@ function PlayGame.Init(MapMode)
     -- CGameMap.RandomGenMap()
     -- CGameMap.WriteMap()
     PlayGame.armyNum = CGameMap.LoadMap()
+    CGameMap.InitSavedata()
     BasicMap.Init()
     Judgement.Init()
 end
@@ -38,6 +39,7 @@ end
 function PlayGame.keypressed(key, scancode, isrepeat)
     if key == "s" then
         CGameMap.WriteMap()
+        print("Manually save map")
     end
 end
 

@@ -108,7 +108,7 @@ void MAP::Update() {
     if (step % MoveUpdateStep == 0) {
         MoveUpdate();
     }
-    if (step % SaveMapStep == 0) {
+    if (step % SaveMapStep == 0 && VERIFY::Singleton().GetArmyID() == 0) {
         SaveMap();
     }
     return;
@@ -246,14 +246,20 @@ void MAP::RandomGen(int armyCnt, int level) {
         }
     }
 }
+void MAP::InitSavedata() {
+    std::time_t t = std::time(&t) + 28800;
+    struct tm* gmt = gmtime(&t);
+    char cst[80];
+    strftime(cst, 80, "%Y-%m-%d_%H.%M.%S", gmt);
+    StartTime = cst;
+    system("cd ..&mkdir Savedata");
+    system(("cd ../Savedata&mkdir " + StartTime).c_str());
+    return;
+}
 int MAP::LoadMap(std::string_view file) {  // file = "../Data/map.map"
     std::ifstream fin(file.data());
     fin >> *this;
     fin.close();
-
-    std::time_t t;
-    StartTime = std::to_string(std::time(&t));
-    system(("cd ..&mkdir -p Savedata/" + StartTime).c_str());
     return kingNum;
 }
 void MAP::SaveMap(std::string_view file) {  // file="../Savedata/"
@@ -273,7 +279,7 @@ void MAP::SaveStep(int armyID, VECTOR src, VECTOR dst) {
     }
     return;
 }
-void MAP::Save(std::string_view file) {  // file = "../Output/map.map"
+void MAP::SaveEdit(std::string_view file) {  // file = "../Output/map.map"
     std::ofstream fout(file.data());
     fout << *this;
     fout.close();
