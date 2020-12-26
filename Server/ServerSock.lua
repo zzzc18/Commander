@@ -31,7 +31,7 @@ end
 
 function ServerSock.SendUpdate()
     Server:sendToAll("Update")
-    CGameMap.Update()
+    CLib.GameMapUpdate()
 end
 
 function ServerSock.SendGameOver()

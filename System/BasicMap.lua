@@ -139,10 +139,10 @@ function BasicMap.Pixel2Coordinate(pixelX, pixelY)
 end
 
 function BasicMap.SetNodeColor(x, y)
-    local unitNum = CGameMap.GetUnitNum(x, y)
-    local belong = CGameMap.GetBelong(x, y)
+    local unitNum = CLib.GameMapGetUnitNum(x, y)
+    local belong = CLib.GameMapGetBelong(x, y)
     if belong == 0 then
-        if CGameMap.GetVision(x, y) then
+        if CLib.GameMapGetVision(x, y) then
             love.graphics.setColor(Color.Army(0))
         else
             love.graphics.setColor(1, 1, 1, 0.2)
@@ -156,7 +156,7 @@ function BasicMap.DrawNode(x, y)
     local pixelX, pixelY = BasicMap.Coordinate2Pixel(x, y)
     BasicMap.SetNodeColor(x, y)
     Picture.DrawNode(pixelX, pixelY, BasicMap.Map[x][y].nodeType)
-    local unitNum = CGameMap.GetUnitNum(x, y)
+    local unitNum = CLib.GameMapGetUnitNum(x, y)
     -- TODO: 我觉得可能变成nil更合理
     if unitNum ~= 0 then
         love.graphics.setColor(Color.White())
@@ -165,17 +165,17 @@ function BasicMap.DrawNode(x, y)
 end
 
 function BasicMap.DrawPath(x, y)
-    if CGameMap.GetVision(x, y) and CGameMap.GetUnitNum(x, y) ~= 0 then
-        local belong = CGameMap.GetBelong(x, y)
+    if CLib.GameMapGetVision(x, y) and CLib.GameMapGetUnitNum(x, y) ~= 0 then
+        local belong = CLib.GameMapGetBelong(x, y)
         if belong ~= 0 then
             local step = 0
-            local srcX, srcY, dstX, dstY = CGameMap.GetArmyPath(belong, step)
+            local srcX, srcY, dstX, dstY = CLib.GameMapGetArmyPath(belong, step)
             while srcX ~= -1 do
                 local sx, sy = BasicMap.Coordinate2Pixel(srcX, srcY)
                 local ds, dy = BasicMap.Coordinate2Pixel(dstX, dstY)
                 Picture.DrawArrow(sx, sy, ds, dy)
                 step = step + 1
-                srcX, srcY, dstX, dstY = CGameMap.GetArmyPath(belong, step)
+                srcX, srcY, dstX, dstY = CLib.GameMapGetArmyPath(belong, step)
             end
         end
     end
@@ -191,12 +191,12 @@ function BasicMap.DrawMap()
 end
 
 function BasicMap.Init()
-    BasicMap.MapSize.x, BasicMap.MapSize.y = CGameMap.GetSize()
+    BasicMap.MapSize.x, BasicMap.MapSize.y = CLib.GameMapGetSize()
     for i = 0, BasicMap.MapSize.x - 1 do
         BasicMap.Map[i] = {}
         for j = 0, BasicMap.MapSize.y - 1 do
             BasicMap.Map[i][j] = {}
-            BasicMap.Map[i][j].nodeType = CGameMap.GetNodeType(i, j)
+            BasicMap.Map[i][j].nodeType = CLib.GameMapGetNodeType(i, j)
         end
     end
 

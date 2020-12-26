@@ -10,7 +10,7 @@ function ClientSock.Init()
         function(data)
             print("Received Data")
             PlayGame.armyID = data.armyID
-            CVerify.Register(data.armyID)
+            CLib.VerifyRegister(data.armyID)
             PlayGame.LoadMap()
         end
     )
@@ -23,7 +23,7 @@ function ClientSock.Init()
     Client:on(
         "Update",
         function()
-            CGameMap.Update()
+            CLib.GameMapUpdate()
         end
     )
     Client:on(

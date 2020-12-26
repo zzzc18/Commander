@@ -1,9 +1,3 @@
-/**
- * @file API.cpp
- *
- * @brief @c GameMap 模块对 Lua 提供的 API
- */
-
 #include "GameMap.hpp"
 #include "LuaAPI.hpp"
 
@@ -13,7 +7,7 @@
  * @param @c void
  * @return @c void
  */
-static int RandomGenMap(lua_State *luaState) {
+static int GameMapRandomGenMap(lua_State *luaState) {
     MAP::Singleton().RandomGen(2, 0);  // FIXME magic numbers
     return APIreturn(luaState);
 }
@@ -23,7 +17,7 @@ static int RandomGenMap(lua_State *luaState) {
  * @param @c void
  * @return @c void
  */
-static int LoadMap(lua_State *luaState) {
+static int GameMapLoadMap(lua_State *luaState) {
     return APIreturn(luaState, MAP::Singleton().Load());
 }
 /**
@@ -32,7 +26,7 @@ static int LoadMap(lua_State *luaState) {
  * @param @c void
  * @return @c void
  */
-static int WriteMap(lua_State *luaState) {
+static int GameMapWriteMap(lua_State *luaState) {
     MAP::Singleton().Save();
     return APIreturn(luaState);
 }
@@ -44,7 +38,7 @@ static int WriteMap(lua_State *luaState) {
  * @return @c int sizeX 行数
  * @return @c int sizeY 列数
  */
-static int GetSize(lua_State *luaState) {
+static int GameMapGetSize(lua_State *luaState) {
     auto [sizeX, sizeY] = MAP::Singleton().GetSize();
     return APIreturn(luaState, sizeX, sizeY);
 }
@@ -56,7 +50,7 @@ static int GetSize(lua_State *luaState) {
  * @param y @c int 给定点所在列号
  * @return @c bool 是否可见
  */
-static int GetVision(lua_State *luaState) {
+static int GameMapGetVision(lua_State *luaState) {
     int x, y;
     APIparam(luaState, x, y);
     return APIreturn(luaState, MAP::Singleton().IsViewable({x, y}));
@@ -68,7 +62,7 @@ static int GetVision(lua_State *luaState) {
  * @param y @c int 给定点所在列号
  * @return @c const-char* 类型对应字符串
  */
-static int GetNodeType(lua_State *luaState) {
+static int GameMapGetNodeType(lua_State *luaState) {
     int x, y;
     APIparam(luaState, x, y);
     return APIreturn(luaState,
@@ -81,7 +75,7 @@ static int GetNodeType(lua_State *luaState) {
  * @param y @c int 给定点所在列号
  * @return @c int 军队看到的兵数
  */
-static int GetUnitNum(lua_State *luaState) {
+static int GameMapGetUnitNum(lua_State *luaState) {
     int x, y;
     APIparam(luaState, x, y);
     return APIreturn(luaState, MAP::Singleton().GetUnitNum({x, y}));
@@ -93,7 +87,7 @@ static int GetUnitNum(lua_State *luaState) {
  * @param y @c int 给定点所在列号
  * @return @c int 军队看到的该点所属军队编号
  */
-static int GetBelong(lua_State *luaState) {
+static int GameMapGetBelong(lua_State *luaState) {
     int x, y;
     APIparam(luaState, x, y);
     return APIreturn(luaState, MAP::Singleton().GetBelong({x, y}));
@@ -105,7 +99,7 @@ static int GetBelong(lua_State *luaState) {
  * @param step @c int 军队路径步数
  * @return @c int 某一步的开始坐标，结束坐标
  */
-static int GetArmyPath(lua_State *luaState) {
+static int GameMapGetArmyPath(lua_State *luaState) {
     int armyID, step;
     APIparam(luaState, armyID, step);
     std::pair<VECTOR, VECTOR> data = MAP::Singleton().GetArmyPath(armyID, step);
@@ -122,7 +116,7 @@ static int GetArmyPath(lua_State *luaState) {
  * @param @c void
  * @return @c void
  */
-static int Update(lua_State *luaState) {
+static int GameMapUpdate(lua_State *luaState) {
     MAP::Singleton().Update();
     return APIreturn(luaState);
 }
@@ -132,7 +126,7 @@ static int Update(lua_State *luaState) {
  * @param @c void
  * @return @c void
  */
-static int BigUpdate(lua_State *luaState) {
+static int GameMapBigUpdate(lua_State *luaState) {
     MAP::Singleton().BigUpdate();
     return APIreturn(luaState);
 }
@@ -147,7 +141,7 @@ static int BigUpdate(lua_State *luaState) {
  * @param dstY @c int 目标点所在列号
  * @return @c bool 操作是否合法
  */
-static int PushMove(lua_State *luaState) {
+static int GameMapPushMove(lua_State *luaState) {
     int armyID, srcX, srcY, dstX, dstY;
     APIparam(luaState, armyID, srcX, srcY, dstX, dstY);
     return APIreturn(luaState, MAP::Singleton().PushMove(armyID, {srcX, srcY},
@@ -159,19 +153,64 @@ static int PushMove(lua_State *luaState) {
  * @param @c void
  * @return @c bool 当前军队是否移动成功
  */
-static int MoveUpdate(lua_State *luaState) {
+static int GameMapMoveUpdate(lua_State *luaState) {
     return APIreturn(luaState, MAP::Singleton().MoveUpdate());
 }
-static int Judge(lua_State *luaState) {
+static int GameMapJudge(lua_State *luaState) {
     int armyID;
     APIparam(luaState, armyID);
     return APIreturn(luaState, MAP::Singleton().Judge(armyID));
 }
+
+/**
+ * @brief 地图更新触发器
+ *  Lua 每 @c dt 秒调用一次，该函数计数达到阈值时触发地图更新
+ *
+ * @note 暂时弃置
+ *
+ * @param dt @c double Lua 调用的时间间隔，单位：秒
+ * @return @c void
+ */
+static int SystemUpdate(lua_State *luaState) {
+    static int cnt;
+    static double totalTime;
+    double dt;
+    APIparam(luaState, dt);
+    totalTime += dt;
+    if (totalTime > 1) {
+        totalTime -= 1;
+        if (++cnt == 25) {
+            cnt = 0;
+            MAP::Singleton().BigUpdate();
+        } else
+            MAP::Singleton().Update();
+    }
+    return APIreturn(luaState);
+}
+
+#include "Verify.hpp"
+
+/**
+ * @brief 注册当前军队的各个属性
+ *
+ * @param armyID @c int 军队编号
+ * @param privilege @c int 军队权限
+ * @return @c void
+ */
+static int VerifyRegister(lua_State *luaState) {
+    int armyID, privilege;
+    APIparam(luaState, armyID, privilege);
+    return APIreturn(luaState, VERIFY::Register(armyID, privilege));
+}
+
 /**
  * @brief 向 Lua 注册 API，模块名为 lib/GameMap.dll
  */
-LUA_REG_FUNC(GameMap, C_API(RandomGenMap), C_API(LoadMap), C_API(WriteMap),
-             C_API(GetSize), C_API(GetVision), C_API(GetNodeType),
-             C_API(GetUnitNum), C_API(GetBelong), C_API(GetArmyPath),
-             C_API(Update), C_API(BigUpdate), C_API(PushMove),
-             C_API(MoveUpdate), C_API(Judge))
+LUA_REG_FUNC(CLib, C_API(GameMapRandomGenMap), C_API(GameMapLoadMap),
+             C_API(GameMapWriteMap), C_API(GameMapGetSize),
+             C_API(GameMapGetVision), C_API(GameMapGetNodeType),
+             C_API(GameMapGetUnitNum), C_API(GameMapGetBelong),
+             C_API(GameMapGetArmyPath), C_API(GameMapUpdate),
+             C_API(GameMapBigUpdate), C_API(GameMapPushMove),
+             C_API(GameMapMoveUpdate), C_API(GameMapJudge), C_API(SystemUpdate),
+             C_API(VerifyRegister))

@@ -7,6 +7,7 @@
 #include "GameMap.hpp"
 #include "ostream"
 using std::cerr;
+using std::cout;
 using std::endl;
 using std::ostream;
 

@@ -33,7 +33,7 @@ function Operation.Queue:Size()
 end
 
 function Operation.Select(x, y)
-    if true or CGameMap.GetBelong(x, y) == PlayGame.armyID then -- TODO: fix true
+    if true or CLib.GameMapGetBelong(x, y) == PlayGame.armyID then -- TODO: fix true
         Operation.SelectPos = {}
         Operation.SelectPos.x = x
         Operation.SelectPos.y = y

@@ -6,7 +6,13 @@ Core = {}
 function Core.PushMove(data)
     -- local str = string.format("%d, (%d, %d) -> (%d, %d)\n", data.armyID, data.srcX, data.srcY, data.dstX, data.dstY)
     -- print(str)
-    CGameMap.PushMove(data.armyID, data.srcX, data.srcY, data.dstX, data.dstY)
+    CLib.GameMapPushMove(
+        data.armyID,
+        data.srcX,
+        data.srcY,
+        data.dstX,
+        data.dstY
+    )
 end
 
 return Core

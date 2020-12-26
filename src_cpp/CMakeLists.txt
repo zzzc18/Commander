@@ -16,6 +16,7 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang"
     add_compile_definitions(__func__=__PRETTY_FUNCTION__ DEBUG)
 endif()
 #find include path
+# include_directories(include /usr/local/include)
 include_directories(include)
 if(WINDOWS)
     find_package(Lua51 REQUIRED)
@@ -25,15 +26,22 @@ if(WINDOWS)
 elseif(LINUX)
     #position of .so file
     set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/../lib)
+elseif(MACOS)
+    #position of .dylib file
+    find_package(Lua51 REQUIRED)
+    include_directories(${LUA_INCLUDE_DIR})
+    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/../lib)
+    # link_directories(../lib)
 endif()
 #add source files to variable xxx_SOURCE_FILES
 aux_source_directory(GameMap GameMap_SOURCE_FILES)
 aux_source_directory(System System_SOURCE_FILES)
 aux_source_directory(Verify Verify_SOURCE_FILES)
 #generate .so/.dll files
-add_library(GameMap SHARED ${GameMap_SOURCE_FILES})
-add_library(System SHARED ${System_SOURCE_FILES})
-add_library(Verify SHARED ${Verify_SOURCE_FILES})
+add_library(Full STATIC ${GameMap_SOURCE_FILES} ${System_SOURCE_FILES} ${Verify_SOURCE_FILES})
+add_library(CLib SHARED CLib/API.cpp)
+target_link_libraries(CLib Full ${LUA_LIBRARIES})
+
 if(WINDOWS)
     target_link_libraries(Verify ${LUA_LIBRARIES})
     target_link_libraries(GameMap Verify ${LUA_LIBRARIES})
@@ -41,6 +49,7 @@ if(WINDOWS)
 elseif(LINUX)
     target_link_libraries(GameMap Verify)
     target_link_libraries(System GameMap)
+elseif(MACOS)
 endif()
 #change name: e.g. libmat.so->lib_mat.so
-set_target_properties(GameMap System Verify PROPERTIES PREFIX "")
+set_target_properties(CLib PROPERTIES PREFIX "")

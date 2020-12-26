@@ -4,6 +4,7 @@
  * @brief @c GameMap 模块类相关函数的定义
  */
 
+#include <cstring>
 #include <fstream>
 #include <queue>
 #include <stdexcept>
@@ -137,7 +138,8 @@ void MAP::RandomGen(int armyCnt, int level) {
     //检查 king 是否互相连通
     auto ValidateConnectivity = [this, &kings]() -> bool {
         int kingFound = 0;
-        bool vis[_sizeX][_sizeY] = {};
+        bool vis[_sizeX][_sizeY];
+        memset(vis, 0, sizeof(vis));
         std::queue<VECTOR> que;
         que.push(kings.front().first);
         vis[kings.front().first.x][kings.front().first.y] = true;

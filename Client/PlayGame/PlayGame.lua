@@ -19,9 +19,9 @@ function PlayGame.Init()
 end
 
 function PlayGame.LoadMap()
-    -- CGameMap.RandomGenMap()
-    -- CGameMap.WriteMap()
-    CGameMap.LoadMap()
+    -- CLib.GameMapRandomGenMap()
+    -- CLib.GameMapWriteMap()
+    CLib.GameMapLoadMap()
     BasicMap.Init()
 end
 

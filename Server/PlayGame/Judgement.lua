@@ -13,7 +13,7 @@ function Judgement.Judge()
     -- 存活部队数
     local aliveCnt = 0
     for i = 1, PlayGame.armyNum do
-        local state = CGameMap.Judge(i)
+        local state = CLib.GameMapJudge(i)
         -- 状态由1变为0，说明当前部队死了
         if state == 0 and Judgement.state[i] == 1 then
             Judgement.state[i] = 0

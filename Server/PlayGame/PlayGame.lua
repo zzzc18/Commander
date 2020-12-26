@@ -12,9 +12,9 @@ end
 
 function PlayGame.Init(MapMode)
     Picture.Init()
-    -- CGameMap.RandomGenMap()
-    -- CGameMap.WriteMap()
-    PlayGame.armyNum = CGameMap.LoadMap()
+    -- CLib.GameMapRandomGenMap()
+    -- CLib.GameMapWriteMap()
+    PlayGame.armyNum = CLib.GameMapLoadMap()
     BasicMap.Init()
     Judgement.Init()
 end
