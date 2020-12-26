@@ -150,17 +150,10 @@ static int Judge(lua_State *luaState) {
     return APIreturn(luaState, MAP::Singleton().Judge(armyID));
 }
 
-static int SaveStep(lua_State *luaState) {
-    int armyID, srcX, srcY, dstX, dstY;
-    APIparam(luaState, armyID, srcX, srcY, dstX, dstY);
-    MAP::Singleton().SaveStep(armyID, {srcX, srcY}, {dstX, dstY});
-    return APIreturn(luaState);
-}
-
 /**
  * @brief 向 Lua 注册 API，模块名为 lib/GameMap.dll
  */
 LUA_REG_FUNC(GameMap, C_API(RandomGenMap), C_API(LoadMap), C_API(WriteMap),
              C_API(GetSize), C_API(GetVision), C_API(GetNodeType),
              C_API(GetUnitNum), C_API(GetBelong), C_API(GetArmyPath),
-             C_API(Update), C_API(PushMove), C_API(Judge), C_API(SaveStep))
+             C_API(Update), C_API(PushMove), C_API(Judge))

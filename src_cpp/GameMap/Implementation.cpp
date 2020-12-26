@@ -4,6 +4,7 @@
  * @brief @c GameMap 模块类相关函数的定义
  */
 
+#include <cstdlib>
 #include <fstream>
 #include <queue>
 #include <stdexcept>
@@ -68,6 +69,9 @@ bool MAP::MoveUpdate() {
         if (src.belong != armyID || src.unitNum <= 1)
             return false;  // FIXME magic number 1
         if (dst.type == NODE_TYPE::HILL) return false;
+        if (VERIFY::Singleton().GetArmyID() == 0) {  //只有服务器会保存
+            SaveStep(armyID, _src, _dst);
+        }
         if (dst.belong == armyID)
             dst.unitNum += src.unitNum - 1;  // FIXME magic number 1
         else {
@@ -186,8 +190,7 @@ int MAP::LoadMap(std::string_view file) {  // file = "Input/map.map"
     std::ifstream fin(file.data());
     fin >> *this;
     fin.close();
-    std::ofstream fout("../Output/steps.txt");
-    fout.close();
+    system("cd ..&mkdir Output");
     return kingNum;
 }
 void MAP::SaveMap(std::string_view file) {  // file="../Output/map.map"
