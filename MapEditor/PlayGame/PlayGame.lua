@@ -32,7 +32,7 @@ function PlayGame.mousepressed(pixelX, pixelY, button, istouch, presses)
 end
 
 function PlayGame.mousereleased(pixelX, pixelY, button, istouch, presses)
-    Operation.CatchMouseReleased()
+    Operation.CatchMouseReleased(pixelX, pixelY, button, istouch, presses)
 end
 
 function PlayGame.keypressed(key, scancode, isrepeat)
@@ -47,6 +47,7 @@ end
 
 function PlayGame.update(dt)
     MapAdjust.Update()
+    Operation.Update(love.mouse.getX(), love.mouse.getY())
 end
 
 function PlayGame.draw()

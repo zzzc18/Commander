@@ -108,15 +108,14 @@ end
 function Operation.CatchMousePressed(pixelX, pixelY, button, istouch, presses)
     -- 鼠标坐标转换为地图坐标
     local x, y = BasicMap.Pixel2Coordinate(pixelX, pixelY)
-
-    -- 说明鼠标点的位置不在地图中
-    if Buttons:ButtonsClick(pixelX, pixelY) ~= nil then
+    if Buttons.MouseState(pixelX, pixelY, 0) ~= nil then
         return
     end
-    print("mouse pressed")
+    -- 说明鼠标点的位置不在地图中
     if x == -1 and y == -1 then
         return
     end
+    print("mouse pressed")
     print(string.format("Chosen point %d %d", x, y))
     if Operation.SelectPos ~= nil then
         if Operation.SelectPos.x == x and Operation.SelectPos.y == y then -- 再次选择了已选位置
@@ -135,8 +134,8 @@ function Operation.CatchMousePressed(pixelX, pixelY, button, istouch, presses)
     end
 end
 
-function Operation.CatchMouseReleased()
-    Buttons.ButtonsRelease()
+function Operation.CatchMouseReleased(pixelX, pixelY, button, istouch, presses)
+    Buttons.MouseState(pixelX, pixelY, 2)
 end
 
 function Operation.DrawSelect()
@@ -166,6 +165,10 @@ function Operation.Decrease(x, y)
         aimY = y
     }
     CGameMap.IncreaseOrDecrease(newRequest.aimX, newRequest.aimY, 2)
+end
+
+function Operation.Update(mouseX, mouseY)
+    Buttons.MouseState(mouseX, mouseY, 1)
 end
 
 return Operation
