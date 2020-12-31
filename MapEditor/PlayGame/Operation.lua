@@ -108,7 +108,8 @@ end
 function Operation.CatchMousePressed(pixelX, pixelY, button, istouch, presses)
     -- 鼠标坐标转换为地图坐标
     local x, y = BasicMap.Pixel2Coordinate(pixelX, pixelY)
-    if Buttons.MouseState(pixelX, pixelY, 0) ~= nil then
+    local buttonName = Buttons.MouseState(pixelX, pixelY, 0)
+    if buttonName ~= nil then
         return
     end
     -- 说明鼠标点的位置不在地图中
