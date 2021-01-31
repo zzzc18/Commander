@@ -109,6 +109,7 @@ function Operation.CatchMousePressed(pixelX, pixelY, button, istouch, presses)
     -- 鼠标坐标转换为地图坐标
     local x, y = BasicMap.Pixel2Coordinate(pixelX, pixelY)
     local buttonName = Buttons.MouseState(pixelX, pixelY, 0)
+    --说明鼠标点了按钮
     if buttonName ~= nil then
         return
     end
@@ -143,8 +144,7 @@ function Operation.DrawSelect()
     if Operation.SelectPos == nil then
         return
     end
-    local pixelX, pixelY =
-        BasicMap.Coordinate2Pixel(Operation.SelectPos.x, Operation.SelectPos.y)
+    local pixelX, pixelY = BasicMap.Coordinate2Pixel(Operation.SelectPos.x, Operation.SelectPos.y)
     Picture.DrawSelect(pixelX, pixelY)
 end
 

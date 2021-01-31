@@ -10,16 +10,11 @@ function EachButton:Load()
     self.button_continue = {}
     self.button_next = {}
     self.button_shift_speed = {}
-    self.button_last.imag =
-        love.graphics.newImage("data/Picture/BUTTON_TYPE_LAST.png")
-    self.button_pause.imag =
-        love.graphics.newImage("data/Picture/BUTTON_TYPE_PAUSE.png")
-    self.button_continue.imag =
-        love.graphics.newImage("data/Picture/BUTTON_TYPE_CONTINUE.png")
-    self.button_next.imag =
-        love.graphics.newImage("data/Picture/BUTTON_TYPE_NEXT.png")
-    self.button_shift_speed.imag =
-        love.graphics.newImage("data/Picture/BUTTON_TYPE_SHIFTSPEED.png")
+    self.button_last.imag = love.graphics.newImage("data/Picture/BUTTON_TYPE_LAST.png")
+    self.button_pause.imag = love.graphics.newImage("data/Picture/BUTTON_TYPE_PAUSE.png")
+    self.button_continue.imag = love.graphics.newImage("data/Picture/BUTTON_TYPE_CONTINUE.png")
+    self.button_next.imag = love.graphics.newImage("data/Picture/BUTTON_TYPE_NEXT.png")
+    self.button_shift_speed.imag = love.graphics.newImage("data/Picture/BUTTON_TYPE_SHIFTSPEED.png")
     self.button_last.x = 400
     self.button_last.y = 0
     self.button_last.ratio = self.initialRatio
@@ -60,7 +55,6 @@ function Buttons.Init()
 end
 
 function Buttons.DrawButtons()
-    -- local a = love.graphics.newImage("data/Picture/NODE_TYPE_HILL.png")
     love.graphics.setColor(1, 1, 1, EachButton.button_last.diaphaneity)
     love.graphics.draw(
         EachButton.button_last.imag,
@@ -148,9 +142,7 @@ function Buttons.MouseState(mouseX, mouseY, mode)
     -- end
     local name = nil
     if
-        mouseX > EachButton.button_last.x and
-            mouseX < EachButton.button_last.x + 50 and
-            mouseY > EachButton.button_last.y and
+        mouseX > EachButton.button_last.x and mouseX < EachButton.button_last.x + 50 and mouseY > EachButton.button_last.y and
             mouseY < EachButton.button_last.y + 50
      then
         if mode == 0 then
@@ -161,9 +153,7 @@ function Buttons.MouseState(mouseX, mouseY, mode)
             EachButton:ButtonsRelease(EachButton.button_last)
         end
     elseif
-        mouseX > EachButton.button_pause.x and
-            mouseX < EachButton.button_pause.x + 50 and
-            mouseY > EachButton.button_pause.y and
+        mouseX > EachButton.button_pause.x and mouseX < EachButton.button_pause.x + 50 and mouseY > EachButton.button_pause.y and
             mouseY < EachButton.button_pause.y + 50
      then
         if mode == 0 then
@@ -189,9 +179,7 @@ function Buttons.MouseState(mouseX, mouseY, mode)
             end
         end
     elseif
-        mouseX > EachButton.button_next.x and
-            mouseX < EachButton.button_next.x + 50 and
-            mouseY > EachButton.button_next.y and
+        mouseX > EachButton.button_next.x and mouseX < EachButton.button_next.x + 50 and mouseY > EachButton.button_next.y and
             mouseY < EachButton.button_next.y + 50
      then
         if mode == 0 then
@@ -202,8 +190,7 @@ function Buttons.MouseState(mouseX, mouseY, mode)
             EachButton:ButtonsRelease(EachButton.button_next)
         end
     elseif
-        mouseX > EachButton.button_shift_speed.x and
-            mouseX < EachButton.button_shift_speed.x + 50 and
+        mouseX > EachButton.button_shift_speed.x and mouseX < EachButton.button_shift_speed.x + 50 and
             mouseY > EachButton.button_shift_speed.y and
             mouseY < EachButton.button_shift_speed.y + 50
      then
@@ -217,9 +204,6 @@ function Buttons.MouseState(mouseX, mouseY, mode)
     elseif mode == 2 then
         EachButton:ClearAll()
     end
-    -- if name ~= nil then
-    --     print(name .. "!!!!!!!!")
-    -- end
     return name
 end
 
