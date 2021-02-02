@@ -132,7 +132,7 @@ bool MAP::IncreaseOrDecrease(VECTOR aim, int mode) {
             _mat[aim.x][aim.y].unitNum++;
         } else {
             if (mode == 2) {
-                if (_mat[aim.x][aim.y].unitNum > 1) {
+                if (_mat[aim.x][aim.y].unitNum > 0) {
                     _mat[aim.x][aim.y].unitNum--;
                 }
             }
@@ -153,7 +153,8 @@ bool MAP::ChangeType(VECTOR aim, int type) {
             break;
         case 3:
             _mat[aim.x][aim.y].type = NODE_TYPE::KING;
-            _mat[aim.x][aim.y].unitNum = 1;
+            this->_armyCnt++;
+            _mat[aim.x][aim.y].unitNum = 0;
             break;
         case 4:
             _mat[aim.x][aim.y].type = NODE_TYPE::FORT;
@@ -177,13 +178,14 @@ bool MAP::ChangeBelong(VECTOR aim) {
         return false;
     }
     _mat[aim.x][aim.y].belong++;
-    if (_mat[aim.x][aim.y].belong > 2) {
+    if (_mat[aim.x][aim.y].belong > 4) {
         _mat[aim.x][aim.y].belong = SERVER;
     }
     if (_mat[aim.x][aim.y].belong == SERVER &&
         _mat[aim.x][aim.y].type == NODE_TYPE::KING) {
         _mat[aim.x][aim.y].unitNum = 0;
         _mat[aim.x][aim.y].type = NODE_TYPE::BLANK;
+        this->_armyCnt--;
     }
     return true;
 }
@@ -256,8 +258,8 @@ void MAP::InitSavedata() {
     system(("cd ../Savedata&mkdir " + StartTime).c_str());
     return;
 }
-int MAP::LoadMap(std::string_view file) {  // file = "../Data/map.map"
-    std::ifstream fin(file.data());
+int MAP::LoadMap(std::string_view file) {  // file = "../Data/"
+    std::ifstream fin((std::string)file.data() + "3Player.map");
     fin >> *this;
     fin.close();
     return kingNum;
@@ -279,8 +281,12 @@ void MAP::SaveStep(int armyID, VECTOR src, VECTOR dst) {
     }
     return;
 }
-void MAP::SaveEdit(std::string_view file) {  // file = "../Output/map.map"
-    std::ofstream fout(file.data());
+void MAP::SaveEdit(std::string_view file) {  // file = "../Output/"
+    std::time_t t = std::time(&t) + 28800;
+    char cst[80];
+    strftime(cst, 80, "%Y-%m-%d_%H.%M.%S", gmtime(&t));
+    StartTime = cst;
+    std::ofstream fout(file.data() + StartTime + ".map");
     fout << *this;
     fout.close();
 }
