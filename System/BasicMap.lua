@@ -138,6 +138,7 @@ function BasicMap.Pixel2Coordinate(pixelX, pixelY)
     return -1, -1
 end
 
+--根据可见性和归属设定格子颜色
 function BasicMap.SetNodeColor(x, y)
     local unitNum = CGameMap.GetUnitNum(x, y)
     local belong = CGameMap.GetBelong(x, y)
@@ -152,6 +153,7 @@ function BasicMap.SetNodeColor(x, y)
     end
 end
 
+--绘制格子，包括地形和部队
 function BasicMap.DrawNode(x, y)
     local pixelX, pixelY = BasicMap.Coordinate2Pixel(x, y)
     BasicMap.SetNodeColor(x, y)
@@ -164,6 +166,7 @@ function BasicMap.DrawNode(x, y)
     end
 end
 
+--绘制从x,y格子延伸出的路径
 function BasicMap.DrawPath(x, y)
     if CGameMap.GetVision(x, y) and CGameMap.GetUnitNum(x, y) ~= 0 then
         local belong = CGameMap.GetBelong(x, y)

@@ -5,10 +5,8 @@ local Operation = require("PlayGame.Operation")
 PlayGame.GameState = "READY"
 PlayGame.judgementState = "Running"
 PlayGame.armyID = nil
-PlayGame.timerTotal = 0
-PlayGame.timerSecond = 0
-PlayGame.timer25Second = 0
 
+--只有在游戏进行中才能进行操作
 function PlayGame.RunPermission()
     return PlayGame.GameState == "Start"
 end

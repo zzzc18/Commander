@@ -15,18 +15,18 @@
 NODE_TYPE StrToNodeType(std::string_view str) {
     switch (str[10]) {  // NODE_TYPE_*
         case 'B':
-            return NODE_TYPE::BLANK;
+            return NODE_TYPE::BLANK;  //空白
         case 'H':
-            return NODE_TYPE::HILL;
+            return NODE_TYPE::HILL;  //丘陵
         case 'F':
-            return NODE_TYPE::FORT;
+            return NODE_TYPE::FORT;  //堡垒
         case 'K':
-            return NODE_TYPE::KING;
+            return NODE_TYPE::KING;  //国王
         case 'O':
-            return NODE_TYPE::OBSTACLE;
+            return NODE_TYPE::OBSTACLE;  //障碍
         case 'M':
-            return NODE_TYPE::MARSH;
-        default:  //为了避免 without return 的 warning
+            return NODE_TYPE::MARSH;  //沼泽
+        default:                      //为了避免 without return 的 warning
             [[unlikely]] throw std::invalid_argument(str.data());
     }
 }

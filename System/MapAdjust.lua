@@ -1,4 +1,5 @@
 MapAdjust = {}
+--更改地图的平移和缩放大小
 
 MapAdjust.focusNeedUpdate = false
 MapAdjust.mousePrePos = nil
