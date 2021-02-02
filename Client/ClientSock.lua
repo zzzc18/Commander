@@ -21,21 +21,9 @@ function ClientSock.Init()
         end
     )
     Client:on(
-        "GameMapMoveUpdate",
-        function()
-            CGameMap.MoveUpdate()
-        end
-    )
-    Client:on(
-        "GameMapUpdate",
+        "Update",
         function()
             CGameMap.Update()
-        end
-    )
-    Client:on(
-        "GameMapBigUpdate",
-        function()
-            CGameMap.BigUpdate()
         end
     )
     Client:on(
