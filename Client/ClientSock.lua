@@ -22,8 +22,8 @@ function ClientSock.Init()
     )
     Client:on(
         "Update",
-        function()
-            CGameMap.Update()
+        function(data)
+            CSystem.Update(data)
         end
     )
     Client:on(

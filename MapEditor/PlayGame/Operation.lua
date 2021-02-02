@@ -1,37 +1,5 @@
 Operation = {}
 
--- 这是一个记录移动操作的队列（先进先出）
--- 对于队列中的以及所有的移动指令格式全部固定
--- 为一个表 data={...} 其中有 armyID,srcX,srcY,dstX,dstY 5个元素
-Operation.Queue = {}
-Operation.SelectPos = nil
-
-function Operation.Queue:Push(data)
-    table.insert(self, data)
-end
-
-function Operation.Queue:Top()
-    return self[1]
-end
-
-function Operation.Queue:Pop()
-    table.remove(self, 1)
-end
-
-function Operation.Queue:Clear()
-    while self[1] ~= nil do
-        table.remove(self, 1)
-    end
-end
-
-function Operation.Queue:Empty()
-    return self[1] == nil
-end
-
-function Operation.Queue:Size()
-    return #self
-end
-
 function Operation.Select(x, y)
     if true or CGameMap.GetBelong(x, y) == PlayGame.armyID then -- TODO: fix true
         Operation.SelectPos = {}
@@ -40,68 +8,6 @@ function Operation.Select(x, y)
     end
 end
 
--- function Operation.IsConnected(posX1, posY1, posX2, posY2)
---     if posX1 == posX2 then
---         if posY1 - posY2 == 1 or posY2 - posY1 == 1 then
---             return true
---         end
---     end
-
---     if posX1 % 2 == 1 then
---         if
---             (posX1 == posX2 + 1 or posX1 == posX2 - 1) and
---                 (posY1 == posY2 or posY1 == posY2 - 1)
---          then
---             return true
---         end
---     else
---         if
---             (posX1 == posX2 + 1 or posX1 == posX2 - 1) and
---                 (posY1 == posY2 or posY1 == posY2 + 1)
---          then
---             return true
---         end
---     end
---     return false
--- end
-
--- function Operation.MoveTo(x, y)
---     if x == -1 and y == -1 then --撤销移动
---         local newRequest = {
---             armyID = PlayGame.armyID,
---             srcX = -1,
---             srcY = -1,
---             dstX = -1,
---             dstY = -1
---         }
---         EditorSock.SendMove(newRequest)
---         return
---     end
-
---     if
---         not Operation.IsConnected(
---             Operation.SelectPos.x,
---             Operation.SelectPos.y,
---             x,
---             y
---         )
---      then
---         return
---     end
-
---     local newRequest = {
---         armyID = PlayGame.armyID,
---         srcX = Operation.SelectPos.x,
---         srcY = Operation.SelectPos.y,
---         dstX = x,
---         dstY = y
---     }
---     --debug--
---     EditorSock.SendMove(newRequest)
---     -- Core.Move(newRequest)
---     ---------
--- end
-
 function Operation.CatchKeyPressed(key)
     if key == "escape" then
         -- Operation.MoveTo(-1, -1)
@@ -109,7 +15,7 @@ function Operation.CatchKeyPressed(key)
     end
 
     if key == "return" then
-        CGameMap.SaveMap()
+        CGameMap.SaveEdit()
         return
     end
 
@@ -163,8 +69,6 @@ function Operation.CatchKeyPressed(key)
     end
     x = x + moveOp[key][1]
     y = y + moveOp[key][2]
-    -- Operation.MoveTo(x, y)
-    -- Operation.MoveTo(x, y)
     Operation.Select(x, y)
 end
 

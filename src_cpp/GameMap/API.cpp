@@ -24,16 +24,23 @@ static int RandomGenMap(lua_State *luaState) {
  * @return @c void
  */
 static int LoadMap(lua_State *luaState) {
-    return APIreturn(luaState, MAP::Singleton().Load());
+    return APIreturn(luaState, MAP::Singleton().LoadMap());
 }
 /**
- * @brief 保存地图
+ * @brief 初始化存档文件
+ */
+static int InitSavedata(lua_State *luaState) {
+    MAP::Singleton().InitSavedata();
+    return APIreturn(luaState);
+}
+/**
+ * @brief 保存生成的地图（编辑器独占）
  *
  * @param @c void
  * @return @c void
  */
-static int SaveMap(lua_State *luaState) {
-    MAP::Singleton().Save();
+static int SaveEdit(lua_State *luaState) {
+    MAP::Singleton().SaveEdit();
     return APIreturn(luaState);
 }
 /**
@@ -43,7 +50,7 @@ static int SaveMap(lua_State *luaState) {
  * @return @c void
  */
 static int WriteMap(lua_State *luaState) {
-    MAP::Singleton().Save();
+    MAP::Singleton().SaveMap();
     return APIreturn(luaState);
 }
 
@@ -125,28 +132,6 @@ static int GetArmyPath(lua_State *luaState) {
     int dstY = data.second.y;
     return APIreturn(luaState, srcX, srcY, dstX, dstY);
 }
-
-/**
- * @brief 地图每秒的兵力更新
- *
- * @param @c void
- * @return @c void
- */
-static int Update(lua_State *luaState) {
-    MAP::Singleton().Update();
-    return APIreturn(luaState);
-}
-/**
- * @brief 地图每 25 秒的兵力大更新
- *
- * @param @c void
- * @return @c void
- */
-static int BigUpdate(lua_State *luaState) {
-    MAP::Singleton().BigUpdate();
-    return APIreturn(luaState);
-}
-
 /**
  * @brief 将给定军队给定点的兵移至相邻点
  *
@@ -201,26 +186,17 @@ static int ChangeBelong(lua_State *luaState) {
     APIparam(luaState, aimX, aimY);
     return APIreturn(luaState, MAP::Singleton().ChangeBelong({aimX, aimY}));
 }
-/**
- * @brief 地图每 0.5 秒的移动兵力操作更新
- *
- * @param @c void
- * @return @c bool 当前军队是否移动成功
- */
-static int MoveUpdate(lua_State *luaState) {
-    return APIreturn(luaState, MAP::Singleton().MoveUpdate());
-}
 static int Judge(lua_State *luaState) {
     int armyID;
     APIparam(luaState, armyID);
     return APIreturn(luaState, MAP::Singleton().Judge(armyID));
 }
+
 /**
  * @brief 向 Lua 注册 API，模块名为 lib/GameMap.dll
  */
-LUA_REG_FUNC(GameMap, C_API(RandomGenMap), C_API(LoadMap), C_API(SaveMap),
-             C_API(WriteMap), C_API(GetSize), C_API(GetVision),
+LUA_REG_FUNC(GameMap, C_API(RandomGenMap), C_API(InitSavedata), C_API(LoadMap),
+             C_API(SaveEdit), C_API(WriteMap), C_API(GetSize), C_API(GetVision),
              C_API(GetNodeType), C_API(GetUnitNum), C_API(GetBelong),
-             C_API(GetArmyPath), C_API(Update), C_API(BigUpdate),
-             C_API(PushMove), C_API(MoveUpdate), C_API(Judge),
+             C_API(GetArmyPath), C_API(PushMove), C_API(Judge),
              C_API(IncreaseOrDecrease), C_API(ChangeType), C_API(ChangeBelong))

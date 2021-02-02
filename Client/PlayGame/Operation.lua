@@ -1,37 +1,5 @@
 Operation = {}
 
--- 这是一个记录移动操作的队列（先进先出）
--- 对于队列中的以及所有的移动指令格式全部固定
--- 为一个表 data={...} 其中有 armyID,srcX,srcY,dstX,dstY 5个元素
-Operation.Queue = {}
-Operation.SelectPos = nil
-
-function Operation.Queue:Push(data)
-    table.insert(self, data)
-end
-
-function Operation.Queue:Top()
-    return self[1]
-end
-
-function Operation.Queue:Pop()
-    table.remove(self, 1)
-end
-
-function Operation.Queue:Clear()
-    while self[1] ~= nil do
-        table.remove(self, 1)
-    end
-end
-
-function Operation.Queue:Empty()
-    return self[1] == nil
-end
-
-function Operation.Queue:Size()
-    return #self
-end
-
 function Operation.Select(x, y)
     if true or CGameMap.GetBelong(x, y) == PlayGame.armyID then -- TODO: fix true
         Operation.SelectPos = {}
@@ -132,7 +100,6 @@ function Operation.CatchKeyPressed(key)
     end
     x = x + moveOp[key][1]
     y = y + moveOp[key][2]
-    -- Operation.MoveTo(x, y)
     Operation.MoveTo(x, y)
     Operation.Select(x, y)
 end
@@ -151,7 +118,6 @@ function Operation.CatchMousePressed(pixelX, pixelY, button, istouch, presses)
         Operation.Select(x, y)
     else -- 选择后的情况要移动
         --print(string.format("Current select: %d,%d", Operation.SelectPos.x, Operation.SelectPos.y))
-        -- Operation.MoveTo(x, y)
         Operation.MoveTo(x, y)
         Operation.Select(x, y)
     end

@@ -4,6 +4,8 @@
  * @brief @c GameMap 模块类相关函数的定义
  */
 
+#include <cstdlib>
+#include <ctime>
 #include <fstream>
 #include <queue>
 #include <stdexcept>
@@ -68,6 +70,9 @@ bool MAP::MoveUpdate() {
         if (src.belong != armyID || src.unitNum <= 1)
             return false;  // FIXME magic number 1
         if (dst.type == NODE_TYPE::HILL) return false;
+        if (VERIFY::Singleton().GetArmyID() == 0) {  //只有服务器会保存
+            SaveStep(armyID, _src, _dst);
+        }
         if (dst.belong == armyID)
             dst.unitNum += src.unitNum - 1;  // FIXME magic number 1
         else {
@@ -103,8 +108,8 @@ void MAP::Update() {
     if (step % MoveUpdateStep == 0) {
         MoveUpdate();
     }
-    if (step == StepCommonMultiple) {
-        step -= StepCommonMultiple;
+    if (step % SaveMapStep == 0 && VERIFY::Singleton().GetArmyID() == 0) {
+        SaveMap();
     }
     return;
 }
@@ -241,13 +246,40 @@ void MAP::RandomGen(int armyCnt, int level) {
         }
     }
 }
-int MAP::Load(std::string_view file) {  // file = "Input/map.map"
+void MAP::InitSavedata() {
+    std::time_t t = std::time(&t) + 28800;
+    struct tm* gmt = gmtime(&t);
+    char cst[80];
+    strftime(cst, 80, "%Y-%m-%d_%H.%M.%S", gmt);
+    StartTime = cst;
+    system("cd ..&mkdir Savedata");
+    system(("cd ../Savedata&mkdir " + StartTime).c_str());
+    return;
+}
+int MAP::LoadMap(std::string_view file) {  // file = "../Data/map.map"
     std::ifstream fin(file.data());
     fin >> *this;
     fin.close();
     return kingNum;
 }
-void MAP::Save(std::string_view file) {  // file = "Output/map.map"
+void MAP::SaveMap(std::string_view file) {  // file="../Savedata/"
+    std::ofstream fout(file.data() + StartTime + "/" + std::to_string(step) +
+                       ".map");
+    fout << *this;
+    fout.close();
+}
+void MAP::SaveStep(int armyID, VECTOR src, VECTOR dst) {
+    std::ofstream outfile;
+    outfile.open("../Savedata/" + StartTime + "/steps.txt", std::ios::app);
+    if (outfile.is_open()) {
+        outfile << "\n" << step << "\n";
+        outfile << armyID << " " << src.x << " " << src.y << " " << dst.x << " "
+                << dst.y << "\n";
+        outfile.close();
+    }
+    return;
+}
+void MAP::SaveEdit(std::string_view file) {  // file = "../Output/map.map"
     std::ofstream fout(file.data());
     fout << *this;
     fout.close();

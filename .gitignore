@@ -2,9 +2,7 @@ lib
 src_cpp/Build
 .vscode
 tmp
-Client/Output
-Client/Input
-Server/Output
-Server/Input
 *.code-workspace
 *.log
+Output
+Savedata

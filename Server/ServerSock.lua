@@ -16,7 +16,6 @@ function ServerSock.Init()
             if ServerSock.clientNum == 2 then
                 Server:sendToAll("GameStart")
                 PlayGame.GameState = "Start"
-                Timer.Begin()
             end
         end
     )
@@ -29,9 +28,9 @@ function ServerSock.Init()
     )
 end
 
-function ServerSock.SendUpdate()
-    Server:sendToAll("Update")
-    CGameMap.Update()
+function ServerSock.SendUpdate(dt)
+    Server:sendToAll("Update", dt)
+    CSystem.Update(dt)
 end
 
 function ServerSock.SendGameOver()
