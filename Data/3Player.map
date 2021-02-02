@@ -1,6 +1,6 @@
 army : 3
 size : 24 24
-0 0 : { NODE_TYPE_KING 4 0 }
+0 0 : { NODE_TYPE_BLANK 0 0 }
 0 1 : { NODE_TYPE_HILL 0 0 }
 0 2 : { NODE_TYPE_BLANK 0 0 }
 0 3 : { NODE_TYPE_BLANK 0 0 }
