@@ -10,7 +10,6 @@ end
 
 function Operation.CatchKeyPressed(key)
     if key == "escape" then
-        -- Operation.MoveTo(-1, -1)
         return
     end
 
@@ -75,12 +74,16 @@ end
 function Operation.CatchMousePressed(pixelX, pixelY, button, istouch, presses)
     -- 鼠标坐标转换为地图坐标
     local x, y = BasicMap.Pixel2Coordinate(pixelX, pixelY)
-    print("mouse_pressed")
-
+    local buttonName = Buttons.MouseState(pixelX, pixelY, 0)
+    --说明鼠标点了按钮
+    if buttonName ~= nil then
+        return
+    end
     -- 说明鼠标点的位置不在地图中
     if x == -1 and y == -1 then
         return
     end
+    print("mouse pressed")
     print(string.format("Chosen point %d %d", x, y))
     if Operation.SelectPos ~= nil then
         if Operation.SelectPos.x == x and Operation.SelectPos.y == y then -- 再次选择了已选位置
@@ -99,13 +102,20 @@ function Operation.CatchMousePressed(pixelX, pixelY, button, istouch, presses)
     end
 end
 
+function Operation.CatchMouseReleased(pixelX, pixelY, button, istouch, presses)
+    Buttons.MouseState(pixelX, pixelY, 2)
+end
+
 function Operation.DrawSelect()
     if Operation.SelectPos == nil then
         return
     end
-    local pixelX, pixelY =
-        BasicMap.Coordinate2Pixel(Operation.SelectPos.x, Operation.SelectPos.y)
+    local pixelX, pixelY = BasicMap.Coordinate2Pixel(Operation.SelectPos.x, Operation.SelectPos.y)
     Picture.DrawSelect(pixelX, pixelY)
+end
+
+function Operation.DrawButtons()
+    Buttons.DrawButtons()
 end
 
 function Operation.Increase(x, y)
@@ -113,7 +123,7 @@ function Operation.Increase(x, y)
         aimX = x,
         aimY = y
     }
-    EditorSock.Increase(newRequest)
+    CGameMap.IncreaseOrDecrease(newRequest.aimX, newRequest.aimY, 1)
 end
 
 function Operation.Decrease(x, y)
@@ -121,7 +131,11 @@ function Operation.Decrease(x, y)
         aimX = x,
         aimY = y
     }
-    EditorSock.Decrease(newRequest)
+    CGameMap.IncreaseOrDecrease(newRequest.aimX, newRequest.aimY, 2)
+end
+
+function Operation.Update(mouseX, mouseY)
+    Buttons.MouseState(mouseX, mouseY, 1)
 end
 
 return Operation
