@@ -16,6 +16,7 @@ require("PlayGame.PlayGame")
 
 function love.load()
     CVerify.Register(0, 2)
+     --0无意义，2代表回放器
     Running = PlayGame
     Running.Init()
 end

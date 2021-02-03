@@ -3,6 +3,9 @@ PlayGame = {}
 local Operation = require("PlayGame.Operation")
 
 PlayGame.GameState = "READY"
+--READY:游戏未开始，不显示界面，无法操作
+--Start:游戏进行中
+--Over:游戏介绍，显示界面，无法发送移动命令
 PlayGame.judgementState = "Running"
 PlayGame.armyID = nil
 

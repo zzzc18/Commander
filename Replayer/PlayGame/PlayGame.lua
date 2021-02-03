@@ -55,6 +55,7 @@ function PlayGame.update(dt)
     for i = 1, PlayGame.armyNum do
         if CGameMap.Judge(i) == 0 then
             return
+         --有一方失败后游戏结束，停止地图更新
         end
     end
     CSystem.Update(dt)

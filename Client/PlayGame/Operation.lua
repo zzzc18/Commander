@@ -39,6 +39,7 @@ end
 function Operation.MoveTo(x, y)
     if PlayGame.GameState ~= "Start" then
         return
+     --只有游戏进行时才能发送
     end
     if x == -1 and y == -1 then --撤销移动
         local newRequest = {
@@ -112,7 +113,7 @@ function Operation.CatchKeyPressed(key)
     Operation.Select(x, y)
 end
 
---依依鼠标键按下的位置进行操作
+--依鼠标键按下的位置进行操作
 function Operation.CatchMousePressed(pixelX, pixelY, button, istouch, presses)
     -- 鼠标坐标转换为地图坐标
     local x, y = BasicMap.Pixel2Coordinate(pixelX, pixelY)

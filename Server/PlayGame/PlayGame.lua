@@ -3,6 +3,9 @@ PlayGame = {}
 require("PlayGame.Judgement")
 
 PlayGame.GameState = "READY"
+--READY:游戏未开始，不显示界面
+--Start:游戏进行中
+--Over:游戏介绍，显示界面，不发送地图更新
 PlayGame.armyID = nil
 PlayGame.armyNum = 0
 

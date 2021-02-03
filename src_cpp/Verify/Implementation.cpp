@@ -31,6 +31,7 @@ VERIFY::VERIFY(int armyID, int privilege) {  // FIXME magic numbers
             break;
         case 2:  // replay mode
             _armyID = SERVER;
+            //获取全图视野
             break;
         case 3:  // server
             _armyID = SERVER;
