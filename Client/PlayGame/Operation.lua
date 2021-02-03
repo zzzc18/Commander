@@ -39,7 +39,7 @@ end
 function Operation.MoveTo(x, y)
     if PlayGame.GameState ~= "Start" then
         return
-     --只有游戏进行时才能发送
+    --只有游戏进行时才能发送
     end
     if x == -1 and y == -1 then --撤销移动
         local newRequest = {
@@ -85,12 +85,10 @@ function Operation.CatchKeyPressed(key)
         return
     end
 
-    print("DEBUG__1")
     if Operation.SelectPos == nil then
         return
     end
 
-    print("DEBUG__2")
     local x = Operation.SelectPos.x
     local y = Operation.SelectPos.y
     local mode = x % 2 + 1
@@ -102,7 +100,6 @@ function Operation.CatchKeyPressed(key)
         ["z"] = {BasicMap.direction[mode][4][1], BasicMap.direction[mode][4][2]},
         ["a"] = {BasicMap.direction[mode][5][1], BasicMap.direction[mode][5][2]}
     }
-    print("Caught key pressed (Move operation): ", moveOp[key])
 
     if (moveOp[key] == nil) then
         return
