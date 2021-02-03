@@ -2,7 +2,7 @@ Operation = {}
 
 --将x,y格设为选中状态
 function Operation.Select(x, y)
-    if true or CGameMap.GetBelong(x, y) == PlayGame.armyID then -- TODO: fix true
+    if true or CGameMap.GetBelong(x, y) == PlayGame.armyID then
         Operation.SelectPos = {}
         Operation.SelectPos.x = x
         Operation.SelectPos.y = y
@@ -10,6 +10,7 @@ function Operation.Select(x, y)
 end
 
 --检查pos之间是否相邻
+-- 参数分别为点1和点2的坐标
 function Operation.IsConnected(posX1, posY1, posX2, posY2)
     if posX1 == posX2 then
         if posY1 - posY2 == 1 or posY2 - posY1 == 1 then
@@ -71,10 +72,7 @@ function Operation.MoveTo(x, y)
         dstX = x,
         dstY = y
     }
-    --debug--
     ClientSock.SendMove(newRequest)
-    -- Core.Move(newRequest)
-    ---------
 end
 
 --依按下的键盘按键进行操作
@@ -93,6 +91,7 @@ function Operation.CatchKeyPressed(key)
     local y = Operation.SelectPos.y
     local mode = x % 2 + 1
     local moveOp = {
+        -- 按QEADZC进行移动
         ["q"] = {BasicMap.direction[mode][6][1], BasicMap.direction[mode][6][2]},
         ["e"] = {BasicMap.direction[mode][1][1], BasicMap.direction[mode][1][2]},
         ["d"] = {BasicMap.direction[mode][2][1], BasicMap.direction[mode][2][2]},
