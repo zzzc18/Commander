@@ -54,16 +54,19 @@ MAP& MAP::Singleton() {
     return singleton;
 }
 
+//地图兵力自然增长
 void MAP::TroopsUpdate() {
     for (int i = 0; i < _sizeX; ++i) {
         for (int j = 0; j < _sizeY; ++j) _mat[i][j].Update();
     }
 }
+//一段时间以此的兵力大增长
 void MAP::BigUpdate() {
     for (int i = 0; i < _sizeX; ++i) {
         for (int j = 0; j < _sizeY; ++j) _mat[i][j].BigUpdate();
     }
 }
+//从moveCommands中取出最先加入的移动命令并执行
 bool MAP::MoveUpdate() {
     auto Move = [this](int armyID, VECTOR _src, VECTOR _dst) -> bool {
         NODE &src = _mat[_src.x][_src.y], &dst = _mat[_dst.x][_dst.y];
@@ -94,6 +97,7 @@ bool MAP::MoveUpdate() {
     return ret;
 }
 
+//步长更新
 void MAP::Update() {
     step++;
     if (step % TroopsUpdateStep == 0) {
@@ -114,12 +118,13 @@ void MAP::Update() {
     return;
 }
 
+//将移动命令加入moveCommands
 bool MAP::PushMove(int armyID, VECTOR src, VECTOR dst) {
     if (VERIFY::Singleton().GetPrivilege() == 3) {
         SaveStep(armyID, src, dst);
     }
     VECTOR j = {-1, -1};
-    if (src == j && dst == j) {
+    if (src == j && dst == j) {  //撤销移动命令
         if (!moveCommands[armyID].empty()) {
             moveCommands[armyID].erase(moveCommands[armyID].begin());
             return true;
@@ -129,6 +134,7 @@ bool MAP::PushMove(int armyID, VECTOR src, VECTOR dst) {
     return true;
 }
 
+//编辑地图单位数量
 bool MAP::IncreaseOrDecrease(VECTOR aim, int mode) {
     if (_mat[aim.x][aim.y].type != NODE_TYPE::HILL) {
         if (mode == 1) {
@@ -143,6 +149,7 @@ bool MAP::IncreaseOrDecrease(VECTOR aim, int mode) {
     }
     return true;
 }
+//编辑地图格子类型
 bool MAP::ChangeType(VECTOR aim, int type) {
     switch (type) {
         case 1:
@@ -175,6 +182,7 @@ bool MAP::ChangeType(VECTOR aim, int type) {
     }
     return true;
 }
+//编辑地图格子归属
 bool MAP::ChangeBelong(VECTOR aim) {
     if (_mat[aim.x][aim.y].type == NODE_TYPE::HILL) {
         return false;
@@ -249,6 +257,7 @@ void MAP::RandomGen(int armyCnt, int level) {
         }
     }
 }
+//初始化存档文件夹，以游戏开始时间命名
 void MAP::InitSavedata() {
     std::time_t t = std::time(&t) + 28800;
     struct tm* gmt = gmtime(&t);
@@ -260,18 +269,21 @@ void MAP::InitSavedata() {
     SaveMap();
     return;
 }
+//加载游戏地图
 int MAP::LoadMap(std::string_view file) {  // file = "../Data/map.map"
     std::ifstream fin(file.data());
     fin >> *this;
     fin.close();
     return kingNum;
 }
+//保存当前步数的游戏地图到存档文件夹，以步数命名
 void MAP::SaveMap(std::string_view file) {  // file="../Savedata/"
     std::ofstream fout(file.data() + StartTime + "/" + std::to_string(step) +
                        ".map");
     fout << *this;
     fout.close();
 }
+//向存档文件夹中steps.txt末尾附加执行的移动命令
 void MAP::SaveStep(int armyID, VECTOR src, VECTOR dst) {
     std::ofstream outfile;
     outfile.open("../Savedata/" + StartTime + "/steps.txt", std::ios::app);
@@ -283,6 +295,7 @@ void MAP::SaveStep(int armyID, VECTOR src, VECTOR dst) {
     }
     return;
 }
+//保存编辑后的地图文件
 void MAP::SaveEdit(std::string_view file) {  // file = "../Output/map.map"
     std::ofstream fout(file.data());
     fout << *this;
@@ -317,6 +330,7 @@ std::pair<int, int> MAP::GetSize() const { return {_sizeX, _sizeY}; }
 bool MAP::InMap(VECTOR pos) const {
     return 0 <= pos.x && pos.x < _sizeX && 0 <= pos.y && pos.y < _sizeY;
 }
+//检查格子可见性
 bool MAP::IsViewable(VECTOR pos) const {
     if (_mat[pos.x][pos.y].belong == VERIFY::Singleton().GetArmyID())
         return true;
@@ -369,6 +383,7 @@ std::pair<VECTOR, VECTOR> MAP::GetArmyPath(int armyID, int step) const {
     }
 }
 
+//国王处兵力增长
 void MAP::NODE::Update() {
     if (belong == SERVER) return;
     switch (type) {
@@ -380,6 +395,7 @@ void MAP::NODE::Update() {
             ++unitNum;
     }
 }
+//空白格子兵力增长，沼泽兵力减少
 void MAP::NODE::BigUpdate() {
     if (belong == SERVER) return;
     switch (type) {

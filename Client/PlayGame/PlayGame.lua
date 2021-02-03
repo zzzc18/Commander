@@ -5,9 +5,6 @@ local Operation = require("PlayGame.Operation")
 PlayGame.GameState = "READY"
 PlayGame.judgementState = "Running"
 PlayGame.armyID = nil
-PlayGame.timerTotal = 0
-PlayGame.timerSecond = 0
-PlayGame.timer25Second = 0
 
 function PlayGame.Init()
     Picture.Init()
