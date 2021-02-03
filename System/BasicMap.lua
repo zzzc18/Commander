@@ -85,10 +85,12 @@ function BasicMap.Coordinate2Pixel(x, y)
     return math.floor(retX), math.floor(retY)
 end
 
+-- 计算两个像素点之间的直线距离，参数为两个点的位置
 function BasicMap.GetDisByPixel(x1, y1, x2, y2)
     return math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2))
 end
 
+-- pixel位置转坐标，返回值是该点的坐标
 function BasicMap.Pixel2Coordinate(pixelX, pixelY)
     local retX, retY
     for i = 0, BasicMap.MapSize.x - 1 do
@@ -134,7 +136,6 @@ function BasicMap.Pixel2Coordinate(pixelX, pixelY)
             return tmpX, tmpY
         end
     end
-    -- TODO: 可能还需要后续进行测试
     return -1, -1
 end
 

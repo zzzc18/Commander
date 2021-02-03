@@ -1,6 +1,7 @@
 Operation = {}
 
---将x,y格设为选中状态
+-- 这段代码 if 里面去掉 true 是否还能正常运转？？
+-- 将x,y格设为选中状态
 function Operation.Select(x, y)
     if true or CGameMap.GetBelong(x, y) == PlayGame.armyID then
         Operation.SelectPos = {}
@@ -119,7 +120,6 @@ function Operation.CatchMousePressed(pixelX, pixelY, button, istouch, presses)
     if x == -1 and y == -1 then
         return
     end
-    print(string.format("Chosen point %d %d", x, y))
     if Operation.SelectPos == nil then -- 没有选择的情况下要选择
         Operation.Select(x, y)
     else -- 选择后的情况要移动
