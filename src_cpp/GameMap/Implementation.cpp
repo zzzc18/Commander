@@ -70,9 +70,6 @@ bool MAP::MoveUpdate() {
         if (src.belong != armyID || src.unitNum <= 1)
             return false;  // FIXME magic number 1
         if (dst.type == NODE_TYPE::HILL) return false;
-        if (VERIFY::Singleton().GetArmyID() == 0) {  //只有服务器会保存
-            SaveStep(armyID, _src, _dst);
-        }
         if (dst.belong == armyID)
             dst.unitNum += src.unitNum - 1;  // FIXME magic number 1
         else {
@@ -108,13 +105,19 @@ void MAP::Update() {
     if (step % MoveUpdateStep == 0) {
         MoveUpdate();
     }
-    if (step % SaveMapStep == 0 && VERIFY::Singleton().GetArmyID() == 0) {
+    if (step % SaveMapStep == 0 && VERIFY::Singleton().GetPrivilege() == 3) {
         SaveMap();
+    }
+    if (VERIFY::Singleton().GetPrivilege() == 2) {
+        ReadMove(step);
     }
     return;
 }
 
 bool MAP::PushMove(int armyID, VECTOR src, VECTOR dst) {
+    if (VERIFY::Singleton().GetPrivilege() == 3) {
+        SaveStep(armyID, src, dst);
+    }
     VECTOR j = {-1, -1};
     if (src == j && dst == j) {
         if (!moveCommands[armyID].empty()) {
@@ -254,6 +257,7 @@ void MAP::InitSavedata() {
     StartTime = cst;
     system("cd ..&mkdir Savedata");
     system(("cd ../Savedata&mkdir " + StartTime).c_str());
+    SaveMap();
     return;
 }
 int MAP::LoadMap(std::string_view file) {  // file = "../Data/map.map"
@@ -283,6 +287,29 @@ void MAP::SaveEdit(std::string_view file) {  // file = "../Output/map.map"
     std::ofstream fout(file.data());
     fout << *this;
     fout.close();
+}
+int MAP::LoadReplayFile(
+    std::string_view file) {  // file="../Savedata/test_save_path/0.map"
+    std::ifstream fin(file.data());
+    fin >> *this;
+    fin.close();
+    return kingNum;
+}
+void MAP::ReadMove(int ReplayStep) {
+    std::string line;
+    std::ifstream replayfile;
+    replayfile.open("../Savedata/test_save_path/steps.txt", std::ios::in);
+    if (replayfile.is_open()) {
+        while (std::getline(replayfile, line)) {
+            if (line != std::to_string(ReplayStep)) continue;
+            std::getline(replayfile, line);
+            char* move = (char*)line.c_str();
+            int army, sx, sy, dx, dy;
+            sscanf(move, "%d %d %d %d %d", &army, &sx, &sy, &dx, &dy);
+            PushMove(army, {sx, sy}, {dx, dy});
+        }
+    }
+    replayfile.close();
 }
 
 std::pair<int, int> MAP::GetSize() const { return {_sizeX, _sizeY}; }

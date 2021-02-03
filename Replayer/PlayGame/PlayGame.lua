@@ -1,67 +1,63 @@
 PlayGame = {}
 
-local Operation = require("PlayGame.Operation")
-
 PlayGame.GameState = "READY"
-PlayGame.judgementState = "Running"
 PlayGame.armyID = nil
-PlayGame.timerTotal = 0
-PlayGame.timerSecond = 0
-PlayGame.timer25Second = 0
+PlayGame.armyNum = 0
 
-function PlayGame.Init()
-    Picture.Init()
-    ClientSock.Init()
+function PlayGame.RunPermission()
+    return PlayGame.GameState == "Start"
 end
 
-function PlayGame.LoadMap()
-    -- CGameMap.RandomGenMap()
-    -- CGameMap.WriteMap()
-    CGameMap.LoadMap()
+function PlayGame.Init(MapMode)
+    Picture.Init()
+    PlayGame.armyNum = CGameMap.LoadReplayFile()
+    PlayGame.GameState = "Start"
     BasicMap.Init()
 end
 
 function PlayGame.wheelmoved(x, y)
-    if PlayGame.GameState == "READY" then
+    if not PlayGame.RunPermission() then
         return
     end
     MapAdjust.Catchwheelmoved(x, y)
 end
 
 function PlayGame.mousepressed(pixelX, pixelY, button, istouch, presses)
-    if PlayGame.GameState == "READY" then
+    if not PlayGame.RunPermission() then
         return
     end
-    Operation.CatchMousePressed(pixelX, pixelY, button, istouch, presses)
 end
 
 function PlayGame.mousereleased(pixelX, pixelY, button, istouch, presses)
 end
 
 function PlayGame.keypressed(key, scancode, isrepeat)
-    Operation.CatchKeyPressed(key)
 end
 
 function PlayGame.keyreleased(key, scancode)
 end
 
 function PlayGame.draw()
-    if PlayGame.GameState == "READY" then
+    if not PlayGame.RunPermission() then
         return
     end
     BasicMap.DrawMap()
-    Operation.DrawSelect()
-    Picture.DrawJudgement(PlayGame.judgementState)
 end
 
 function PlayGame.UpdateTimerSecond(dt)
 end
 
 function PlayGame.update(dt)
-    if PlayGame.GameState ~= "Start" then
+    if not PlayGame.RunPermission() then
         return
     end
     MapAdjust.Update()
+    for i = 1, PlayGame.armyNum do
+        if CGameMap.Judge(i) == 0 then
+            return
+        end
+    end
+    CSystem.Update(dt)
 end
 
 return PlayGame

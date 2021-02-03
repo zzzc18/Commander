@@ -27,6 +27,15 @@ static int LoadMap(lua_State *luaState) {
     return APIreturn(luaState, MAP::Singleton().LoadMap());
 }
 /**
+ * @brief 加载回放文件
+ *
+ * @param @c void
+ * @return @c void
+ */
+static int LoadReplayFile(lua_State *luaState) {
+    return APIreturn(luaState, MAP::Singleton().LoadReplayFile());
+}
+/**
  * @brief 初始化存档文件
  */
 static int InitSavedata(lua_State *luaState) {
@@ -196,7 +205,8 @@ static int Judge(lua_State *luaState) {
  * @brief 向 Lua 注册 API，模块名为 lib/GameMap.dll
  */
 LUA_REG_FUNC(GameMap, C_API(RandomGenMap), C_API(InitSavedata), C_API(LoadMap),
-             C_API(SaveEdit), C_API(WriteMap), C_API(GetSize), C_API(GetVision),
-             C_API(GetNodeType), C_API(GetUnitNum), C_API(GetBelong),
-             C_API(GetArmyPath), C_API(PushMove), C_API(Judge),
-             C_API(IncreaseOrDecrease), C_API(ChangeType), C_API(ChangeBelong))
+             C_API(LoadReplayFile), C_API(SaveEdit), C_API(WriteMap),
+             C_API(GetSize), C_API(GetVision), C_API(GetNodeType),
+             C_API(GetUnitNum), C_API(GetBelong), C_API(GetArmyPath),
+             C_API(PushMove), C_API(Judge), C_API(IncreaseOrDecrease),
+             C_API(ChangeType), C_API(ChangeBelong))

@@ -34,6 +34,9 @@ function Operation.IsConnected(posX1, posY1, posX2, posY2)
 end
 
 function Operation.MoveTo(x, y)
+    if PlayGame.GameState ~= "Start" then
+        return
+    end
     if x == -1 and y == -1 then --撤销移动
         local newRequest = {
             armyID = PlayGame.armyID,

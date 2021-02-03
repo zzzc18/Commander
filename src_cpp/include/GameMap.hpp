@@ -85,6 +85,12 @@ class MAP final {
     // MapEditor:改变格点归属
     bool ChangeBelong(VECTOR aim);
 
+    //从回放文件读取当前步添加到命令队列的命令（回放器专用）
+    void ReadMove(int ReplayStep);
+    //加载回放文件（回放器专用）
+    int LoadReplayFile(
+        std::string_view file = "../Savedata/test_save_path/0.map");
+
     //以 level 为参数随机生成有 armyCnt 个军队的地图
     void RandomGen(int armyCnt, int level);
     void InitSavedata();  //初始化存档文件
