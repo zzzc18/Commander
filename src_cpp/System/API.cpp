@@ -7,9 +7,11 @@
 #include "GameMap.hpp"
 #include "LuaAPI.hpp"
 
+using namespace System;
+
 /**
  * @brief 地图更新触发器
- *  Lua 每 @c dt 秒调用一次，该函数计数达到0.5秒时触发地图更新
+ *  Lua 每 @c dt 秒调用一次，该函数计数达到StepTime秒时触发地图更新
  *
  * @param dt @c double Lua 调用的时间间隔，单位：秒
  * @return @c void
@@ -19,8 +21,8 @@ static int Update(lua_State* luaState) {
     double dt;
     APIparam(luaState, dt);
     totalTime += dt;
-    if (totalTime > 0.5) {
-        totalTime -= 0.5;
+    if (totalTime > StepTime) {
+        totalTime -= StepTime;
         MAP::Singleton().Update();
     }
     return APIreturn(luaState);

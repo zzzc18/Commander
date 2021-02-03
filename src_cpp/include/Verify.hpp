@@ -22,7 +22,8 @@ class VERIFY final {
     static int Register(int armyID, int privilege);
     static VERIFY& Singleton();  //获得单例实例
 
-    int GetArmyID() const;  //该军队注册的编号
+    int GetArmyID() const;     //该军队注册的编号
+    int GetPrivilege() const;  //该军队的权限
 
    private:
     //创建编号为 armyID，权限为 privilege 的军队的注册信息

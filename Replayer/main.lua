@@ -7,26 +7,19 @@ CSystem = require("lib.System")
 
 Sock = require("sock")
 Bitser = require("spec.bitser")
-PlayGame = require("PlayGame.PlayGame")
-
-Font = {
-    gillsans50 = love.graphics.newFont("Font/gillsans.ttf", 50)
-}
 
 require("System.Color")
 require("System.Picture")
 require("System.BasicMap")
 require("System.MapAdjust")
-require("Init")
-require("ClientSock")
-
-Running = {}
+require("PlayGame.PlayGame")
 
 function love.load()
+    CVerify.Register(0, 2)
+     --0无意义，2代表回放器
     Running = PlayGame
     Running.Init()
 end
-
 function love.wheelmoved(x, y)
     Running.wheelmoved(x, y)
 end
@@ -54,7 +47,6 @@ end
 function love.update(dt)
     -- 倍速开关，用于快速测试，可以通过注释和取消注释调整
     -- dt = dt * 10
-    Client:update()
     Running.update(dt)
 end
 

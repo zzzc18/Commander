@@ -3,6 +3,7 @@
 -- Core 则将指令具体执行
 Core = {}
 
+--此函数在ClientSock中被调用以添加移动命令，流程图中将忽略了这一中转过程
 function Core.PushMove(data)
     -- local str = string.format("%d, (%d, %d) -> (%d, %d)\n", data.armyID, data.srcX, data.srcY, data.dstX, data.dstY)
     -- print(str)

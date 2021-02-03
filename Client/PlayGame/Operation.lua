@@ -1,5 +1,6 @@
 Operation = {}
 
+--将x,y格设为选中状态
 function Operation.Select(x, y)
     if true or CGameMap.GetBelong(x, y) == PlayGame.armyID then -- TODO: fix true
         Operation.SelectPos = {}
@@ -8,6 +9,7 @@ function Operation.Select(x, y)
     end
 end
 
+--检查pos之间是否相邻
 function Operation.IsConnected(posX1, posY1, posX2, posY2)
     if posX1 == posX2 then
         if posY1 - posY2 == 1 or posY2 - posY1 == 1 then
@@ -33,7 +35,12 @@ function Operation.IsConnected(posX1, posY1, posX2, posY2)
     return false
 end
 
+--发送移动命令
 function Operation.MoveTo(x, y)
+    if PlayGame.GameState ~= "Start" then
+        return
+     --只有游戏进行时才能发送
+    end
     if x == -1 and y == -1 then --撤销移动
         local newRequest = {
             armyID = PlayGame.armyID,
@@ -70,7 +77,9 @@ function Operation.MoveTo(x, y)
     ---------
 end
 
+--依按下的键盘按键进行操作
 function Operation.CatchKeyPressed(key)
+    --esc键撤销最后发出的移动命令
     if key == "escape" then
         Operation.MoveTo(-1, -1)
         return
@@ -104,6 +113,7 @@ function Operation.CatchKeyPressed(key)
     Operation.Select(x, y)
 end
 
+--依鼠标键按下的位置进行操作
 function Operation.CatchMousePressed(pixelX, pixelY, button, istouch, presses)
     -- 鼠标坐标转换为地图坐标
     local x, y = BasicMap.Pixel2Coordinate(pixelX, pixelY)
@@ -123,6 +133,7 @@ function Operation.CatchMousePressed(pixelX, pixelY, button, istouch, presses)
     end
 end
 
+--绘制选中单元格的外框
 function Operation.DrawSelect()
     if Operation.SelectPos == nil then
         return
