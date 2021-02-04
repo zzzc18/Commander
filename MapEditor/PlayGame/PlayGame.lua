@@ -3,7 +3,7 @@ PlayGame = {}
 local Operation = require("PlayGame.Operation")
 
 function PlayGame.Init()
-    CVerify.Register(0, 2)
+    CVerify.Register(0, 3)
     PlayGame.LoadMap()
     Picture.Init()
     Buttons.Init()
