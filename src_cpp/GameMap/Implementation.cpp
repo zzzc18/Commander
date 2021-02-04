@@ -259,7 +259,7 @@ void MAP::InitSavedata() {
     return;
 }
 int MAP::LoadMap(std::string_view file) {  // file = "../Data/"
-    std::ifstream fin((std::string)file.data() + "4Player.map");
+    std::ifstream fin((std::string)file.data() + "3Player.map");
     fin >> *this;
     fin.close();
     return this->_armyCnt;

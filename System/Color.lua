@@ -71,6 +71,9 @@ function Color.Army(k)
     if k == 4 then
         colorName = "Orange"
     end
+    if k == 5 then
+        colorName = "Green"
+    end
     return Color.GetColor(colorName, 0.5)
 end
 
