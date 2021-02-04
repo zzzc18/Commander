@@ -259,10 +259,10 @@ void MAP::InitSavedata() {
     return;
 }
 int MAP::LoadMap(std::string_view file) {  // file = "../Data/"
-    std::ifstream fin((std::string)file.data() + "3Player.map");
+    std::ifstream fin((std::string)file.data() + "4Player.map");
     fin >> *this;
     fin.close();
-    return kingNum;
+    return this->_armyCnt;
 }
 void MAP::SaveMap(std::string_view file) {  // file="../Savedata/"
     std::ofstream fout(file.data() + StartTime + "/" + std::to_string(step) +
