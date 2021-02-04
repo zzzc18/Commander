@@ -10,6 +10,7 @@ function ClientSock.Init()
         function(data)
             print("Received Data")
             PlayGame.armyID = data.armyID
+            print("armyID:" .. data.armyID)
             CVerify.Register(data.armyID)
             PlayGame.LoadMap()
         end

@@ -31,13 +31,7 @@ function GameOver.DrawJudgeInfo(state, VanquisherID)
         judgeMenuHeight
     )
     love.graphics.setColor(0.9, 0.9, 0.9)
-    love.graphics.rectangle(
-        "fill",
-        x - judgeMenuWidth / 2,
-        y - judgeMenuHeight / 2,
-        judgeMenuWidth,
-        judgeMenuHeight
-    )
+    love.graphics.rectangle("fill", x - judgeMenuWidth / 2, y - judgeMenuHeight / 2, judgeMenuWidth, judgeMenuHeight)
     love.graphics.setColor(0.333, 0.102, 0.545)
     love.graphics.setLineWidth(5)
     love.graphics.rectangle(
