@@ -318,6 +318,10 @@ int MAP::Judge(int armyID) {
     return 0;
 }
 
+int MAP::ReturnBelong(int x) {
+    return MAP::Singleton().kingState.kingBelong[x];
+}
+
 int MAP::Surrender(int armyID, int vanquisherID) {
     for (int i = 0; i < MAX_GRAPH_SIZE; i++) {
         for (int j = 0; j < MAX_GRAPH_SIZE; j++) {
