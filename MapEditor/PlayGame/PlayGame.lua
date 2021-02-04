@@ -2,15 +2,8 @@ PlayGame = {}
 
 local Operation = require("PlayGame.Operation")
 
--- PlayGame.GameState = "READY"
-PlayGame.judgementState = "Running"
-PlayGame.armyID = nil
-PlayGame.timerTotal = 0
-PlayGame.timerSecond = 0
-PlayGame.timer25Second = 0
-
 function PlayGame.Init()
-    CVerify.Register(0, 3)
+    CVerify.Register(0, 2)
     PlayGame.LoadMap()
     Picture.Init()
     Buttons.Init()
@@ -19,7 +12,7 @@ end
 function PlayGame.LoadMap()
     -- CGameMap.RandomGenMap()
     -- CGameMap.WriteMap()
-    PlayGame.armyID = CGameMap.LoadMap()
+    CGameMap.LoadMap()
     BasicMap.Init()
 end
 

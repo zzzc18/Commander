@@ -22,52 +22,36 @@ function Operation.CatchKeyPressed(key)
         return
     end
 
+    local x = Operation.SelectPos.x
+    local y = Operation.SelectPos.y
     if key == "h" then
-        CGameMap.ChangeType(Operation.SelectPos.x, Operation.SelectPos.y, 1)
+        CGameMap.ChangeType(x, y, 1)
         return
     end
     if key == "b" then
-        CGameMap.ChangeType(Operation.SelectPos.x, Operation.SelectPos.y, 2)
+        CGameMap.ChangeType(x, y, 2)
         return
     end
     if key == "k" then
-        CGameMap.ChangeType(Operation.SelectPos.x, Operation.SelectPos.y, 3)
+        CGameMap.ChangeType(x, y, 3)
         return
     end
     if key == "f" then
-        CGameMap.ChangeType(Operation.SelectPos.x, Operation.SelectPos.y, 4)
+        CGameMap.ChangeType(x, y, 4)
         return
     end
     if key == "o" then
-        CGameMap.ChangeType(Operation.SelectPos.x, Operation.SelectPos.y, 5)
+        CGameMap.ChangeType(x, y, 5)
         return
     end
     if key == "m" then
-        CGameMap.ChangeType(Operation.SelectPos.x, Operation.SelectPos.y, 6)
+        CGameMap.ChangeType(x, y, 6)
         return
     end
     if key == "space" then
-        CGameMap.ChangeBelong(Operation.SelectPos.x, Operation.SelectPos.y)
+        CGameMap.ChangeBelong(x, y)
     end
 
-    local x = Operation.SelectPos.x
-    local y = Operation.SelectPos.y
-    local mode = x % 2 + 1
-    local moveOp = {
-        ["q"] = {BasicMap.direction[mode][6][1], BasicMap.direction[mode][6][2]},
-        ["e"] = {BasicMap.direction[mode][1][1], BasicMap.direction[mode][1][2]},
-        ["d"] = {BasicMap.direction[mode][2][1], BasicMap.direction[mode][2][2]},
-        ["c"] = {BasicMap.direction[mode][3][1], BasicMap.direction[mode][3][2]},
-        ["z"] = {BasicMap.direction[mode][4][1], BasicMap.direction[mode][4][2]},
-        ["a"] = {BasicMap.direction[mode][5][1], BasicMap.direction[mode][5][2]}
-    }
-    -- print("Caught key pressed (Move operation): ", moveOp[key])
-
-    if (moveOp[key] == nil) then
-        return
-    end
-    x = x + moveOp[key][1]
-    y = y + moveOp[key][2]
     Operation.Select(x, y)
 end
 
