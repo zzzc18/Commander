@@ -17,6 +17,7 @@ require("System.Color")
 require("System.Picture")
 require("System.BasicMap")
 require("System.MapAdjust")
+require("System.Buttons")
 require("ClientSock")
 
 Running = {}
