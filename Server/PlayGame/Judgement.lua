@@ -15,9 +15,12 @@ function Judgement.Judge()
     for i = 1, PlayGame.armyNum do
         local state = CGameMap.Judge(i)
         -- 状态由1变为0，说明当前部队死了
-        if state == 0 and Judgement.state[i] == 1 then
+        -- state是击败当前部队的玩家armyID
+        if state ~= 0 and Judgement.state[i] == 1 then
             Judgement.state[i] = 0
-            ServerSock.SendLose(i)
+            ServerSock.SendLose(PlayGame.armyNum - i + 1) -- i和armyID的等价关系
+            ServerSock.SendVanquisherID(PlayGame.armyNum - i + 1, state)
+            CGameMap.Surrender(PlayGame.armyNum - i + 1, state) -- 改归属
         end
         if Judgement.state[i] == 1 then
             aliveCnt = aliveCnt + 1
@@ -27,7 +30,7 @@ function Judgement.Judge()
     if aliveCnt == 1 then
         for i = 1, PlayGame.armyNum do
             if Judgement.state[i] == 1 then
-                ServerSock.SendWin(i)
+                ServerSock.SendWin(PlayGame.armyNum - i + 1)
                 break
             end
         end

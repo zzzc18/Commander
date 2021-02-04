@@ -57,7 +57,7 @@ function PlayGame.draw()
     end
     BasicMap.DrawMap()
     Operation.DrawSelect()
-    Picture.DrawJudgement(PlayGame.judgementState)
+    GameOver.DrawJudgement(PlayGame.judgementState, GameOver.VanquisherID)
     Operation.DrawButtons()
 end
 
