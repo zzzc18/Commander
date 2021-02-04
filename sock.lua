@@ -65,11 +65,7 @@ local function zipTable(items, keys, event)
         local key = keys[i]
 
         if not key then
-            error(
-                "Event '" ..
-                    event ..
-                        "' missing data key. Is the schema different between server and client?"
-            )
+            error("Event '" .. event .. "' missing data key. Is the schema different between server and client?")
         end
 
         data[key] = value
@@ -388,11 +384,7 @@ function Server:_activateTriggers(event, data, client)
     self.packetsReceived = self.packetsReceived + 1
 
     if not result then
-        self:log(
-            "warning",
-            "Tried to activate trigger: '" ..
-                tostring(event) .. "' but it does not exist."
-        )
+        self:log("warning", "Tried to activate trigger: '" .. tostring(event) .. "' but it does not exist.")
     end
 end
 
@@ -448,11 +440,7 @@ end
 --server:sendToAll("playerState", {...})
 function Server:setSendMode(mode)
     if not isValidSendMode(mode) then
-        self:log(
-            "warning",
-            "Tried to use invalid send mode: '" ..
-                mode .. "'. Defaulting to reliable."
-        )
+        self:log("warning", "Tried to use invalid send mode: '" .. mode .. "'. Defaulting to reliable.")
         mode = "reliable"
     end
 
@@ -465,13 +453,8 @@ end
 -- @see SEND_MODES
 function Server:setDefaultSendMode(mode)
     if not isValidSendMode(mode) then
-        self:log(
-            "error",
-            "Tried to set default send mode to invalid mode: '" .. mode .. "'"
-        )
-        error(
-            "Tried to set default send mode to invalid mode: '" .. mode .. "'"
-        )
+        self:log("error", "Tried to set default send mode to invalid mode: '" .. mode .. "'")
+        error("Tried to set default send mode to invalid mode: '" .. mode .. "'")
     end
 
     self.defaultSendMode = mode
@@ -489,9 +472,7 @@ function Server:setSendChannel(channel)
     if channel > (self.maxChannels - 1) then
         self:log(
             "warning",
-            "Tried to use invalid channel: " ..
-                channel ..
-                    " (max is " .. self.maxChannels - 1 .. "). Defaulting to 0."
+            "Tried to use invalid channel: " .. channel .. " (max is " .. self.maxChannels - 1 .. "). Defaulting to 0."
         )
         channel = 0
     end
@@ -595,14 +576,8 @@ end
 --server = sock.newServer("localhost", 22122)
 --server:setSerialization(bitser.dumps, bitser.loads)
 function Server:setSerialization(serialize, deserialize)
-    assert(
-        type(serialize) == "function",
-        "Serialize must be a function, got: '" .. type(serialize) .. "'"
-    )
-    assert(
-        type(deserialize) == "function",
-        "Deserialize must be a function, got: '" .. type(deserialize) .. "'"
-    )
+    assert(type(serialize) == "function", "Serialize must be a function, got: '" .. type(serialize) .. "'")
+    assert(type(deserialize) == "function", "Deserialize must be a function, got: '" .. type(deserialize) .. "'")
     self.serialize = serialize
     self.deserialize = deserialize
 end
@@ -733,7 +708,7 @@ function Server:getPort()
 end
 
 --- Get the table of Clients actively connected to the server.
--- @return {Client,...}
+-- @treturn {Client,...}
 function Server:getClients()
     return self.clients
 end
@@ -764,10 +739,7 @@ function Client:update()
             self:log(eventName, data)
         elseif event.type == "disconnect" then
             self:_activateTriggers("disconnect", event.data)
-            self:log(
-                event.type,
-                "Disconnected from " .. tostring(self.connection)
-            )
+            self:log(event.type, "Disconnected from " .. tostring(self.connection))
         end
 
         event = self.host:service(self.messageTimeout)
@@ -779,12 +751,7 @@ end
 -- @tparam ?number code A number that can be associated with the connect event.
 function Client:connect(code)
     -- number of channels for the client and server must match
-    self.connection =
-        self.host:connect(
-        self.address .. ":" .. self.port,
-        self.maxChannels,
-        code
-    )
+    self.connection = self.host:connect(self.address .. ":" .. self.port, self.maxChannels, code)
     self.connectId = self.connection:connect_id()
 end
 
@@ -890,11 +857,7 @@ function Client:_activateTriggers(event, data)
     self.packetsReceived = self.packetsReceived + 1
 
     if not result then
-        self:log(
-            "warning",
-            "Tried to activate trigger: '" ..
-                tostring(event) .. "' but it does not exist."
-        )
+        self:log("warning", "Tried to activate trigger: '" .. tostring(event) .. "' but it does not exist.")
     end
 end
 
@@ -945,11 +908,7 @@ end
 --client:send("position", {...})
 function Client:setSendMode(mode)
     if not isValidSendMode(mode) then
-        self:log(
-            "warning",
-            "Tried to use invalid send mode: '" ..
-                mode .. "'. Defaulting to reliable."
-        )
+        self:log("warning", "Tried to use invalid send mode: '" .. mode .. "'. Defaulting to reliable.")
         mode = "reliable"
     end
 
@@ -962,13 +921,8 @@ end
 -- @see SEND_MODES
 function Client:setDefaultSendMode(mode)
     if not isValidSendMode(mode) then
-        self:log(
-            "error",
-            "Tried to set default send mode to invalid mode: '" .. mode .. "'"
-        )
-        error(
-            "Tried to set default send mode to invalid mode: '" .. mode .. "'"
-        )
+        self:log("error", "Tried to set default send mode to invalid mode: '" .. mode .. "'")
+        error("Tried to set default send mode to invalid mode: '" .. mode .. "'")
     end
 
     self.defaultSendMode = mode
@@ -986,9 +940,7 @@ function Client:setSendChannel(channel)
     if channel > (self.maxChannels - 1) then
         self:log(
             "warning",
-            "Tried to use invalid channel: " ..
-                channel ..
-                    " (max is " .. self.maxChannels - 1 .. "). Defaulting to 0."
+            "Tried to use invalid channel: " .. channel .. " (max is " .. self.maxChannels - 1 .. "). Defaulting to 0."
         )
         channel = 0
     end
@@ -1128,14 +1080,8 @@ end
 --client = sock.newClient("localhost", 22122)
 --client:setSerialization(bitser.dumps, bitser.loads)
 function Client:setSerialization(serialize, deserialize)
-    assert(
-        type(serialize) == "function",
-        "Serialize must be a function, got: '" .. type(serialize) .. "'"
-    )
-    assert(
-        type(deserialize) == "function",
-        "Deserialize must be a function, got: '" .. type(deserialize) .. "'"
-    )
+    assert(type(serialize) == "function", "Serialize must be a function, got: '" .. type(serialize) .. "'")
+    assert(type(deserialize) == "function", "Deserialize must be a function, got: '" .. type(deserialize) .. "'")
     self.serialize = serialize
     self.deserialize = deserialize
 end
@@ -1351,13 +1297,7 @@ end
 --
 -- -- Limit incoming/outgoing bandwidth to 1kB/s (1000 bytes/s)
 --server = sock.newServer("*", 22122, 10, 2, 1000, 1000)
-sock.newServer = function(
-    address,
-    port,
-    maxPeers,
-    maxChannels,
-    inBandwidth,
-    outBandwidth)
+sock.newServer = function(address, port, maxPeers, maxChannels, inBandwidth, outBandwidth)
     address = address or "localhost"
     port = port or 22122
     maxPeers = maxPeers or 64
@@ -1392,18 +1332,10 @@ sock.newServer = function(
 
     -- ip, max peers, max channels, in bandwidth, out bandwidth
     -- number of channels for the client and server must match
-    server.host =
-        enet.host_create(
-        server.address .. ":" .. server.port,
-        server.maxPeers,
-        server.maxChannels
-    )
+    server.host = enet.host_create(server.address .. ":" .. server.port, server.maxPeers, server.maxChannels)
 
     if not server.host then
-        error(
-            "Failed to create the host. Is there another server running on :" ..
-                server.port .. "?"
-        )
+        error("Failed to create the host. Is there another server running on :" .. server.port .. "?")
     end
 
     server:setBandwidthLimit(inBandwidth, outBandwidth)
@@ -1470,10 +1402,7 @@ sock.newClient = function(serverOrAddress, port, maxChannels)
     -- latter is mostly used for creating clients in the server-side code.
 
     -- First form: (address, port)
-    if
-        port ~= nil and type(port) == "number" and serverOrAddress ~= nil and
-            type(serverOrAddress) == "string"
-     then
+    if port ~= nil and type(port) == "number" and serverOrAddress ~= nil and type(serverOrAddress) == "string" then
         -- Second form: (enet peer)
         client.address = serverOrAddress
         client.port = port

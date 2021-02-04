@@ -262,7 +262,7 @@ int MAP::LoadMap(std::string_view file) {  // file = "../Data/"
     std::ifstream fin((std::string)file.data() + "3Player.map");
     fin >> *this;
     fin.close();
-    return kingNum;
+    return this->_armyCnt;
 }
 void MAP::SaveMap(std::string_view file) {  // file="../Savedata/"
     std::ofstream fout(file.data() + StartTime + "/" + std::to_string(step) +
@@ -313,9 +313,24 @@ int MAP::Judge(int armyID) {
     int y = MAP::Singleton().kingState.kingPos[armyID].y;
     if (MAP::Singleton()._mat[x][y].belong !=
         MAP::Singleton().kingState.kingBelong[armyID]) {
-        return 0;
+        return MAP::Singleton()._mat[x][y].belong;
     }
-    return 1;
+    return 0;
+}
+
+int MAP::ReturnBelong(int x) {
+    return MAP::Singleton().kingState.kingBelong[x];
+}
+
+int MAP::Surrender(int armyID, int vanquisherID) {
+    for (int i = 0; i < MAX_GRAPH_SIZE; i++) {
+        for (int j = 0; j < MAX_GRAPH_SIZE; j++) {
+            if (MAP::_mat[i][j].belong == armyID) {
+                MAP::_mat[i][j].belong = vanquisherID;
+            }
+        }
+    }
+    return 0;
 }
 
 NODE_TYPE MAP::GetType(VECTOR pos) const {

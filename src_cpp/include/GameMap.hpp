@@ -69,12 +69,14 @@ class MAP final {
     friend std::istream& operator>>(std::istream& is, MAP& map);
     friend std::ostream& operator<<(std::ostream& os, const MAP& map);
 
-    void TroopsUpdate();  //地图每秒的兵力更新
-    void BigUpdate();     //地图每 25 秒的兵力大更新
-    bool MoveUpdate();    //地图每 0.5 秒的移动兵力操作更新
-    void Update();        //地图的步长更新
-    int step = 0;         //地图步数
-    int Judge(int);       //判断胜负
+    void TroopsUpdate();      //地图每秒的兵力更新
+    void BigUpdate();         //地图每 25 秒的兵力大更新
+    bool MoveUpdate();        //地图每 0.5 秒的移动兵力操作更新
+    void Update();            //地图的步长更新
+    int step = 0;             //地图步数
+    int Judge(int);           //判断胜负
+    int ReturnBelong(int);    //在判断胜负时候用于获取ID
+    int Surrender(int, int);  //玩家被击败后改变军队归属
 
     //添加军队 armyID 从 src 的兵移动到相邻点 dst的指令
     bool PushMove(int armyID, VECTOR src, VECTOR dst);

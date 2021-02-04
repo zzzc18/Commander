@@ -45,4 +45,11 @@ function ServerSock.SendWin(armyID)
     Server:sendToAll("Win", {armyID = armyID})
 end
 
+function ServerSock.SendVanquisherID(armyID, VanquisherID)
+    Server:sendToAll(
+        "VanquisherID",
+        {armyID = armyID, VanquisherID = VanquisherID}
+    )
+end
+
 return ServerSock
