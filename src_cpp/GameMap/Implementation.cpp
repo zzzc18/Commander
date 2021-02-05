@@ -336,6 +336,9 @@ bool MAP::InMap(VECTOR pos) const {
 }
 
 bool MAP::IsViewable(VECTOR pos) const {
+    if (SERVER == VERIFY::Singleton().GetArmyID()) {
+        return true;
+    }
     if (_mat[pos.x][pos.y].belong == VERIFY::Singleton().GetArmyID())
         return true;
     for (auto dta : DIR[pos.x & 1]) {  //判断是奇数行还是偶数行

@@ -22,8 +22,7 @@ BasicMap.direction = {
 
 function BasicMap.GetHexagonBesideByEdge(x, y, edgeID)
     local opt = x % 2 + 1
-    return x + BasicMap.direction[opt][edgeID][1], y +
-        BasicMap.direction[opt][edgeID][2]
+    return x + BasicMap.direction[opt][edgeID][1], y + BasicMap.direction[opt][edgeID][2]
 end
 
 function BasicMap.InsideHexagon(pixelX, pixelY, x, y)
@@ -70,9 +69,7 @@ function BasicMap.Coordinate2Pixel(x, y)
     -- 所以在这里要用Focus x,y（地图坐标）对应offset y,x（显示坐标）
     local retX, retY = BasicMap.Focus.pixelX, BasicMap.Focus.pixelY
 
-    local offsetY, offsetX =
-        (x - BasicMap.Focus.x) * BasicMap.verticalDis,
-        (y - BasicMap.Focus.y) * BasicMap.horizontalDis
+    local offsetY, offsetX = (x - BasicMap.Focus.x) * BasicMap.verticalDis, (y - BasicMap.Focus.y) * BasicMap.horizontalDis
 
     -- 当前格子 与 基准格子 的 x坐标奇偶性不一致时，需要进行修正
     if (x - BasicMap.Focus.x) % 2 == 1 then
@@ -95,10 +92,7 @@ function BasicMap.Pixel2Coordinate(pixelX, pixelY)
     local retX, retY
     for i = 0, BasicMap.MapSize.x - 1 do
         local tmpx, tmpy = BasicMap.Coordinate2Pixel(i, 0)
-        if
-            tmpy - BasicMap.verticalDis / 2 < pixelY and
-                pixelY < tmpy + BasicMap.verticalDis / 2
-         then
+        if tmpy - BasicMap.verticalDis / 2 < pixelY and pixelY < tmpy + BasicMap.verticalDis / 2 then
             retX = i
             break
         end
@@ -109,10 +103,7 @@ function BasicMap.Pixel2Coordinate(pixelX, pixelY)
 
     for i = 0, BasicMap.MapSize.y - 1 do
         local tmpx, tmpy = BasicMap.Coordinate2Pixel(retX, i)
-        if
-            tmpx - BasicMap.horizontalDis / 2 < pixelX and
-                pixelX < tmpx + BasicMap.horizontalDis / 2
-         then
+        if tmpx - BasicMap.horizontalDis / 2 < pixelX and pixelX < tmpx + BasicMap.horizontalDis / 2 then
             retY = i
             break
         end
@@ -130,8 +121,7 @@ function BasicMap.Pixel2Coordinate(pixelX, pixelY)
     -- TODO: 似乎用距离比叉积速度快，而且好像没毛病
     local direct = {1, 3, 4, 6}
     for i = 1, 4 do
-        local tmpX, tmpY =
-            BasicMap.GetHexagonBesideByEdge(retX, retY, direct[i])
+        local tmpX, tmpY = BasicMap.GetHexagonBesideByEdge(retX, retY, direct[i])
         if BasicMap.InsideHexagon(pixelX, pixelY, tmpX, tmpY) then
             return tmpX, tmpY
         end
