@@ -16,7 +16,7 @@ end
 function PlayGame.LoadMap()
     -- CGameMap.RandomGenMap()
     -- CGameMap.WriteMap()
-    PlayGame.armyID = CGameMap.LoadMap()
+    CGameMap.LoadMap()
     BasicMap.Init()
 end
 

@@ -10,6 +10,7 @@ function ClientSock.Init()
         function(data)
             print("Received Data")
             PlayGame.armyID = data.armyID
+            print("armyID:" .. data.armyID)
             CVerify.Register(data.armyID)
             PlayGame.LoadMap()
         end
@@ -53,6 +54,16 @@ function ClientSock.Init()
             -- 说明所在部队获胜了
             if PlayGame.armyID == data.armyID then
                 PlayGame.judgementState = "Win"
+            end
+        end
+    )
+    Client:on(
+        "VanquisherID",
+        function(data)
+            -- 传递击败玩家者的ID
+            CGameMap.Surrender(data.armyID, data.VanquisherID)
+            if PlayGame.armyID == data.armyID then
+                GameOver.VanquisherID = data.VanquisherID
             end
         end
     )

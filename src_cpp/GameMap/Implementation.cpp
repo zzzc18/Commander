@@ -138,7 +138,7 @@ bool MAP::IncreaseOrDecrease(VECTOR aim, int mode) {
             _mat[aim.x][aim.y].unitNum++;
         } else {
             if (mode == 2) {
-                if (_mat[aim.x][aim.y].unitNum > 1) {
+                if (_mat[aim.x][aim.y].unitNum > 0) {
                     _mat[aim.x][aim.y].unitNum--;
                 }
             }
@@ -160,7 +160,8 @@ bool MAP::ChangeType(VECTOR aim, int type) {
             break;
         case 3:
             _mat[aim.x][aim.y].type = NODE_TYPE::KING;
-            _mat[aim.x][aim.y].unitNum = 1;
+            this->_armyCnt++;
+            _mat[aim.x][aim.y].unitNum = 0;
             break;
         case 4:
             _mat[aim.x][aim.y].type = NODE_TYPE::FORT;
@@ -185,13 +186,14 @@ bool MAP::ChangeBelong(VECTOR aim) {
         return false;
     }
     _mat[aim.x][aim.y].belong++;
-    if (_mat[aim.x][aim.y].belong > 2) {
+    if (_mat[aim.x][aim.y].belong > 4) {
         _mat[aim.x][aim.y].belong = SERVER;
     }
     if (_mat[aim.x][aim.y].belong == SERVER &&
         _mat[aim.x][aim.y].type == NODE_TYPE::KING) {
         _mat[aim.x][aim.y].unitNum = 0;
         _mat[aim.x][aim.y].type = NODE_TYPE::BLANK;
+        this->_armyCnt--;
     }
     return true;
 }
@@ -271,7 +273,7 @@ int MAP::LoadMap(std::string_view file) {  // file = "../Data/map.map"
     std::ifstream fin(file.data());
     fin >> *this;
     fin.close();
-    return kingNum;
+    return this->_armyCnt;
 }
 
 void MAP::SaveMap(std::string_view file) {  // file="../Savedata/"
@@ -292,9 +294,12 @@ void MAP::SaveStep(int armyID, VECTOR src, VECTOR dst) {
     }
     return;
 }
-
-void MAP::SaveEdit(std::string_view file) {  // file = "../Output/map.map"
-    std::ofstream fout(file.data());
+void MAP::SaveEdit(std::string_view file) {  // file = "../Output/"
+    std::time_t t = std::time(&t) + 28800;
+    char cst[80];
+    strftime(cst, 80, "%Y-%m-%d_%H.%M.%S", gmtime(&t));
+    StartTime = cst;
+    std::ofstream fout(file.data() + StartTime + ".map");
     fout << *this;
     fout.close();
 }
@@ -347,9 +352,24 @@ int MAP::Judge(int armyID) {
     int y = MAP::Singleton().kingState.kingPos[armyID].y;
     if (MAP::Singleton()._mat[x][y].belong !=
         MAP::Singleton().kingState.kingBelong[armyID]) {
-        return 0;
+        return MAP::Singleton()._mat[x][y].belong;
     }
-    return 1;
+    return 0;
+}
+
+int MAP::ReturnBelong(int x) {
+    return MAP::Singleton().kingState.kingBelong[x];
+}
+
+int MAP::Surrender(int armyID, int vanquisherID) {
+    for (int i = 0; i < MAX_GRAPH_SIZE; i++) {
+        for (int j = 0; j < MAX_GRAPH_SIZE; j++) {
+            if (MAP::_mat[i][j].belong == armyID) {
+                MAP::_mat[i][j].belong = vanquisherID;
+            }
+        }
+    }
+    return 0;
 }
 
 NODE_TYPE MAP::GetType(VECTOR pos) const {

@@ -4,8 +4,8 @@ local PlayGameCore = require("PlayGame.Core")
 
 ServerSock.clientNum = 0
 
-function ServerSock.Init()
-    Server = Sock.newServer("*", 22122, 2)
+function ServerSock.Init(armyNum)
+    Server = Sock.newServer("*", 22122, armyNum)
     Server:setSerialization(Bitser.dumps, Bitser.loads)
     Server:on(
         "connect",
@@ -13,7 +13,7 @@ function ServerSock.Init()
             client:send("SetArmyID", {armyID = client:getIndex()})
             ServerSock.clientNum = ServerSock.clientNum + 1
             -- TODO为了前期调试方便用的2个而不是自动加载的个数
-            if ServerSock.clientNum == 2 then
+            if ServerSock.clientNum == armyNum then
                 Server:sendToAll("GameStart")
                 PlayGame.GameState = "Start"
             end
@@ -43,6 +43,13 @@ end
 
 function ServerSock.SendWin(armyID)
     Server:sendToAll("Win", {armyID = armyID})
+end
+
+function ServerSock.SendVanquisherID(armyID, VanquisherID)
+    Server:sendToAll(
+        "VanquisherID",
+        {armyID = armyID, VanquisherID = VanquisherID}
+    )
 end
 
 return ServerSock

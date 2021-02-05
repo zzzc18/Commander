@@ -12,6 +12,7 @@ PlayGame.armyID = nil
 function PlayGame.Init()
     Picture.Init()
     ClientSock.Init()
+    Buttons.Init()
 end
 
 function PlayGame.LoadMap()
@@ -36,6 +37,7 @@ function PlayGame.mousepressed(pixelX, pixelY, button, istouch, presses)
 end
 
 function PlayGame.mousereleased(pixelX, pixelY, button, istouch, presses)
+    Operation.CatchMouseReleased(pixelX, pixelY, button, istouch, presses)
 end
 
 function PlayGame.keypressed(key, scancode, isrepeat)
@@ -51,7 +53,8 @@ function PlayGame.draw()
     end
     BasicMap.DrawMap()
     Operation.DrawSelect()
-    Picture.DrawJudgement(PlayGame.judgementState)
+    GameOver.DrawJudgement(PlayGame.judgementState, GameOver.VanquisherID)
+    Operation.DrawButtons()
 end
 
 function PlayGame.UpdateTimerSecond(dt)
@@ -62,6 +65,7 @@ function PlayGame.update(dt)
         return
     end
     MapAdjust.Update()
+    Operation.Update(love.mouse.getX(), love.mouse.getY())
 end
 
 return PlayGame

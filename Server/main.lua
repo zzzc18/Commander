@@ -12,15 +12,14 @@ require("System.Color")
 require("System.Picture")
 require("System.BasicMap")
 require("System.MapAdjust")
-require("Init")
 require("ServerSock")
 require("PlayGame.PlayGame")
 
 function love.load()
     CVerify.Register(0, 3)
-    ServerSock.Init()
     Running = PlayGame
     Running.Init()
+    ServerSock.Init(PlayGame.armyNum)
 end
 function love.wheelmoved(x, y)
     Running.wheelmoved(x, y)
