@@ -356,6 +356,7 @@ bool MAP::InMap(VECTOR pos) const {
 bool MAP::IsViewable(VECTOR pos) const {
     if (_mat[pos.x][pos.y].belong == VERIFY::Singleton().GetArmyID())
         return true;
+    if (VERIFY::Singleton().GetArmyID() == SERVER) return true;
     for (auto dta : DIR[pos.x & 1]) {  //判断是奇数行还是偶数行
         if (VECTOR next = pos + dta; this->InMap(next)) {
             if (_mat[next.x][next.y].belong == VERIFY::Singleton().GetArmyID())

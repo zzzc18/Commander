@@ -167,20 +167,23 @@ function BasicMap.DrawNode(x, y)
     end
 end
 
---绘制从x,y格子延伸出的路径
-function BasicMap.DrawPath(x, y)
-    if CGameMap.GetVision(x, y) and CGameMap.GetUnitNum(x, y) ~= 0 then
-        local belong = CGameMap.GetBelong(x, y)
-        if belong ~= 0 then
-            local step = 0
-            local srcX, srcY, dstX, dstY = CGameMap.GetArmyPath(belong, step)
-            while srcX ~= -1 do
-                local sx, sy = BasicMap.Coordinate2Pixel(srcX, srcY)
-                local ds, dy = BasicMap.Coordinate2Pixel(dstX, dstY)
-                Picture.DrawArrow(sx, sy, ds, dy)
-                step = step + 1
-                srcX, srcY, dstX, dstY = CGameMap.GetArmyPath(belong, step)
+--绘制可见的路径
+function BasicMap.DrawPath()
+    for i = 1, Running.armyNum do
+        local step = 0
+        local srcX, srcY, dstX, dstY = CGameMap.GetArmyPath(i, step)
+        while srcX ~= -1 do
+            if
+                not CGameMap.GetVision(srcX, srcY) and
+                    not CGameMap.GetVision(dstX, dstY)
+             then
+                break
             end
+            local sx, sy = BasicMap.Coordinate2Pixel(srcX, srcY)
+            local ds, dy = BasicMap.Coordinate2Pixel(dstX, dstY)
+            Picture.DrawArrow(sx, sy, ds, dy)
+            step = step + 1
+            srcX, srcY, dstX, dstY = CGameMap.GetArmyPath(i, step)
         end
     end
 end
@@ -190,9 +193,9 @@ function BasicMap.DrawMap()
         for j = 0, BasicMap.MapSize.y - 1 do
             BasicMap.Map[i][j].nodeType = CGameMap.GetNodeType(i, j)
             BasicMap.DrawNode(i, j)
-            BasicMap.DrawPath(i, j)
         end
     end
+    BasicMap.DrawPath()
 end
 
 function BasicMap.Init()
