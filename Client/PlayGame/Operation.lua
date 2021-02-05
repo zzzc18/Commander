@@ -1,13 +1,17 @@
 Operation = {}
 
+-- 这段代码 if 里面去掉 true 是否还能正常运转？？
+-- 将x,y格设为选中状态
 function Operation.Select(x, y)
-    if true or CGameMap.GetBelong(x, y) == PlayGame.armyID then -- TODO: fix true
+    if true or CGameMap.GetBelong(x, y) == PlayGame.armyID then
         Operation.SelectPos = {}
         Operation.SelectPos.x = x
         Operation.SelectPos.y = y
     end
 end
 
+--检查pos之间是否相邻
+-- 参数分别为点1和点2的坐标
 function Operation.IsConnected(posX1, posY1, posX2, posY2)
     if posX1 == posX2 then
         if posY1 - posY2 == 1 or posY2 - posY1 == 1 then
@@ -27,7 +31,12 @@ function Operation.IsConnected(posX1, posY1, posX2, posY2)
     return false
 end
 
+--发送移动命令
 function Operation.MoveTo(x, y)
+    if PlayGame.GameState ~= "Start" then
+        return
+    --只有游戏进行时才能发送
+    end
     if x == -1 and y == -1 then --撤销移动
         local newRequest = {
             armyID = PlayGame.armyID,
@@ -51,28 +60,26 @@ function Operation.MoveTo(x, y)
         dstX = x,
         dstY = y
     }
-    --debug--
     ClientSock.SendMove(newRequest)
-    -- Core.Move(newRequest)
-    ---------
 end
 
+--依按下的键盘按键进行操作
 function Operation.CatchKeyPressed(key)
+    --esc键撤销最后发出的移动命令
     if key == "escape" then
         Operation.MoveTo(-1, -1)
         return
     end
 
-    print("DEBUG__1")
     if Operation.SelectPos == nil then
         return
     end
 
-    print("DEBUG__2")
     local x = Operation.SelectPos.x
     local y = Operation.SelectPos.y
     local mode = x % 2 + 1
     local moveOp = {
+        -- 按QEADZC进行移动
         ["q"] = {BasicMap.direction[mode][6][1], BasicMap.direction[mode][6][2]},
         ["e"] = {BasicMap.direction[mode][1][1], BasicMap.direction[mode][1][2]},
         ["d"] = {BasicMap.direction[mode][2][1], BasicMap.direction[mode][2][2]},
@@ -80,7 +87,6 @@ function Operation.CatchKeyPressed(key)
         ["z"] = {BasicMap.direction[mode][4][1], BasicMap.direction[mode][4][2]},
         ["a"] = {BasicMap.direction[mode][5][1], BasicMap.direction[mode][5][2]}
     }
-    print("Caught key pressed (Move operation): ", moveOp[key])
 
     if (moveOp[key] == nil) then
         return
@@ -91,6 +97,7 @@ function Operation.CatchKeyPressed(key)
     Operation.Select(x, y)
 end
 
+--依鼠标键按下的位置进行操作
 function Operation.CatchMousePressed(pixelX, pixelY, button, istouch, presses)
     -- 鼠标坐标转换为地图坐标
     local x, y = BasicMap.Pixel2Coordinate(pixelX, pixelY)

@@ -36,6 +36,7 @@ function Judgement.Judge()
             end
         end
         ServerSock.SendGameOver()
+        PlayGame.GameState = "Over"
     end
 end
 

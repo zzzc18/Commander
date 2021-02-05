@@ -70,6 +70,7 @@ function Picture.DrawSelect(pixelX, pixelY)
     )
 end
 
+-- 画路径箭头
 function Picture.DrawArrow(pixelX, pixelY, targetX, targetY)
     love.graphics.setColor(1, 1, 1)
     -- love.graphics.setLineWidth(10)

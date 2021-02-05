@@ -13,7 +13,7 @@ set(CMAKE_CXX_STANDARD 17)
 # more warnings
 if (CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -Wall -Weffc++")
-    add_compile_definitions(__func__=__PRETTY_FUNCTION__ DEBUG)
+    # add_compile_definitions(__func__=__PRETTY_FUNCTION__ DEBUG)
 endif()
 #find include path
 include_directories(include)

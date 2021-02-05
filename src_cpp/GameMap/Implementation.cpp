@@ -59,20 +59,19 @@ void MAP::TroopsUpdate() {
         for (int j = 0; j < _sizeY; ++j) _mat[i][j].Update();
     }
 }
+
 void MAP::BigUpdate() {
     for (int i = 0; i < _sizeX; ++i) {
         for (int j = 0; j < _sizeY; ++j) _mat[i][j].BigUpdate();
     }
 }
+
 bool MAP::MoveUpdate() {
     auto Move = [this](int armyID, VECTOR _src, VECTOR _dst) -> bool {
         NODE &src = _mat[_src.x][_src.y], &dst = _mat[_dst.x][_dst.y];
         if (src.belong != armyID || src.unitNum <= 1)
             return false;  // FIXME magic number 1
         if (dst.type == NODE_TYPE::HILL) return false;
-        if (VERIFY::Singleton().GetArmyID() == 0) {  //只有服务器会保存
-            SaveStep(armyID, _src, _dst);
-        }
         if (dst.belong == armyID)
             dst.unitNum += src.unitNum - 1;  // FIXME magic number 1
         else {
@@ -108,15 +107,22 @@ void MAP::Update() {
     if (step % MoveUpdateStep == 0) {
         MoveUpdate();
     }
-    if (step % SaveMapStep == 0 && VERIFY::Singleton().GetArmyID() == 0) {
+    if (step % SaveMapStep == 0 &&
+        VERIFY::Singleton().GetPrivilege() == 3) {  //只有服务器会保存
         SaveMap();
+    }
+    if (VERIFY::Singleton().GetPrivilege() == 2) {  //只有回放器会读取
+        ReadMove(step);
     }
     return;
 }
 
 bool MAP::PushMove(int armyID, VECTOR src, VECTOR dst) {
+    if (VERIFY::Singleton().GetPrivilege() == 3) {
+        SaveStep(armyID, src, dst);
+    }
     VECTOR j = {-1, -1};
-    if (src == j && dst == j) {
+    if (src == j && dst == j) {  //撤销移动命令
         if (!moveCommands[armyID].empty()) {
             moveCommands[armyID].erase(moveCommands[armyID].begin());
             return true;
@@ -140,6 +146,7 @@ bool MAP::IncreaseOrDecrease(VECTOR aim, int mode) {
     }
     return true;
 }
+
 bool MAP::ChangeType(VECTOR aim, int type) {
     switch (type) {
         case 1:
@@ -173,6 +180,7 @@ bool MAP::ChangeType(VECTOR aim, int type) {
     }
     return true;
 }
+
 bool MAP::ChangeBelong(VECTOR aim) {
     if (_mat[aim.x][aim.y].type == NODE_TYPE::HILL) {
         return false;
@@ -248,6 +256,7 @@ void MAP::RandomGen(int armyCnt, int level) {
         }
     }
 }
+
 void MAP::InitSavedata() {
     std::time_t t = std::time(&t) + 28800;
     struct tm* gmt = gmtime(&t);
@@ -256,20 +265,24 @@ void MAP::InitSavedata() {
     StartTime = cst;
     system("cd ..&mkdir Savedata");
     system(("cd ../Savedata&mkdir " + StartTime).c_str());
+    SaveMap();
     return;
 }
-int MAP::LoadMap(std::string_view file) {  // file = "../Data/"
-    std::ifstream fin((std::string)file.data() + "3Player.map");
+
+int MAP::LoadMap(std::string_view file) {  // file = "../Data/map.map"
+    std::ifstream fin(file.data());
     fin >> *this;
     fin.close();
     return this->_armyCnt;
 }
+
 void MAP::SaveMap(std::string_view file) {  // file="../Savedata/"
     std::ofstream fout(file.data() + StartTime + "/" + std::to_string(step) +
                        ".map");
     fout << *this;
     fout.close();
 }
+
 void MAP::SaveStep(int armyID, VECTOR src, VECTOR dst) {
     std::ofstream outfile;
     outfile.open("../Savedata/" + StartTime + "/steps.txt", std::ios::app);
@@ -291,11 +304,37 @@ void MAP::SaveEdit(std::string_view file) {  // file = "../Output/"
     fout.close();
 }
 
+int MAP::LoadReplayFile(
+    std::string_view file) {  // file="../Savedata/test_save_path/0.map"
+    std::ifstream fin(file.data());
+    fin >> *this;
+    fin.close();
+    return kingNum;
+}
+
+void MAP::ReadMove(int ReplayStep) {
+    std::string line;
+    std::ifstream replayfile;
+    replayfile.open("../Savedata/test_save_path/steps.txt", std::ios::in);
+    if (replayfile.is_open()) {
+        while (std::getline(replayfile, line)) {  //搜索step.txt的每一行
+            if (line != std::to_string(ReplayStep)) continue;
+            std::getline(replayfile, line);
+            char* move = (char*)line.c_str();
+            int army, sx, sy, dx, dy;
+            sscanf(move, "%d %d %d %d %d", &army, &sx, &sy, &dx, &dy);
+            PushMove(army, {sx, sy}, {dx, dy});
+        }
+    }
+    replayfile.close();
+}
+
 std::pair<int, int> MAP::GetSize() const { return {_sizeX, _sizeY}; }
 
 bool MAP::InMap(VECTOR pos) const {
     return 0 <= pos.x && pos.x < _sizeX && 0 <= pos.y && pos.y < _sizeY;
 }
+
 bool MAP::IsViewable(VECTOR pos) const {
     if (_mat[pos.x][pos.y].belong == VERIFY::Singleton().GetArmyID())
         return true;
@@ -374,6 +413,7 @@ void MAP::NODE::Update() {
             ++unitNum;
     }
 }
+
 void MAP::NODE::BigUpdate() {
     if (belong == SERVER) return;
     switch (type) {

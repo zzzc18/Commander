@@ -19,22 +19,25 @@ int VERIFY::Register(int armyID, int privilege) {  // FIXME magic numbers
 VERIFY& VERIFY::Singleton() { return *singletonPtr_; }
 
 int VERIFY::GetArmyID() const { return _armyID; }
+int VERIFY::GetPrivilege() const { return _privilege; }
 
 VERIFY::VERIFY(int armyID, int privilege) {  // FIXME magic numbers
     switch (privilege) {
         case 0:  // army commander
-            if (armyID == SERVER) throw - 2;
+            if (armyID == SERVER) throw -2;
             _armyID = armyID;
             break;
         case 1:  // army leader
             break;
         case 2:  // replay mode
-            [[fallthrough]];
+            _armyID = SERVER;
+            //获取全图视野
+            break;
         case 3:  // server
             _armyID = SERVER;
             break;
         default:  // invalid
-            throw - 1;
+            throw -1;
     }
     _privilege = privilege;
 }

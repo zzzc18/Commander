@@ -2,6 +2,10 @@ PlayGame = {}
 
 local Operation = require("PlayGame.Operation")
 
+-- PlayGame.GameState = "READY"
+PlayGame.judgementState = "Running"
+PlayGame.armyID = nil
+
 function PlayGame.Init()
     CVerify.Register(0, 3)
     PlayGame.LoadMap()

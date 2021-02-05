@@ -3,15 +3,11 @@ PlayGame = {}
 local Operation = require("PlayGame.Operation")
 
 PlayGame.GameState = "READY"
+--READY:游戏未开始，不显示界面，无法操作
+--Start:游戏进行中
+--Over:游戏介绍，显示界面，无法发送移动命令
 PlayGame.judgementState = "Running"
 PlayGame.armyID = nil
-PlayGame.timerTotal = 0
-PlayGame.timerSecond = 0
-PlayGame.timer25Second = 0
-
-function PlayGame.RunPermission()
-    return PlayGame.GameState == "Start"
-end
 
 function PlayGame.Init()
     Picture.Init()
@@ -27,14 +23,14 @@ function PlayGame.LoadMap()
 end
 
 function PlayGame.wheelmoved(x, y)
-    if not PlayGame.RunPermission() then
+    if PlayGame.GameState == "READY" then
         return
     end
     MapAdjust.Catchwheelmoved(x, y)
 end
 
 function PlayGame.mousepressed(pixelX, pixelY, button, istouch, presses)
-    if not PlayGame.RunPermission() then
+    if PlayGame.GameState == "READY" then
         return
     end
     Operation.CatchMousePressed(pixelX, pixelY, button, istouch, presses)
@@ -52,7 +48,7 @@ function PlayGame.keyreleased(key, scancode)
 end
 
 function PlayGame.draw()
-    if not PlayGame.RunPermission() then
+    if PlayGame.GameState == "READY" then
         return
     end
     BasicMap.DrawMap()
@@ -65,8 +61,7 @@ function PlayGame.UpdateTimerSecond(dt)
 end
 
 function PlayGame.update(dt)
-    Client:update()
-    if not PlayGame.RunPermission() then
+    if PlayGame.GameState ~= "Start" then
         return
     end
     MapAdjust.Update()
