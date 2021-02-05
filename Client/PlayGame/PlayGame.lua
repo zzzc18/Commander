@@ -15,6 +15,10 @@ function PlayGame.Init()
     Buttons.Init()
 end
 
+function PlayGame.DeInit()
+    Client:disconnect()
+end
+
 function PlayGame.LoadMap()
     -- CGameMap.RandomGenMap()
     -- CGameMap.WriteMap()

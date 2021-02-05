@@ -270,6 +270,7 @@ void MAP::InitSavedata() {
 }
 
 int MAP::LoadMap(std::string_view file) {  // file = "../Data/"
+    step = 0;
     std::ifstream fin(std::string(file.data()) + "3Player.map");
     fin >> *this;
     fin.close();
@@ -281,6 +282,7 @@ void MAP::SaveMap(std::string_view file) {  // file="../Savedata/"
                        ".map");
     fout << *this;
     fout.close();
+    return;
 }
 
 void MAP::SaveStep(int armyID, VECTOR src, VECTOR dst) {
@@ -294,6 +296,12 @@ void MAP::SaveStep(int armyID, VECTOR src, VECTOR dst) {
     }
     return;
 }
+
+void MAP::SaveGameOver(int armyID) {
+    SaveStep(armyID, {-3, -3}, {0, 0});
+    return;
+}
+
 void MAP::SaveEdit(std::string_view file) {  // file = "../Output/"
     std::time_t t = std::time(&t) + 28800;
     char cst[80];
@@ -302,10 +310,12 @@ void MAP::SaveEdit(std::string_view file) {  // file = "../Output/"
     std::ofstream fout(file.data() + StartTime + ".map");
     fout << *this;
     fout.close();
+    return;
 }
 
 int MAP::LoadReplayFile(
     std::string_view file) {  // file="../Savedata/test_save_path/0.map"
+    step = 0;
     std::ifstream fin(file.data());
     fin >> *this;
     fin.close();
@@ -323,10 +333,18 @@ void MAP::ReadMove(int ReplayStep) {
             char* move = (char*)line.c_str();
             int army, sx, sy, dx, dy;
             sscanf(move, "%d %d %d %d %d", &army, &sx, &sy, &dx, &dy);
+            if (sx == sy && sy == -2) {  //某支军队归属改变
+                Surrender(dx, dy);
+            }
+            if (sx == sy && sy == -3) {  //游戏结束
+                ReplayOver = true;
+                return;
+            }
             PushMove(army, {sx, sy}, {dx, dy});
         }
     }
     replayfile.close();
+    return;
 }
 
 std::pair<int, int> MAP::GetSize() const { return {_sizeX, _sizeY}; }
@@ -358,6 +376,9 @@ int MAP::Judge(int armyID) {
 }
 
 int MAP::Surrender(int armyID, int vanquisherID) {
+    if (VERIFY::Singleton().GetPrivilege() == 3) {
+        SaveStep(0, {-2, -2}, {armyID, vanquisherID});
+    }
     for (int i = 0; i < MAX_GRAPH_SIZE; i++) {
         for (int j = 0; j < MAX_GRAPH_SIZE; j++) {
             if (MAP::_mat[i][j].belong == armyID) {

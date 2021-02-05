@@ -57,8 +57,8 @@ end
 
 function PlayGame.update(dt)
     MapAdjust.Update()
-    Judgement.Judge()
     if PlayGame.GameState == "Start" then
+        Judgement.Judge()
         ServerSock.SendUpdate(dt)
     end
 end
