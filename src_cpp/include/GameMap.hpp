@@ -69,7 +69,7 @@ class MAP final {
 
     friend std::istream& operator>>(std::istream& is, MAP& map);
     friend std::ostream& operator<<(std::ostream& os, const MAP& map);
-    
+
     //地图每 TroopsUpdateStep 步的兵力更新
     void TroopsUpdate();
     //地图每 BigUpdateStep 步的兵力大更新
@@ -110,8 +110,6 @@ class MAP final {
     bool ChangeType(VECTOR aim, int type);
     //编辑器：改变格点归属
     bool ChangeBelong(VECTOR aim);
-    //编辑器：保存生成的地图
-    void SaveEdit(std::string_view file = "../Output/map.map");
 
     //回放器：从回放文件读取当前步添加到命令队列的命令
     void ReadMove(int ReplayStep);
@@ -121,25 +119,7 @@ class MAP final {
 
     //以 level 为参数随机生成有 armyCnt 个军队的地图
     void RandomGen(int armyCnt, int level);
-<<<<<<< src_cpp/include/GameMap.hpp
-    void InitSavedata();                              //初始化存档文件
-    int LoadMap(std::string_view file = "../Data/");  //从 file 读取地图
-    void SaveMap(std::string_view file = "../Savedata/");  //将地图保存至 file
-    void SaveStep(int armyID, VECTOR src, VECTOR dst);  //保存当前步数的操作
-    void SaveEdit(std::string_view file = "../Output/");  //保存生成的地图
 
-    std::string StartTime;
-
-    std::pair<int, int> GetSize() const;  //获取地图大小 (行数，列数)
-
-    bool InMap(VECTOR pos) const;       //判断 pos 是否在地图内
-    bool IsViewable(VECTOR pos) const;  //判断当前军队是否可看见 pos
-    NODE_TYPE GetType(VECTOR pos) const;  //当前军队看到 pos 的类型
-    int GetUnitNum(VECTOR pos) const;     //当前军队看到 pos 的兵数
-    int GetBelong(VECTOR pos) const;  //当前军队看到 pos 的所属军队
-    std::pair<VECTOR, VECTOR> GetArmyPath(
-        int armyID, int step) const;  //当前军队看到pos的计划路径
-=======
     //初始化存档文件夹，以游戏开始时间命名
     void InitSavedata();
     //从 file 读取地图
@@ -148,6 +128,8 @@ class MAP final {
     void SaveMap(std::string_view file = "../Savedata/");
     //向steps.txt保存当前步数的操作
     void SaveStep(int armyID, VECTOR src, VECTOR dst);
+    //保存生成的地图
+    void SaveEdit(std::string_view file = "../Output/");
 
     std::string StartTime;  //游戏开始时间
 
@@ -166,7 +148,6 @@ class MAP final {
     int GetBelong(VECTOR pos) const;
     //当前军队看到pos的计划路径
     std::pair<VECTOR, VECTOR> GetArmyPath(int armyID, int step) const;
->>>>>>> src_cpp/include/GameMap.hpp
 
    private:
     MAP() = default;
