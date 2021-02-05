@@ -200,11 +200,6 @@ static int Judge(lua_State *luaState) {
     APIparam(luaState, armyID);
     return APIreturn(luaState, MAP::Singleton().Judge(armyID));
 }
-static int ReturnBelong(lua_State *luaState) {
-    int armyID;
-    APIparam(luaState, armyID);
-    return APIreturn(luaState, MAP::Singleton().ReturnBelong(armyID));
-}
 static int Surrender(lua_State *luaState) {
     int armyID, vanquisherID;
     APIparam(luaState, armyID, vanquisherID);
@@ -219,6 +214,5 @@ LUA_REG_FUNC(GameMap, C_API(RandomGenMap), C_API(InitSavedata), C_API(LoadMap),
              C_API(LoadReplayFile), C_API(SaveEdit), C_API(WriteMap),
              C_API(GetSize), C_API(GetVision), C_API(GetNodeType),
              C_API(GetUnitNum), C_API(GetBelong), C_API(GetArmyPath),
-             C_API(PushMove), C_API(Judge), C_API(ReturnBelong),
-             C_API(Surrender), C_API(IncreaseOrDecrease), C_API(ChangeType),
-             C_API(ChangeBelong))
+             C_API(PushMove), C_API(Judge), C_API(Surrender),
+             C_API(IncreaseOrDecrease), C_API(ChangeType), C_API(ChangeBelong))

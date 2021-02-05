@@ -82,8 +82,6 @@ class MAP final {
     int step = 0;
     //判断胜负
     int Judge(int);
-    //在判断胜负时候用于获取ID
-    int ReturnBelong(int);
     //玩家被击败后改变军队归属
     int Surrender(int, int);
 
@@ -123,7 +121,7 @@ class MAP final {
     //初始化存档文件夹，以游戏开始时间命名
     void InitSavedata();
     //从 file 读取地图
-    int LoadMap(std::string_view file = "../Data/map.map");
+    int LoadMap(std::string_view file = "../Data/");
     //将地图保存至 file，以步数命名
     void SaveMap(std::string_view file = "../Savedata/");
     //向steps.txt保存当前步数的操作

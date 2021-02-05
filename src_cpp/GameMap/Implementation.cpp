@@ -269,8 +269,8 @@ void MAP::InitSavedata() {
     return;
 }
 
-int MAP::LoadMap(std::string_view file) {  // file = "../Data/map.map"
-    std::ifstream fin(file.data());
+int MAP::LoadMap(std::string_view file) {  // file = "../Data/"
+    std::ifstream fin(std::string(file.data()) + "3Player.map");
     fin >> *this;
     fin.close();
     return this->_armyCnt;
@@ -357,10 +357,6 @@ int MAP::Judge(int armyID) {
     return 0;
 }
 
-int MAP::ReturnBelong(int x) {
-    return MAP::Singleton().kingState.kingBelong[x];
-}
-
 int MAP::Surrender(int armyID, int vanquisherID) {
     for (int i = 0; i < MAX_GRAPH_SIZE; i++) {
         for (int j = 0; j < MAX_GRAPH_SIZE; j++) {
@@ -369,6 +365,9 @@ int MAP::Surrender(int armyID, int vanquisherID) {
             }
         }
     }
+    MAP::_mat[MAP::Singleton().kingState.kingPos[armyID].x]
+             [MAP::Singleton().kingState.kingPos[armyID].y]
+                 .type = NODE_TYPE::FORT;
     return 0;
 }
 
