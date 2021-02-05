@@ -8,6 +8,7 @@ CSystem = require("lib.System")
 Sock = require("sock")
 Bitser = require("spec.bitser")
 PlayGame = require("PlayGame.PlayGame")
+GameOver = require("GameOver.GameOver")
 
 Font = {
     gillsans50 = love.graphics.newFont("Font/gillsans.ttf", 50)
@@ -19,7 +20,6 @@ require("System.BasicMap")
 require("System.MapAdjust")
 require("System.Buttons")
 require("ClientSock")
-require("GameOver")
 
 Running = {}
 
