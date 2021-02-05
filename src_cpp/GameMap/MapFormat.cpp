@@ -36,9 +36,10 @@ std::istream& operator>>(std::istream& is, MAP& map) {
             is >> skip(':') >> map._mat[i][j];
             if (map._mat[i][j].type == NODE_TYPE::KING) {
                 map.kingNum++;
-                map.kingState.kingPos[map.kingNum].x = i;
-                map.kingState.kingPos[map.kingNum].y = j;
-                map.kingState.kingBelong[map.kingNum] = map._mat[i][j].belong;
+                map.kingState.kingPos[map._mat[i][j].belong].x = i;
+                map.kingState.kingPos[map._mat[i][j].belong].y = j;
+                map.kingState.kingBelong[map._mat[i][j].belong] =
+                    map._mat[i][j].belong;
             }
         }
     }
