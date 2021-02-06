@@ -30,6 +30,7 @@ function Judgement.Judge()
         for i = 1, PlayGame.armyNum do
             if Judgement.state[i] == 1 then
                 ServerSock.SendWin(i)
+                CGameMap.SaveGameOver(i)
                 break
             end
         end

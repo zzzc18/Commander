@@ -8,6 +8,7 @@ PlayGame.GameState = "READY"
 --Over:游戏介绍，显示界面，无法发送移动命令
 PlayGame.judgementState = "Running"
 PlayGame.armyID = nil
+PlayGame.armyNum = 0
 
 function PlayGame.Init()
     Picture.Init()
@@ -15,10 +16,14 @@ function PlayGame.Init()
     Buttons.Init()
 end
 
+function PlayGame.DeInit()
+    Client:disconnect()
+end
+
 function PlayGame.LoadMap()
     -- CGameMap.RandomGenMap()
     -- CGameMap.WriteMap()
-    CGameMap.LoadMap()
+    PlayGame.armyNum = CGameMap.LoadMap()
     BasicMap.Init()
 end
 

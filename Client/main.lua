@@ -8,6 +8,7 @@ CSystem = require("lib.System")
 Sock = require("sock")
 Bitser = require("spec.bitser")
 PlayGame = require("PlayGame.PlayGame")
+ReplayGame = require("Replayer.ReplayGame")
 
 Font = {
     gillsans50 = love.graphics.newFont("Font/gillsans.ttf", 50)
@@ -20,6 +21,7 @@ require("System.MapAdjust")
 require("System.Buttons")
 require("ClientSock")
 require("GameOver")
+require("Switcher")
 
 Running = {}
 
@@ -41,6 +43,12 @@ function love.mousereleased(pixelX, pixelY, button, istouch, presses)
 end
 
 function love.keypressed(key, scancode, isrepeat)
+    if key == "p" then
+        Switcher.To("本地对局")
+    end
+    if key == "r" then
+        Switcher.To("对局回放")
+    end
     Running.keypressed(key, scancode, isrepeat)
 end
 
