@@ -115,12 +115,12 @@ function Operation.CatchMousePressed(pixelX, pixelY, button, istouch, presses)
     -- 鼠标坐标转换为地图坐标
     local x, y = BasicMap.Pixel2Coordinate(pixelX, pixelY)
     local buttonName = Buttons.MouseState(pixelX, pixelY, 0)
-    local optionName
     if PlayGame.judgementState == "Win" or PlayGame.judgementState == "Lose" then
-        optionName = GameOver.MouseStateForOpts(pixelX, pixelY, 0)
+        GameOver.MouseStateForOpts(pixelX, pixelY, 0)
+        return
     end
     --说明鼠标点了按钮
-    if buttonName ~= nil or optionName ~= nil then
+    if buttonName ~= nil then
         return
     end
 

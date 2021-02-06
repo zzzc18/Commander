@@ -160,7 +160,6 @@ function GameOver.MouseStateForOpts(mouseX, mouseY, mode)
     local oriColor = {1, 1, 1, 1}
     local selectedColor = {0.7, 0.7, 0.7, 1}
     local ClickedColor = {0.867, 0.627, 0.867, 0.68}
-    local name = nil
     local x, y = mouseX, mouseY
     if
         x > EachOption.button_play_again.x and
@@ -229,7 +228,6 @@ function GameOver.MouseStateForOpts(mouseX, mouseY, mode)
         EachOption.button_watch_replay.color = oriColor
         EachOption.button_exit.color = oriColor
     end
-    return name
 end
 
 function GameOver.optZoom(button, x, y, ratio)
