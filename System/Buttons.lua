@@ -25,11 +25,47 @@ function EachButton.NewButton(path, name, x, y, ratio)
 end
 
 function EachButton:Load()
-    self[1] = EachButton.NewButton("data/Picture/BUTTON_TYPE_LAST.png", "last", 300, 0, self.initialRatio)
-    self[2] = EachButton.NewButton("data/Picture/BUTTON_TYPE_PAUSE.png", "pause", 400, 0, self.initialRatio)
-    self[3] = EachButton.NewButton("data/Picture/BUTTON_TYPE_CONTINUE.png", "continue", 400, 0, self.initialRatio)
-    self[4] = EachButton.NewButton("data/Picture/BUTTON_TYPE_NEXT.png", "next", 500, 0, self.initialRatio)
-    self[5] = EachButton.NewButton("data/Picture/BUTTON_TYPE_SHIFTSPEED.png", "shift_speed", 700, 0, self.initialRatio)
+    local windowWidth, windowHeight = love.graphics.getDimensions()
+    self[1] =
+        EachButton.NewButton(
+        "data/Picture/BUTTON_TYPE_LAST.png",
+        "last",
+        windowWidth * 0.35,
+        windowHeight * 0,
+        self.initialRatio
+    )
+    self[2] =
+        EachButton.NewButton(
+        "data/Picture/BUTTON_TYPE_PAUSE.png",
+        "pause",
+        windowWidth * 0.45,
+        windowHeight * 0,
+        self.initialRatio
+    )
+    self[3] =
+        EachButton.NewButton(
+        "data/Picture/BUTTON_TYPE_CONTINUE.png",
+        "continue",
+        windowWidth * 0.45,
+        windowHeight * 0,
+        self.initialRatio
+    )
+    self[4] =
+        EachButton.NewButton(
+        "data/Picture/BUTTON_TYPE_NEXT.png",
+        "next",
+        windowWidth * 0.55,
+        windowHeight * 0,
+        self.initialRatio
+    )
+    self[5] =
+        EachButton.NewButton(
+        "data/Picture/BUTTON_TYPE_SHIFTSPEED.png",
+        "shift_speed",
+        windowWidth * 0.65,
+        windowHeight * 0,
+        self.initialRatio
+    )
     self.initialRatio = 0.2
     self.laterRatio = 0.25
     self.initialDiaphaneity = 0.5
@@ -70,8 +106,9 @@ function Buttons.MouseState(mouseX, mouseY, mode)
             i = i + 1
         end
         if
-            mouseX > EachButton[i].x and mouseX < EachButton[i].x + 50 and mouseY > EachButton[i].y and
-                mouseY < EachButton[i].y + 50
+            mouseX > EachButton[i].x and mouseX < EachButton[i].x + 50 * love.graphics.getWidth() / 1080 and
+                mouseY > EachButton[i].y and
+                mouseY < EachButton[i].y + 60 * love.graphics.getWidth() / 1080
          then
             inButton = true
             if 0 == mode then
@@ -111,7 +148,20 @@ function EachButton:ButtonsRelease(button)
 end
 
 function EachButton:MouseSuspension(button)
-    button.ratio = EachButton.laterRatio
+    button.ratio = EachButton.laterRatio * love.graphics.getWidth() / 1080
+end
+
+function Buttons.Update()
+    local windowWidth, windowHeight = love.graphics.getDimensions()
+    EachButton[1].x = windowWidth * 0.35
+    EachButton[2].x = windowWidth * 0.45
+    EachButton[3].x = windowWidth * 0.45
+    EachButton[4].x = windowWidth * 0.55
+    EachButton[5].x = windowWidth * 0.65
+    for i = 1, Buttons.ButtonsNum do
+        EachButton[i].ratio = EachButton.initialRatio * windowWidth / 1080
+    end
+    Buttons.MouseState(love.mouse.getX(), love.mouse.getY(), 1)
 end
 
 return Buttons
