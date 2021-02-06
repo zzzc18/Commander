@@ -11,7 +11,7 @@ function GameOver.DrawJudgeInfo(state, VanquisherID)
     love.graphics.setFont(Font.gillsans50)
     x, y = love.graphics.getDimensions()
     local ratio = y / 720
-    GameOver.GameOverOptUpdate(x, y, ratio)
+    GameOver.GameOverOptUpdate(x, y, ratio) --创建选项
     x, y = x / 2, y / 2
     judgeMenuWidth = 250 * ratio
     judgeMenuHeight = 350 * ratio
@@ -21,9 +21,8 @@ function GameOver.DrawJudgeInfo(state, VanquisherID)
         titleOffset = 30
     elseif state == "Lose" then
         title = "Defeated"
-    end
+    end --标题设置
     love.graphics.setColor(0.333, 0.102, 0.545)
-    love.graphics.setLineWidth(5)
     love.graphics.rectangle(
         "fill",
         x - (judgeMenuWidth - 12) / 2,
@@ -79,157 +78,122 @@ end
 
 EachOption = {}
 
-EachOption.isClicked = false
+GameOver.isClicked = false
 
 function GameOver.Update(mouseX, mouseY)
     GameOver.MouseStateForOpts(mouseX, mouseY, 1)
 end
 
--- 下面的是绘制裁决界面的选项
-function EachOption:LoadGameOverOpts()
-    self.optionColor = {1, 1, 1, 1}
-    self.optionRatio = 0.5
-    self.button_play_again = {}
-    self.button_watch_replay = {}
-    self.button_exit = {}
-    self.button_play_again.imag =
-        love.graphics.newImage("data/Picture/OPTION_TYPE_PLAYAGAIN.PNG")
-    self.button_watch_replay.imag =
-        love.graphics.newImage("data/Picture/OPTION_TYPE_WATCHREPLAY.PNG")
-    self.button_exit.imag =
-        love.graphics.newImage("data/Picture/OPTION_TYPE_EXIT.PNG")
-    self.button_play_again.x = 445
-    self.button_play_again.y = 290
-    self.button_play_again.width = 190
-    self.button_play_again.height = 70
-    self.button_play_again.ratio = self.optionRatio
-    self.button_play_again.color = self.optionColor
-    self.button_watch_replay.x = 445
-    self.button_watch_replay.y = 370
-    self.button_watch_replay.width = 190
-    self.button_watch_replay.height = 70
-    self.button_watch_replay.ratio = self.optionRatio
-    self.button_watch_replay.color = self.optionColor
-    self.button_exit.x = 445
-    self.button_exit.y = 450
-    self.button_exit.width = 190
-    self.button_exit.height = 70
-    self.button_exit.ratio = self.optionRatio
-    self.button_exit.color = self.optionColor
-    self.button_play_again.name = "play again"
-    self.button_watch_replay.name = "watch replay"
-    self.button_exit.name = "exit"
+-- 初始化裁决界面的选项的参数
+function GameOver.LoadGameOverOpts()
+    local optionColor = {1, 1, 1, 1}
+    local optionRatio = 0.5
+    local options = {}
+    options.button_play_again =
+        GameOver.NewOptions(
+        "play again",
+        "data/Picture/OPTION_TYPE_PLAYAGAIN.PNG",
+        445,
+        290,
+        190,
+        70,
+        optionRatio,
+        optionColor
+    )
+    options.button_watch_replay =
+        GameOver.NewOptions(
+        "watch replay",
+        "data/Picture/OPTION_TYPE_WATCHREPLAY.PNG",
+        445,
+        370,
+        190,
+        70,
+        optionRatio,
+        optionColor
+    )
+    options.button_exit =
+        GameOver.NewOptions(
+        "exit",
+        "data/Picture/OPTION_TYPE_EXIT.PNG",
+        445,
+        450,
+        190,
+        70,
+        optionRatio,
+        optionColor
+    )
+    for i, v in pairs(options) do
+        GameOver.insertOpts(v)
+    end
 end
 
+-- 创建裁决界面选项
+function GameOver.NewOptions(name, imagPath, x, y, width, height, ratio, color)
+    return {
+        name = name,
+        imag = love.graphics.newImage(imagPath),
+        x = x,
+        y = y,
+        width = width,
+        height = height,
+        ratio = ratio,
+        color = color
+    }
+end
+
+function GameOver.insertOpts(Option)
+    table.insert(EachOption, Option)
+end
+
+-- 初始化裁决界面选项
 function GameOver.GameOverOptInit()
-    EachOption:LoadGameOverOpts()
+    GameOver.LoadGameOverOpts()
 end
 
 function GameOver.DrawGameOverOptions()
-    love.graphics.setColor(EachOption.button_play_again.color)
-    love.graphics.draw(
-        EachOption.button_play_again.imag,
-        EachOption.button_play_again.x,
-        EachOption.button_play_again.y,
-        0,
-        EachOption.button_play_again.ratio,
-        EachOption.button_play_again.ratio
-    )
-    love.graphics.setColor(EachOption.button_watch_replay.color)
-    love.graphics.draw(
-        EachOption.button_watch_replay.imag,
-        EachOption.button_watch_replay.x,
-        EachOption.button_watch_replay.y,
-        0,
-        EachOption.button_watch_replay.ratio,
-        EachOption.button_watch_replay.ratio
-    )
-    love.graphics.setColor(EachOption.button_exit.color)
-    love.graphics.draw(
-        EachOption.button_exit.imag,
-        EachOption.button_exit.x,
-        EachOption.button_exit.y,
-        0,
-        EachOption.button_exit.ratio,
-        EachOption.button_exit.ratio
-    )
+    for i, v in pairs(EachOption) do
+        love.graphics.setColor(v.color)
+        love.graphics.draw(v.imag, v.x, v.y, 0, v.ratio, v.ratio)
+    end
 end
 
--- mode==0时为点击，1为悬浮,2为松开
+-- 裁决选项相关功能，mode==0时为点击，1为悬浮,2为松开
 function GameOver.MouseStateForOpts(mouseX, mouseY, mode)
     local oriColor = {1, 1, 1, 1}
     local selectedColor = {0.7, 0.7, 0.7, 1}
     local ClickedColor = {0.867, 0.627, 0.867, 0.68}
     local x, y = mouseX, mouseY
-    if
-        x > EachOption.button_play_again.x and
-            x <
-                EachOption.button_play_again.x +
-                    EachOption.button_play_again.width and
-            y > EachOption.button_play_again.y and
-            y <
-                EachOption.button_play_again.y +
-                    EachOption.button_play_again.height
-     then
-        if mode == 0 then
-            EachOption.isClicked = true
-            EachOption.button_play_again.color = ClickedColor
-        elseif mode == 1 and not EachOption.isClicked then
-            EachOption.button_play_again.color = selectedColor
-            EachOption.button_watch_replay.color = oriColor
-            EachOption.button_exit.color = oriColor
-        elseif mode == 2 then
-            EachOption.isClicked = false
-            EachOption.button_play_again.color = oriColor
-            print(EachOption.button_play_again.name)
+    local isBeyond = true -- 用来表示鼠标是否在任一选项内部
+    for i, v in pairs(EachOption) do
+        if x > v.x and x < v.x + v.width and y > v.y and y < v.y + v.height then
+            isBeyond = false
+            if mode == 0 then
+                GameOver.isClicked = true
+                v.color = ClickedColor
+            elseif mode == 1 and not GameOver.isClicked then
+                GameOver.changeColor(v, oriColor, selectedColor)
+            elseif mode == 2 then
+                GameOver.isClicked = false
+                v.color = oriColor
+                print(v.name)
+            end
         end
-    elseif
-        x > EachOption.button_watch_replay.x and
-            x <
-                EachOption.button_watch_replay.x +
-                    EachOption.button_watch_replay.width and
-            y > EachOption.button_watch_replay.y and
-            y <
-                EachOption.button_watch_replay.y +
-                    EachOption.button_watch_replay.height
-     then
-        if mode == 0 then
-            EachOption.isClicked = true
-            EachOption.button_watch_replay.color = ClickedColor
-        elseif mode == 1 and not EachOption.isClicked then
-            EachOption.button_watch_replay.color = selectedColor
-            EachOption.button_play_again.color = oriColor
-            EachOption.button_exit.color = oriColor
-        elseif mode == 2 then
-            EachOption.isClicked = false
-            EachOption.button_watch_replay.color = oriColor
-            print(EachOption.button_watch_replay.name)
-        end
-    elseif
-        x > EachOption.button_exit.x and
-            x < EachOption.button_exit.x + EachOption.button_exit.width and
-            y > EachOption.button_exit.y and
-            y < EachOption.button_exit.y + EachOption.button_exit.height
-     then
-        if mode == 0 then
-            EachOption.isClicked = true
-            EachOption.button_exit.color = ClickedColor
-        elseif mode == 1 and not EachOption.isClicked then
-            EachOption.button_exit.color = selectedColor
-            EachOption.button_play_again.color = oriColor
-            EachOption.button_watch_replay.color = oriColor
-        elseif mode == 2 then
-            EachOption.isClicked = false
-            EachOption.button_exit.color = oriColor
-            print(EachOption.button_exit.name)
-        end
-    else
-        EachOption.button_play_again.color = oriColor
-        EachOption.button_watch_replay.color = oriColor
-        EachOption.button_exit.color = oriColor
+    end
+    if isBeyond then
+        GameOver.changeColor(nil, oriColor, selectedColor)
     end
 end
 
+function GameOver.changeColor(option, oriColor, selectedColor)
+    for i, v in pairs(EachOption) do
+        v.color = oriColor
+    end
+    if option ~= nil then
+        option.color = selectedColor
+    end
+end
+
+-- 缩放选项
 function GameOver.optZoom(button, x, y, ratio)
     button.width = 190 * ratio
     button.height = 70 * ratio
@@ -246,9 +210,9 @@ function GameOver.optZoom(button, x, y, ratio)
 end
 
 function GameOver.GameOverOptUpdate(x, y, ratio)
-    GameOver.optZoom(EachOption.button_play_again, x, y, ratio)
-    GameOver.optZoom(EachOption.button_watch_replay, x, y, ratio)
-    GameOver.optZoom(EachOption.button_exit, x, y, ratio)
+    for i, v in pairs(EachOption) do
+        GameOver.optZoom(v, x, y, ratio)
+    end
 end
 
 return GameOver
