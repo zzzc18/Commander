@@ -10,6 +10,9 @@ Bitser = require("spec.bitser")
 PlayGame = require("PlayGame.PlayGame")
 GameOver = require("GameOver.GameOver")
 ReplayGame = require("Replayer.ReplayGame")
+Scene={}--可切换的场景
+Scene["PlayGame"]=PlayGame
+Scene["ReplayGame"]=ReplayGame
 
 Font = {
     gillsans50 = love.graphics.newFont("Font/gillsans.ttf", 50)
@@ -28,6 +31,7 @@ Running = {}
 function love.load()
     Running = PlayGame
     Running.Init()
+    Switcher.Init()
 end
 
 function love.wheelmoved(x, y)
@@ -43,12 +47,7 @@ function love.mousereleased(pixelX, pixelY, button, istouch, presses)
 end
 
 function love.keypressed(key, scancode, isrepeat)
-    if key == "p" then
-        Switcher.To("本地对局")
-    end
-    if key == "r" then
-        Switcher.To("对局回放")
-    end
+    Switcher.keypressed(key)
     Running.keypressed(key, scancode, isrepeat)
 end
 

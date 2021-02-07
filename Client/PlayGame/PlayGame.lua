@@ -21,6 +21,10 @@ function PlayGame.DeInit()
     Client:disconnect()
 end
 
+function PlayGame.Destroy()
+    --PlayGame={}
+end
+
 function PlayGame.LoadMap()
     -- CGameMap.RandomGenMap()
     -- CGameMap.WriteMap()
