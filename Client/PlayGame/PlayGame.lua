@@ -70,7 +70,7 @@ function PlayGame.update(dt)
         return
     end
     MapAdjust.Update()
-    Operation.Update(love.mouse.getX(), love.mouse.getY())
+    Operation.Update()
 end
 
 return PlayGame
