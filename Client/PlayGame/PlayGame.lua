@@ -8,17 +8,23 @@ PlayGame.GameState = "READY"
 --Over:游戏介绍，显示界面，无法发送移动命令
 PlayGame.judgementState = "Running"
 PlayGame.armyID = nil
+PlayGame.armyNum = 0
 
 function PlayGame.Init()
     Picture.Init()
     ClientSock.Init()
     Buttons.Init()
+    GameOver.GameOverOptInit()
+end
+
+function PlayGame.DeInit()
+    Client:disconnect()
 end
 
 function PlayGame.LoadMap()
     -- CGameMap.RandomGenMap()
     -- CGameMap.WriteMap()
-    CGameMap.LoadMap()
+    PlayGame.armyNum = CGameMap.LoadMap()
     BasicMap.Init()
 end
 
@@ -53,14 +59,21 @@ function PlayGame.draw()
     end
     BasicMap.DrawMap()
     Operation.DrawSelect()
-    GameOver.DrawJudgement(PlayGame.judgementState, GameOver.VanquisherID)
     Operation.DrawButtons()
+    if PlayGame.judgementState == "Lose" then
+        GameOver.DrawJudgeInfo("Lose", GameOver.VanquisherID)
+    elseif PlayGame.judgementState == "Win" then
+        GameOver.DrawJudgeInfo("Win", nil)
+    end
 end
 
 function PlayGame.UpdateTimerSecond(dt)
 end
 
 function PlayGame.update(dt)
+    if PlayGame.judgementState == "Lose" or PlayGame.judgementState == "Win" then
+        GameOver.Update(love.mouse.getX(), love.mouse.getY())
+    end
     if PlayGame.GameState ~= "Start" then
         return
     end
