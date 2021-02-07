@@ -21,7 +21,6 @@ require("System.BasicMap")
 require("System.MapAdjust")
 require("System.Buttons")
 require("ClientSock")
-require("GameOver")
 require("Switcher")
 
 Running = {}
