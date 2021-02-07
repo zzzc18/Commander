@@ -10,6 +10,7 @@ Bitser = require("spec.bitser")
 PlayGame = require("PlayGame.PlayGame")
 GameOver = require("GameOver.GameOver")
 ReplayGame = require("Replayer.ReplayGame")
+Welcome = require("Welcome.Welcome")
 
 Font = {
     gillsans50 = love.graphics.newFont("Font/gillsans.ttf", 50)
@@ -26,6 +27,7 @@ require("Switcher")
 Running = {}
 
 function love.load()
+    Welcome.Init()
     Running = PlayGame
     Running.Init()
 end
@@ -57,6 +59,7 @@ function love.keyreleased(key, scancode)
 end
 
 function love.draw()
+    Welcome.draw()
     Running.draw()
 end
 
