@@ -8,6 +8,7 @@ CSystem = require("lib.System")
 Sock = require("sock")
 Bitser = require("spec.bitser")
 PlayGame = require("PlayGame.PlayGame")
+GameOver = require("GameOver.GameOver")
 ReplayGame = require("Replayer.ReplayGame")
 
 Font = {
