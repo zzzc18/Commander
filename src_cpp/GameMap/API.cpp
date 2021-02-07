@@ -36,6 +36,14 @@ static int LoadReplayFile(lua_State *luaState) {
     return APIreturn(luaState, MAP::Singleton().LoadReplayFile());
 }
 /**
+ * @brief 获取回放状态
+ *
+ * @return @c bool 真为回放已结束
+ */
+static int GetReplayStatus(lua_State *luaState) {
+    return APIreturn(luaState, MAP::Singleton().ReplayOver);
+}
+/**
  * @brief 初始化存档文件
  */
 static int InitSavedata(lua_State *luaState) {
@@ -43,7 +51,19 @@ static int InitSavedata(lua_State *luaState) {
     return APIreturn(luaState);
 }
 /**
- * @brief 保存生成的地图（编辑器独占）
+ * @brief 向存档文件保存游戏结束声明与获胜者
+ *
+ * @param @c int 获胜军队编号
+ * @return @c void
+ */
+static int SaveGameOver(lua_State *luaState) {
+    int armyID;
+    APIparam(luaState, armyID);
+    MAP::Singleton().SaveGameOver(armyID);
+    return APIreturn(luaState);
+}
+/**
+ * @brief 编辑器：保存生成的地图
  *
  * @param @c void
  * @return @c void
@@ -200,11 +220,6 @@ static int Judge(lua_State *luaState) {
     APIparam(luaState, armyID);
     return APIreturn(luaState, MAP::Singleton().Judge(armyID));
 }
-static int ReturnBelong(lua_State *luaState) {
-    int armyID;
-    APIparam(luaState, armyID);
-    return APIreturn(luaState, MAP::Singleton().ReturnBelong(armyID));
-}
 static int Surrender(lua_State *luaState) {
     int armyID, vanquisherID;
     APIparam(luaState, armyID, vanquisherID);
@@ -215,10 +230,10 @@ static int Surrender(lua_State *luaState) {
 /**
  * @brief 向 Lua 注册 API，模块名为 lib/GameMap.dll
  */
-LUA_REG_FUNC(GameMap, C_API(RandomGenMap), C_API(InitSavedata), C_API(LoadMap),
-             C_API(LoadReplayFile), C_API(SaveEdit), C_API(WriteMap),
+LUA_REG_FUNC(GameMap, C_API(RandomGenMap), C_API(InitSavedata),
+             C_API(SaveGameOver), C_API(LoadMap), C_API(LoadReplayFile),
+             C_API(GetReplayStatus), C_API(SaveEdit), C_API(WriteMap),
              C_API(GetSize), C_API(GetVision), C_API(GetNodeType),
              C_API(GetUnitNum), C_API(GetBelong), C_API(GetArmyPath),
-             C_API(PushMove), C_API(Judge), C_API(ReturnBelong),
-             C_API(Surrender), C_API(IncreaseOrDecrease), C_API(ChangeType),
-             C_API(ChangeBelong))
+             C_API(PushMove), C_API(Judge), C_API(Surrender),
+             C_API(IncreaseOrDecrease), C_API(ChangeType), C_API(ChangeBelong))

@@ -159,8 +159,8 @@ function Operation.DrawButtons()
     Buttons.DrawButtons()
 end
 
-function Operation.Update(mouseX, mouseY)
-    Buttons.MouseState(mouseX, mouseY, 1)
+function Operation.Update()
+    Buttons.Update()
 end
 
 return Operation
