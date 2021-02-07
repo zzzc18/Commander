@@ -9,10 +9,9 @@ Sock = require("sock")
 Bitser = require("spec.bitser")
 PlayGame = require("PlayGame.PlayGame")
 ReplayGame = require("Replayer.ReplayGame")
-Scene={}
-Scene[1]=PlayGame
-Scene[2]=ReplayGame
-SceneNum=2
+Scene={}--可切换的场景
+Scene["PlayGame"]=PlayGame
+Scene["ReplayGame"]=ReplayGame
 
 Font = {
     gillsans50 = love.graphics.newFont("Font/gillsans.ttf", 50)
