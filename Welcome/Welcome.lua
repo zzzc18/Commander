@@ -40,5 +40,24 @@ function Welcome.update()
     Title.widthRatio = 0.7 * PixelHeight / 990
     Title.heightRatio = 0.7 * PixelHeight / 990
 end
+function Welcome.wheelmoved(x, y)
+end
+function Welcome.mousepressed(pixelX, pixelY, button, istouch, presses)
+end
+
+function Welcome.mousereleased(pixelX, pixelY, button, istouch, presses)
+end
+
+function Welcome.keypressed(key, scancode, isrepeat)
+end
+
+function Welcome.keyreleased(key, scancode)
+end
+
+function Welcome.update(dt)
+end
+
+function Welcome.quit()
+end
 
 return Welcome
