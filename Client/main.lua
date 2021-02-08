@@ -10,9 +10,12 @@ Bitser = require("spec.bitser")
 PlayGame = require("PlayGame.PlayGame")
 GameOver = require("GameOver.GameOver")
 ReplayGame = require("Replayer.ReplayGame")
+Welcome = require("Welcome.Welcome")
+
 Scene={}--可切换的场景
 Scene["PlayGame"]=PlayGame
 Scene["ReplayGame"]=ReplayGame
+>>>>>>> Client/main.lua
 
 Font = {
     gillsans50 = love.graphics.newFont("Font/gillsans.ttf", 50)
@@ -29,7 +32,7 @@ require("Switcher")
 Running = {}
 
 function love.load()
-    Running = PlayGame
+    Running = Welcome
     Running.Init()
     Switcher.Init()
 end
@@ -62,8 +65,7 @@ end
 function love.update(dt)
     -- 倍速开关，用于快速测试，可以通过注释和取消注释调整
     -- dt = dt * 10
-    Client:update()
-    Running.update(dt)
+    Running.update()
 end
 
 function love.quit()

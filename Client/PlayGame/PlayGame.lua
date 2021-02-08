@@ -64,6 +64,7 @@ function PlayGame.draw()
     BasicMap.DrawMap()
     Operation.DrawSelect()
     Operation.DrawButtons()
+    love.graphics.print(1)
     if PlayGame.judgementState == "Lose" then
         GameOver.DrawJudgeInfo("Lose", GameOver.VanquisherID)
     elseif PlayGame.judgementState == "Win" then
@@ -75,6 +76,7 @@ function PlayGame.UpdateTimerSecond(dt)
 end
 
 function PlayGame.update(dt)
+    Client:update()
     if PlayGame.judgementState == "Lose" or PlayGame.judgementState == "Win" then
         GameOver.Update(love.mouse.getX(), love.mouse.getY())
     end
