@@ -27,8 +27,7 @@ require("Switcher")
 Running = {}
 
 function love.load()
-    Welcome.Init()
-    Running = PlayGame
+    Running = Welcome
     Running.Init()
 end
 
@@ -59,7 +58,6 @@ function love.keyreleased(key, scancode)
 end
 
 function love.draw()
-    Welcome.draw()
     Running.draw()
 end
 
