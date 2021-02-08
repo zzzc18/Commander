@@ -19,6 +19,10 @@ end
 function ReplayGame.DeInit()
 end
 
+function ReplayGame.Destroy()
+    --ReplayGame={}
+end
+
 function ReplayGame.wheelmoved(x, y)
     if not ReplayGame.RunPermission() then
         return

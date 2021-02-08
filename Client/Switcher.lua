@@ -1,52 +1,33 @@
 Switcher = {}
-local preRunning = {}
-local newState = {}
-local delay = 0
--- delay s
-function Switcher.To(info, _delay)
-    print("switch")
-    if _delay == nil then
-        delay = 0
-    else
-        delay = _delay
+local canchange={}
+local target={['p']="PlayGame",
+              ['r']="ReplayGame"}
+              --场景切换快捷键和名称的对应关系
+local now="PlayGame"
+
+function Switcher.Init()
+    for key_i, value_i in pairs(target) do
+        canchange[value_i]={}
+        for key_j, value_j in pairs(target) do
+            canchange[value_i][value_j]=0
+        end
     end
-    if info == "本地对局" then
-        newState = PlayGame
-    elseif info == "对局回放" then
-        newState = ReplayGame
+    canchange["PlayGame"]["ReplayGame"]=1
+    canchange["ReplayGame"]["PlayGame"]=1
+    --canchange["x"]["y"]==1代表可以从场景x切换到场景y
+end
+
+function Switcher.keypressed(key)
+    if target[key]~=nil and canchange[now][target[key]]~=0 then
+        now=target[key]
+        Switcher.To(Scene[target[key]])
     end
+end
+
+function Switcher.To(newState)
     Running.DeInit()
-    preRunning = Running
-    Running = Switcher
+    Running = newState
+    Running.Init()
 end
-function Switcher.Destroy()
-    preRunning.Destroy()
-end
-function Switcher.wheelmoved(x, y)
-    preRunning.wheelmoved(x, y)
-end
-function Switcher.mousepressed(pixelX, pixelY, button, istouch, presses)
-    preRunning.mousepressed(pixelX, pixelY, button, istouch, presses)
-end
-function Switcher.mousereleased(pixelX, pixelY, button, istouch, presses)
-    preRunning.mousereleased(pixelX, pixelY, button, istouch, presses)
-end
-function Switcher.keypressed(key, scancode, isrepeat)
-    preRunning.keypressed(key, scancode, isrepeat)
-end
-function Switcher.keyreleased(key, scancode)
-    preRunning.keyreleased(key, scancode)
-end
-function Switcher.draw()
-    preRunning.draw()
-end
-function Switcher.update(dt)
-    delay = delay - dt
-    if delay <= 0 then
-        --Running.Destroy()
-        Running = newState
-        Running.Init()
-    end
-    preRunning.update(dt)
-end
+
 return Switcher
