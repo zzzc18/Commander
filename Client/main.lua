@@ -64,7 +64,7 @@ end
 function love.update(dt)
     -- 倍速开关，用于快速测试，可以通过注释和取消注释调整
     -- dt = dt * 10
-    Running.update(dt)
+    Running.update()
 end
 
 function love.quit()
