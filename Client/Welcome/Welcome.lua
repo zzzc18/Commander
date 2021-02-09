@@ -1,5 +1,7 @@
 Welcome = {}
 
+Welcome.name = "Welcome"
+
 function Welcome.Init()
     -- PlayGame.Init()
     PressStart = false
