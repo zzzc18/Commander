@@ -24,7 +24,7 @@ function ClientSock.Init()
     Client:on(
         "Update",
         function(data)
-            CSystem.Update(data)
+            Step = CSystem.Update(data)
         end
     )
     Client:on(

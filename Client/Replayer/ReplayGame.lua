@@ -1,5 +1,6 @@
 ReplayGame = {}
 
+ReplayGame.name = "ReplayGame"
 ReplayGame.GameState = "READY"
 ReplayGame.armyID = nil
 ReplayGame.armyNum = 0
@@ -9,8 +10,14 @@ function ReplayGame.RunPermission()
 end
 
 function ReplayGame.Init(MapMode)
+    if DroppedDir == "" then
+        print("replay dir undefined, return to Playgame")
+        print("drag replay folder to game window before switch to ReplayGame")
+        Switcher.To(PlayGame)
+        return
+    end
     Picture.Init()
-    ReplayGame.armyNum = CGameMap.LoadReplayFile()
+    ReplayGame.armyNum = CGameMap.LoadReplayFile(DroppedDir)
     CVerify.Register(0, 2)
     ReplayGame.GameState = "Start"
     BasicMap.Init()
@@ -52,9 +59,9 @@ function ReplayGame.draw()
     if not ReplayGame.RunPermission() then
         return
     end
+    love.graphics.print("Step:" .. Step, 0, 0, 0, 2)
     BasicMap.DrawMap()
     Buttons.DrawButtons()
-    print("!!")
 end
 
 function ReplayGame.UpdateTimerSecond(dt)
@@ -72,7 +79,9 @@ function ReplayGame.update(dt)
         --游戏结束，停止地图更新
         end
     end
-    CSystem.Update(dt)
+    if not IsPause then
+        Step = CSystem.Update(ReplaySpeed * dt)
+    end
 end
 
 return ReplayGame

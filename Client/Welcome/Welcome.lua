@@ -38,7 +38,14 @@ function Welcome.draw()
     end
     if not ReleaseStart then
         love.graphics.setColor(OriColor)
-        love.graphics.draw(Background.img, 0, 0, 0, Background.widthRatio, Background.heightRatio)
+        love.graphics.draw(
+            Background.img,
+            0,
+            0,
+            0,
+            Background.widthRatio,
+            Background.heightRatio
+        )
         love.graphics.draw(
             Title.img,
             PixelWidth / 2,
@@ -50,7 +57,8 @@ function Welcome.draw()
             Title.img:getHeight() / 2
         )
         if
-            mouseX >= PixelWidth / 2 - StartButton.width / 2 and mouseX <= PixelWidth / 2 + StartButton.width / 2 and
+            mouseX >= PixelWidth / 2 - StartButton.width / 2 and
+                mouseX <= PixelWidth / 2 + StartButton.width / 2 and
                 mouseY >= PixelHeight * 2 / 3 - StartButton.height / 2 and
                 mouseY <= PixelHeight * 2 / 3 + StartButton.height / 2
          then
@@ -75,7 +83,8 @@ end
 
 function Welcome.mousepressed(pixelX, pixelY, button, istouch, presses)
     if
-        pixelX >= PixelWidth / 2 - StartButton.width / 2 and pixelX <= PixelWidth / 2 + StartButton.width / 2 and
+        pixelX >= PixelWidth / 2 - StartButton.width / 2 and
+            pixelX <= PixelWidth / 2 + StartButton.width / 2 and
             pixelY >= PixelHeight * 2 / 3 - StartButton.height / 2 and
             pixelY <= PixelHeight * 2 / 3 + StartButton.height / 2
      then
@@ -85,7 +94,8 @@ end
 
 function Welcome.mousereleased(pixelX, pixelY, button, istouch, presses)
     if
-        pixelX >= PixelWidth / 2 - StartButton.width / 2 and pixelX <= PixelWidth / 2 + StartButton.width / 2 and
+        pixelX >= PixelWidth / 2 - StartButton.width / 2 and
+            pixelX <= PixelWidth / 2 + StartButton.width / 2 and
             pixelY >= PixelHeight * 2 / 3 - StartButton.height / 2 and
             pixelY <= PixelHeight * 2 / 3 + StartButton.height / 2
      then
@@ -94,8 +104,9 @@ function Welcome.mousereleased(pixelX, pixelY, button, istouch, presses)
         PressStart = false
     end
     if ReleaseStart == true then
-        Running = PlayGame
-        PlayGame.Init()
+        Switcher.To(PlayGame)
+    --Running = PlayGame
+    --PlayGame.Init()
     end
 end
 

@@ -2,10 +2,9 @@ PlayGame = {}
 
 local Operation = require("PlayGame.Operation")
 
+PlayGame.name = "PlayGame"
+--READY:游戏未开始，不显示界面，无法操作 Start:游戏进行中 Over:游戏结束，显示界面，无法发送移动命令
 PlayGame.GameState = "READY"
---READY:游戏未开始，不显示界面，无法操作
---Start:游戏进行中
---Over:游戏介绍，显示界面，无法发送移动命令
 PlayGame.judgementState = "Running"
 PlayGame.armyID = nil
 PlayGame.armyNum = 0
@@ -60,9 +59,10 @@ end
 
 function PlayGame.draw()
     if PlayGame.GameState == "READY" then
-        love.graphics.print("Waiting...", 300, 300)
+        love.graphics.print("Waiting...", 300, 300, 0, 2)
         return
     end
+    love.graphics.print("Step:" .. Step, 0, 0, 0, 2)
     BasicMap.DrawMap()
     Operation.DrawSelect()
     Operation.DrawButtons()
