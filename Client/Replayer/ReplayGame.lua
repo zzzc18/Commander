@@ -35,9 +35,11 @@ function ReplayGame.mousepressed(pixelX, pixelY, button, istouch, presses)
     if not ReplayGame.RunPermission() then
         return
     end
+    Buttons.MouseState(pixelX, pixelY, 0)
 end
 
 function ReplayGame.mousereleased(pixelX, pixelY, button, istouch, presses)
+    Buttons.MouseState(pixelX, pixelY, 2)
 end
 
 function ReplayGame.keypressed(key, scancode, isrepeat)
@@ -51,6 +53,7 @@ function ReplayGame.draw()
         return
     end
     BasicMap.DrawMap()
+    Buttons.DrawButtons()
 end
 
 function ReplayGame.UpdateTimerSecond(dt)
@@ -61,6 +64,7 @@ function ReplayGame.update(dt)
         return
     end
     MapAdjust.Update()
+    Buttons.Update()
     for i = 1, ReplayGame.armyNum do
         if CGameMap.GetReplayStatus() == true then
             return

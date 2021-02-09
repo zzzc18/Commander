@@ -154,6 +154,7 @@ function GameOver.MouseStateForOpts(mouseX, mouseY, mode)
                 print(v.name)
                 if v.name == "watch replay" then
                     Running = ReplayGame
+                    ReplayGame.Init()
                 end
             end
         end
