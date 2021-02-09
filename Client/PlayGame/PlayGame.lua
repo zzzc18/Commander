@@ -14,7 +14,6 @@ function PlayGame.Init()
     Picture.Init()
     ClientSock.Init()
     Buttons.Init()
-    GameOver.Init()
 end
 
 function PlayGame.DeInit()

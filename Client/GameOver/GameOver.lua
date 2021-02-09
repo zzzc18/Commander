@@ -191,10 +191,12 @@ function GameOver.MouseStateForOpts(mouseX, mouseY, mode)
                 v.color = oriColor
                 print(v.name)
                 if v.name == "play again" then
+                    PlayGame.GameState = "READY"
                     Switcher.To(PlayGame)
                 elseif v.name == "watch replay" then
                     Switcher.To(ReplayGame)
                 elseif v.name == "exit" then
+                    PlayGame.GameState = "READY"
                     Switcher.To(Welcome)
                 end
                 break
