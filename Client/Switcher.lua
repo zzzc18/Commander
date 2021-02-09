@@ -1,25 +1,27 @@
 Switcher = {}
-local canchange={}
-local target={['p']="PlayGame",
-              ['r']="ReplayGame"}
-              --场景切换快捷键和名称的对应关系
-local now="PlayGame"
+local canchange = {}
+local target = {
+    ["p"] = "PlayGame",
+    ["r"] = "ReplayGame"
+}
+--场景切换快捷键和名称的对应关系
+local now = "PlayGame"
 
 function Switcher.Init()
     for key_i, value_i in pairs(target) do
-        canchange[value_i]={}
+        canchange[value_i] = {}
         for key_j, value_j in pairs(target) do
-            canchange[value_i][value_j]=0
+            canchange[value_i][value_j] = 0
         end
     end
-    canchange["PlayGame"]["ReplayGame"]=1
-    canchange["ReplayGame"]["PlayGame"]=1
+    canchange["PlayGame"]["ReplayGame"] = 1
+    canchange["ReplayGame"]["PlayGame"] = 1
     --canchange["x"]["y"]==1代表可以从场景x切换到场景y
 end
 
 function Switcher.keypressed(key)
-    if target[key]~=nil and canchange[now][target[key]]~=0 then
-        now=target[key]
+    if target[key] ~= nil and canchange[now][target[key]] ~= 0 then
+        now = target[key]
         Switcher.To(Scene[target[key]])
     end
 end

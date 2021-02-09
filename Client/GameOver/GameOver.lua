@@ -31,13 +31,7 @@ function GameOver.DrawJudgeInfo(state, VanquisherID)
         judgeMenuHeight
     )
     love.graphics.setColor(0.9, 0.9, 0.9)
-    love.graphics.rectangle(
-        "fill",
-        x - judgeMenuWidth / 2,
-        y - judgeMenuHeight / 2,
-        judgeMenuWidth,
-        judgeMenuHeight
-    )
+    love.graphics.rectangle("fill", x - judgeMenuWidth / 2, y - judgeMenuHeight / 2, judgeMenuWidth, judgeMenuHeight)
     GameOver.DrawGameOverOptions()
     -- 上为选项框，下为文字内容
     love.graphics.setColor(0, 0, 0)
@@ -90,16 +84,7 @@ function GameOver.LoadGameOverOpts()
     local optionRatio = 0.5
     local options = {}
     options.button_play_again =
-        GameOver.NewOptions(
-        "play again",
-        "data/Picture/OPTION_TYPE_PLAYAGAIN.PNG",
-        445,
-        290,
-        190,
-        70,
-        optionRatio,
-        optionColor
-    )
+        GameOver.NewOptions("play again", "data/Picture/OPTION_TYPE_PLAYAGAIN.PNG", 445, 290, 190, 70, optionRatio, optionColor)
     options.button_watch_replay =
         GameOver.NewOptions(
         "watch replay",
@@ -112,16 +97,7 @@ function GameOver.LoadGameOverOpts()
         optionColor
     )
     options.button_exit =
-        GameOver.NewOptions(
-        "exit",
-        "data/Picture/OPTION_TYPE_EXIT.PNG",
-        445,
-        450,
-        190,
-        70,
-        optionRatio,
-        optionColor
-    )
+        GameOver.NewOptions("exit", "data/Picture/OPTION_TYPE_EXIT.PNG", 445, 450, 190, 70, optionRatio, optionColor)
     for i, v in pairs(options) do
         GameOver.insertOpts(v)
     end
@@ -176,6 +152,9 @@ function GameOver.MouseStateForOpts(mouseX, mouseY, mode)
                 GameOver.isClicked = false
                 v.color = oriColor
                 print(v.name)
+                if v.name == "watch replay" then
+                    Running = ReplayGame
+                end
             end
         end
     end

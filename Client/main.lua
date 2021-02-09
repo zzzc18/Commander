@@ -13,7 +13,7 @@ ReplayGame = require("Replayer.ReplayGame")
 Welcome = require("Welcome.Welcome")
 
 Scene = {}
- --可切换的场景
+--可切换的场景
 Scene["PlayGame"] = PlayGame
 Scene["ReplayGame"] = ReplayGame
 
