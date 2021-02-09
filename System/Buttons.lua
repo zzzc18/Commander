@@ -5,8 +5,22 @@ ButtonsBasic = {}
 
 IsPause = false
 
-function Buttons.Init()
-    ButtonsBasic:Load()
+function Buttons.Init(Running)
+    if Welcome == Running then
+        --
+        return
+    end
+    if PlayGame == Running then
+        -- ButtonsBasic:Load()
+        return
+    end
+    if ReplayGame == Running then
+        ButtonsBasic:Load()
+        return
+    end
+end
+
+function Buttons.DeInit()
 end
 
 --orientation:旋转角度;  ratioX,ratioY:X,Y方向上的缩放比例;  diaphaneity:透明度;  offsetX,offsetY:偏移量（默认0）;  scalingcenterX,scalingcenterY:？？（默认0）

@@ -13,11 +13,12 @@ PlayGame.armyNum = 0
 function PlayGame.Init()
     Picture.Init()
     ClientSock.Init()
-    Buttons.Init()
+    Buttons.Init(PlayGame)
     GameOver.GameOverOptInit()
 end
 
 function PlayGame.DeInit()
+    Buttons.DeInit()
     Client:disconnect()
 end
 
@@ -59,6 +60,7 @@ end
 
 function PlayGame.draw()
     if PlayGame.GameState == "READY" then
+        love.graphics.print("Waiting...", 300, 300)
         return
     end
     BasicMap.DrawMap()

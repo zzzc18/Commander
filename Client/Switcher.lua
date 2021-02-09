@@ -2,10 +2,12 @@ Switcher = {}
 local canchange = {}
 local target = {
     ["p"] = "PlayGame",
-    ["r"] = "ReplayGame"
+    ["r"] = "ReplayGame",
+    ["w"] = "Welcome"
 }
 --场景切换快捷键和名称的对应关系
-local now = "PlayGame"
+local now = "Welcome"
+-- local now = "PlayGame"
 
 function Switcher.Init()
     for key_i, value_i in pairs(target) do
@@ -14,6 +16,7 @@ function Switcher.Init()
             canchange[value_i][value_j] = 0
         end
     end
+    canchange["Welcome"]["PlayGame"] = 1
     canchange["PlayGame"]["ReplayGame"] = 1
     canchange["ReplayGame"]["PlayGame"] = 1
     --canchange["x"]["y"]==1代表可以从场景x切换到场景y

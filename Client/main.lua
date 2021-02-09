@@ -14,6 +14,7 @@ Welcome = require("Welcome.Welcome")
 
 Scene = {}
 --可切换的场景
+Scene["Welcome"] = Welcome
 Scene["PlayGame"] = PlayGame
 Scene["ReplayGame"] = ReplayGame
 
