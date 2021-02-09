@@ -14,6 +14,7 @@ function PlayGame.Init()
     Picture.Init()
     ClientSock.Init()
     Buttons.Init()
+    PlayGame.judgementState = "Running"
 end
 
 function PlayGame.DeInit()
