@@ -1,7 +1,7 @@
 Welcome = {}
 
 function Welcome.Init()
-    PlayGame.Init()
+    -- PlayGame.Init()
     PressStart = false
     ReleaseStart = false
     oriColor = {1, 1, 1, 1}
@@ -117,8 +117,9 @@ function Welcome.mousereleased(pixelX, pixelY, button, istouch, presses)
     else
         PressStart = false
     end
-    if ReleaseStart == 1 then
-        PlayGame.mousereleased(pixelX, pixelY, button, istouch, presses)
+    if ReleaseStart == true then
+        Running = PlayGame
+        PlayGame.Init()
     end
 end
 

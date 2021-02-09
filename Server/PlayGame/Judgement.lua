@@ -17,8 +17,7 @@ function Judgement.Judge()
         -- i为要判断的ID，若其被击败，则Vanquisher是击败i的玩家ID,否则Vanquisher为0
         if Vanquisher ~= 0 and Judgement.state[i] == 1 then
             Judgement.state[i] = 0
-            ServerSock.SendLose(i)
-            ServerSock.SendVanquisherID(i, Vanquisher)
+            ServerSock.SendLose(i, Vanquisher)
             CGameMap.Surrender(i, Vanquisher) -- 改归属
         end
         if Judgement.state[i] == 1 then

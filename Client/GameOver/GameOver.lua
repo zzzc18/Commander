@@ -1,6 +1,16 @@
 GameOver = {}
 
 GameOver.VanquisherID = 0
+GameOver.armyNum = 0
+
+function GameOver.draw()
+    BasicMap.DrawMap()
+    if PlayGame.judgementState == "Lose" then
+        GameOver.DrawJudgeInfo("Lose", GameOver.VanquisherID)
+    elseif PlayGame.judgementState == "Win" then
+        GameOver.DrawJudgeInfo("Win", nil)
+    end
+end
 
 function GameOver.DrawJudgeInfo(state, VanquisherID)
     local x, y, judgeMenuWidth, judgeMenuHeight
@@ -76,13 +86,9 @@ function GameOver.DrawJudgeInfo(state, VanquisherID)
     -- 确保只有裁决信息使用了新字体
 end
 
-EachOption = {}
+EachOption = {} -- 内部只有几个table,每个table对应一个选项
 
 GameOver.isClicked = false
-
-function GameOver.Update(mouseX, mouseY)
-    GameOver.MouseStateForOpts(mouseX, mouseY, 1)
-end
 
 -- 初始化裁决界面的选项的参数
 function GameOver.LoadGameOverOpts()
@@ -146,8 +152,14 @@ function GameOver.insertOpts(Option)
 end
 
 -- 初始化裁决界面选项
-function GameOver.GameOverOptInit()
+function GameOver.Init()
+    EachOption = {}
+    GameOver.armyNum = PlayGame.armyNum
     GameOver.LoadGameOverOpts()
+end
+
+function GameOver.DeInit()
+    return
 end
 
 function GameOver.DrawGameOverOptions()
@@ -170,12 +182,22 @@ function GameOver.MouseStateForOpts(mouseX, mouseY, mode)
             if mode == 0 then
                 GameOver.isClicked = true
                 v.color = ClickedColor
+                break
             elseif mode == 1 and not GameOver.isClicked then
                 GameOver.changeColor(v, oriColor, selectedColor)
+                break
             elseif mode == 2 then
                 GameOver.isClicked = false
                 v.color = oriColor
                 print(v.name)
+                if v.name == "play again" then
+                    Switcher.To(PlayGame)
+                elseif v.name == "watch replay" then
+                    Switcher.To(ReplayGame)
+                elseif v.name == "exit" then
+                    Switcher.To(Welcome)
+                end
+                break
             end
         end
     end
@@ -213,6 +235,20 @@ function GameOver.GameOverOptUpdate(x, y, ratio)
     for i, v in pairs(EachOption) do
         GameOver.optZoom(v, x, y, ratio)
     end
+end
+
+function GameOver.update(dt)
+    Client:update()
+    GameOver.MouseStateForOpts(love.mouse.getX(), love.mouse.getY(), 1)
+    MapAdjust.Update()
+end
+
+function GameOver.mousepressed(pixelX, pixelY, button, istouch, presses)
+    GameOver.MouseStateForOpts(pixelX, pixelY, 0)
+end
+
+function GameOver.mousereleased(pixelX, pixelY, button, istouch, presses)
+    GameOver.MouseStateForOpts(pixelX, pixelY, 2)
 end
 
 return GameOver

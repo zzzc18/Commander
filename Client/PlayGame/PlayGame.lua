@@ -14,7 +14,7 @@ function PlayGame.Init()
     Picture.Init()
     ClientSock.Init()
     Buttons.Init()
-    GameOver.GameOverOptInit()
+    GameOver.Init()
 end
 
 function PlayGame.DeInit()
@@ -65,11 +65,6 @@ function PlayGame.draw()
     Operation.DrawSelect()
     Operation.DrawButtons()
     love.graphics.print(1)
-    if PlayGame.judgementState == "Lose" then
-        GameOver.DrawJudgeInfo("Lose", GameOver.VanquisherID)
-    elseif PlayGame.judgementState == "Win" then
-        GameOver.DrawJudgeInfo("Win", nil)
-    end
 end
 
 function PlayGame.UpdateTimerSecond(dt)
@@ -77,9 +72,9 @@ end
 
 function PlayGame.update(dt)
     Client:update()
-    if PlayGame.judgementState == "Lose" or PlayGame.judgementState == "Win" then
+    --[[if PlayGame.judgementState == "Lose" or PlayGame.judgementState == "Win" then
         GameOver.Update(love.mouse.getX(), love.mouse.getY())
-    end
+    end]]
     if PlayGame.GameState ~= "Start" then
         return
     end

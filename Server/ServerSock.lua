@@ -37,19 +37,12 @@ function ServerSock.SendGameOver()
     Server:sendToAll("GameOver")
 end
 
-function ServerSock.SendLose(armyID)
-    Server:sendToAll("Lose", {armyID = armyID})
+function ServerSock.SendLose(armyID, VanquisherID)
+    Server:sendToAll("Lose", {armyID = armyID, VanquisherID = VanquisherID})
 end
 
 function ServerSock.SendWin(armyID)
     Server:sendToAll("Win", {armyID = armyID})
-end
-
-function ServerSock.SendVanquisherID(armyID, VanquisherID)
-    Server:sendToAll(
-        "VanquisherID",
-        {armyID = armyID, VanquisherID = VanquisherID}
-    )
 end
 
 return ServerSock
