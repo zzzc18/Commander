@@ -20,17 +20,11 @@ function Operation.IsConnected(posX1, posY1, posX2, posY2)
     end
 
     if posX1 % 2 == 1 then
-        if
-            (posX1 == posX2 + 1 or posX1 == posX2 - 1) and
-                (posY1 == posY2 or posY1 == posY2 - 1)
-         then
+        if (posX1 == posX2 + 1 or posX1 == posX2 - 1) and (posY1 == posY2 or posY1 == posY2 - 1) then
             return true
         end
     else
-        if
-            (posX1 == posX2 + 1 or posX1 == posX2 - 1) and
-                (posY1 == posY2 or posY1 == posY2 + 1)
-         then
+        if (posX1 == posX2 + 1 or posX1 == posX2 - 1) and (posY1 == posY2 or posY1 == posY2 + 1) then
             return true
         end
     end
@@ -55,14 +49,7 @@ function Operation.MoveTo(x, y)
         return
     end
 
-    if
-        not Operation.IsConnected(
-            Operation.SelectPos.x,
-            Operation.SelectPos.y,
-            x,
-            y
-        )
-     then
+    if not Operation.IsConnected(Operation.SelectPos.x, Operation.SelectPos.y, x, y) then
         return
     end
 
@@ -114,15 +101,15 @@ end
 function Operation.CatchMousePressed(pixelX, pixelY, button, istouch, presses)
     -- 鼠标坐标转换为地图坐标
     local x, y = BasicMap.Pixel2Coordinate(pixelX, pixelY)
-    local buttonName = Buttons.MouseState(pixelX, pixelY, 0)
+    -- local buttonName = Buttons.MouseState(pixelX, pixelY, 0)
     if PlayGame.judgementState == "Win" or PlayGame.judgementState == "Lose" then
         GameOver.MouseStateForOpts(pixelX, pixelY, 0)
         return
     end
-    --说明鼠标点了按钮
-    if buttonName ~= nil then
-        return
-    end
+    -- --说明鼠标点了按钮
+    -- if buttonName ~= nil then
+    --     return
+    -- end
 
     -- 说明鼠标点的位置不在地图中
     if x == -1 and y == -1 then
@@ -140,7 +127,7 @@ function Operation.CatchMousePressed(pixelX, pixelY, button, istouch, presses)
 end
 
 function Operation.CatchMouseReleased(pixelX, pixelY, button, istouch, presses)
-    Buttons.MouseState(pixelX, pixelY, 2)
+    -- Buttons.MouseState(pixelX, pixelY, 2)
     if PlayGame.judgementState == "Win" or PlayGame.judgementState == "Lose" then
         GameOver.MouseStateForOpts(pixelX, pixelY, 2)
     end
@@ -150,17 +137,16 @@ function Operation.DrawSelect()
     if Operation.SelectPos == nil then
         return
     end
-    local pixelX, pixelY =
-        BasicMap.Coordinate2Pixel(Operation.SelectPos.x, Operation.SelectPos.y)
+    local pixelX, pixelY = BasicMap.Coordinate2Pixel(Operation.SelectPos.x, Operation.SelectPos.y)
     Picture.DrawSelect(pixelX, pixelY)
 end
 
 function Operation.DrawButtons()
-    Buttons.DrawButtons()
+    -- Buttons.DrawButtons()
 end
 
 function Operation.Update()
-    Buttons.Update()
+    -- Buttons.Update()
 end
 
 return Operation

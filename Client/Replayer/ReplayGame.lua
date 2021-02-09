@@ -14,6 +14,7 @@ function ReplayGame.Init(MapMode)
     CVerify.Register(0, 2)
     ReplayGame.GameState = "Start"
     BasicMap.Init()
+    Buttons.Init(ReplayGame)
 end
 
 function ReplayGame.DeInit()
