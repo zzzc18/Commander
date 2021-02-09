@@ -12,10 +12,10 @@ GameOver = require("GameOver.GameOver")
 ReplayGame = require("Replayer.ReplayGame")
 Welcome = require("Welcome.Welcome")
 
-Scene={}--可切换的场景
-Scene["PlayGame"]=PlayGame
-Scene["ReplayGame"]=ReplayGame
->>>>>>> Client/main.lua
+Scene = {}
+ --可切换的场景
+Scene["PlayGame"] = PlayGame
+Scene["ReplayGame"] = ReplayGame
 
 Font = {
     gillsans50 = love.graphics.newFont("Font/gillsans.ttf", 50)
