@@ -9,34 +9,123 @@ function Buttons.Init()
     ButtonsBasic:Load()
 end
 
-function ButtonsBasic:NewButton(path, name, x, y)
+--orientation:旋转角度;  ratioX,ratioY:X,Y方向上的缩放比例;  diaphaneity:透明度;  offsetX,offsetY:偏移量（默认0）;  scalingcenterX,scalingcenterY:？？（默认0）
+function Buttons.NewButton(
+    path,
+    name,
+    x,
+    y,
+    orientation,
+    ratioX,
+    ratioY,
+    diaphaneity,
+    offsetX,
+    offsetY,
+    scalingcenterX,
+    scalingcenterY)
     local button = {}
     button.imag = love.graphics.newImage(path)
     button.name = name
     button.x = x
     button.y = y
-    button.ratio = self.ratio
-    button.offset = -20
-    button.scalingcenterX = 0
-    button.scalingcenterY = 0
-    button.diaphaneity = self.initialDiaphaneity
+    button.orientation = orientation
+    button.ratioX = ratioX
+    button.ratioY = ratioY
+    button.diaphaneity = diaphaneity
+    if nil == offsetX then
+        button.offsetX = 0
+    else
+        button.offsetX = offsetX
+    end
+    if nil == offsetY then
+        button.offsetY = 0
+    else
+        button.offsetY = offsetY
+    end
+    if nil == scalingcenterX then
+        button.scalingcenterX = 0
+    else
+        button.scalingcenterX = scalingcenterX
+    end
+    if nil == scalingcenterY then
+        button.scalingcenterY = 0
+    else
+        button.scalingcenterY = scalingcenterY
+    end
     return button
 end
 
 function ButtonsBasic:Load()
     local windowWidth, windowHeight = love.graphics.getDimensions()
-    EachButton.Last = ButtonsBasic:NewButton("data/Picture/BUTTON_TYPE_LAST.png", "last", windowWidth * 0.35, windowHeight * 0)
-    EachButton.Pause =
-        ButtonsBasic:NewButton("data/Picture/BUTTON_TYPE_PAUSE.png", "pause", windowWidth * 0.45, windowHeight * 0)
-    EachButton.Continue =
-        ButtonsBasic:NewButton("data/Picture/BUTTON_TYPE_CONTINUE.png", "continue", windowWidth * 0.45, windowHeight * 0)
-    EachButton.Next = ButtonsBasic:NewButton("data/Picture/BUTTON_TYPE_NEXT.png", "next", windowWidth * 0.55, windowHeight * 0)
-    EachButton.ShiftSpeed =
-        ButtonsBasic:NewButton("data/Picture/BUTTON_TYPE_SHIFTSPEED.png", "shiftSpeed", windowWidth * 0.65, windowHeight * 0)
     self.initialRatio = 0.2
     self.laterRatio = 0.25
     self.initialDiaphaneity = 0.5
     self.laterDiaphaneity = 1
+    EachButton.Last =
+        Buttons.NewButton(
+        "data/Picture/BUTTON_TYPE_LAST.png",
+        "last",
+        windowWidth * 0.35,
+        windowHeight * 0,
+        0,
+        self.initialRatio,
+        self.initialRatio,
+        self.initialDiaphaneity,
+        -20,
+        -20
+    )
+    EachButton.Pause =
+        Buttons.NewButton(
+        "data/Picture/BUTTON_TYPE_PAUSE.png",
+        "pause",
+        windowWidth * 0.45,
+        windowHeight * 0,
+        0,
+        self.initialRatio,
+        self.initialRatio,
+        self.initialDiaphaneity,
+        -20,
+        -20
+    )
+    EachButton.Continue =
+        Buttons.NewButton(
+        "data/Picture/BUTTON_TYPE_CONTINUE.png",
+        "continue",
+        windowWidth * 0.45,
+        windowHeight * 0,
+        0,
+        self.initialRatio,
+        self.initialRatio,
+        self.initialDiaphaneity,
+        -20,
+        -20
+    )
+    EachButton.Next =
+        Buttons.NewButton(
+        "data/Picture/BUTTON_TYPE_NEXT.png",
+        "next",
+        windowWidth * 0.55,
+        windowHeight * 0,
+        0,
+        self.initialRatio,
+        self.initialRatio,
+        self.initialDiaphaneity,
+        -20,
+        -20
+    )
+    EachButton.ShiftSpeed =
+        Buttons.NewButton(
+        "data/Picture/BUTTON_TYPE_SHIFTSPEED.png",
+        "shiftSpeed",
+        windowWidth * 0.65,
+        windowHeight * 0,
+        0,
+        self.initialRatio,
+        self.initialRatio,
+        self.initialDiaphaneity,
+        -20,
+        -20
+    )
 end
 
 function Buttons.DrawButtons()
@@ -48,15 +137,16 @@ function Buttons.DrawButtons()
                 button.imag,
                 button.x,
                 button.y,
-                0,
-                button.ratio,
-                button.ratio,
-                button.offset,
-                button.offset,
+                button.orientation,
+                button.ratioX,
+                button.ratioY,
+                button.offsetX,
+                button.offsetY,
                 button.scalingcenterX,
                 button.scalingcenterY
             )
-            button.ratio = ButtonsBasic.initialRatio
+            button.ratioX = ButtonsBasic.initialRatio
+            button.ratioY = ButtonsBasic.initialRatio
         end
     end
 end
@@ -111,7 +201,8 @@ function ButtonsBasic:ButtonsRelease(button)
 end
 
 function ButtonsBasic:MouseSuspension(button)
-    button.ratio = self.laterRatio * love.graphics.getWidth() / 1080
+    button.ratioX = self.laterRatio * love.graphics.getWidth() / 1080
+    button.ratioY = self.laterRatio * love.graphics.getWidth() / 1080
 end
 
 function Buttons.Update()
@@ -122,7 +213,8 @@ function Buttons.Update()
     EachButton.Next.x = windowWidth * 0.55
     EachButton.ShiftSpeed.x = windowWidth * 0.65
     for i, button in pairs(EachButton) do
-        button.ratio = ButtonsBasic.initialRatio * windowWidth / 1080
+        button.ratioX = ButtonsBasic.initialRatio * windowWidth / 1080
+        button.ratioY = ButtonsBasic.initialRatio * windowWidth / 1080
     end
     Buttons.MouseState(love.mouse.getX(), love.mouse.getY(), 1)
 end

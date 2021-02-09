@@ -64,7 +64,6 @@ function PlayGame.draw()
     BasicMap.DrawMap()
     Operation.DrawSelect()
     Operation.DrawButtons()
-    love.graphics.print(1)
     if PlayGame.judgementState == "Lose" then
         GameOver.DrawJudgeInfo("Lose", GameOver.VanquisherID)
     elseif PlayGame.judgementState == "Win" then
