@@ -65,7 +65,7 @@ end
 
 function GameOver.update(dt)
     Client:update()
-    Buttons.MouseState(love.mouse.getX(), love.mouse.getY(), 1)
+    Buttons.Update()
     MapAdjust.Update()
 end
 
@@ -75,6 +75,12 @@ end
 
 function GameOver.mousereleased(pixelX, pixelY, button, istouch, presses)
     Buttons.MouseState(pixelX, pixelY, 2)
+end
+
+function GameOver.keypressed(key, scancode, isrepeat)
+end
+
+function GameOver.keyreleased(key, scancode)
 end
 
 return GameOver

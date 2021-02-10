@@ -53,7 +53,6 @@ function love.mousereleased(pixelX, pixelY, button, istouch, presses)
 end
 
 function love.keypressed(key, scancode, isrepeat)
-    Switcher.keypressed(key)
     Running.keypressed(key, scancode, isrepeat)
 end
 

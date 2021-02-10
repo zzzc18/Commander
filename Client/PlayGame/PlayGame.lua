@@ -15,6 +15,7 @@ function PlayGame.Init()
     ClientSock.Init()
     Buttons.Init()
     PlayGame.judgementState = "Running"
+    PlayGame.GameState = "READY"
 end
 
 function PlayGame.DeInit()
@@ -73,9 +74,6 @@ end
 
 function PlayGame.update(dt)
     Client:update()
-    --[[if PlayGame.judgementState == "Lose" or PlayGame.judgementState == "Win" then
-        GameOver.Update(love.mouse.getX(), love.mouse.getY())
-    end]]
     if PlayGame.GameState ~= "Start" then
         return
     end

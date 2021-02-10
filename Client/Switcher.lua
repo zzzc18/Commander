@@ -8,7 +8,6 @@ local target = {
 }
 --场景切换快捷键和名称的对应关系
 local now = "Welcome"
--- local now = "PlayGame"
 
 function Switcher.Init()
     for key_i, value_i in pairs(target) do
@@ -27,7 +26,7 @@ function Switcher.Init()
     --canchange["x"]["y"]==1代表可以从场景x切换到场景y
 end
 
-function Switcher.keypressed(key)
+function Switcher.Switch(key)
     if target[key] ~= nil and canchange[now][target[key]] ~= 0 then
         now = target[key]
         print(target[key])
