@@ -39,7 +39,9 @@ function ReplayGame.mousepressed(pixelX, pixelY, button, istouch, presses)
 end
 
 function ReplayGame.mousereleased(pixelX, pixelY, button, istouch, presses)
-    Buttons.MouseState(pixelX, pixelY, 2)
+    local name = Buttons.MouseState(pixelX, pixelY, 2)
+    if name ~= nil then
+    end
 end
 
 function ReplayGame.keypressed(key, scancode, isrepeat)

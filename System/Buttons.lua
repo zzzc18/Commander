@@ -5,9 +5,17 @@ ButtonsBasic = {}
 ButtonsData = {}
 
 IsPause = false
+IsClicked = false
 
 function Buttons.Init()
     ButtonsBasic:Load()
+end
+
+function Buttons.DeInit()
+    EachButton = {}
+    ButtonsData = {}
+    IsPause = false
+    IsClicked = false
 end
 
 function Buttons.DeInit()
@@ -29,7 +37,8 @@ function Buttons.NewButton(
     offsetX,
     offsetY,
     scalingcenterX,
-    scalingcenterY)
+    scalingcenterY,
+    color)
     local button = {}
     button.imag = love.graphics.newImage(path)
     button.name = name
@@ -58,6 +67,9 @@ function Buttons.NewButton(
         button.scalingcenterY = 0
     else
         button.scalingcenterY = scalingcenterY
+    end
+    if nil == color then
+        button.color = {1, 1, 1, 1}
     end
     table.insert(EachButton, button)
 end
@@ -137,6 +149,40 @@ function ButtonsBasic:Load()
         )
         return
     end
+    if GameOver == Running then
+        ButtonsData.optionRatio = 0.5
+        Buttons.NewButton(
+            "data/Picture/OPTION_TYPE_PLAYAGAIN.PNG",
+            "play again",
+            445,
+            290,
+            0,
+            ButtonsData.optionRatio,
+            ButtonsData.optionRatio,
+            1
+        )
+        Buttons.NewButton(
+            "data/Picture/OPTION_TYPE_WATCHREPLAY.PNG",
+            "watch replay",
+            445,
+            370,
+            0,
+            ButtonsData.optionRatio,
+            ButtonsData.optionRatio,
+            1
+        )
+        Buttons.NewButton(
+            "data/Picture/OPTION_TYPE_EXIT.PNG",
+            "exit",
+            445,
+            450,
+            0,
+            ButtonsData.optionRatio,
+            ButtonsData.optionRatio,
+            1
+        )
+        return
+    end
 end
 
 function Buttons.DrawButtons()
@@ -169,6 +215,24 @@ function Buttons.DrawButtons()
         end
         return
     end
+    if GameOver == Running then
+        for i, button in pairs(EachButton) do
+            love.graphics.setColor(button.color)
+            love.graphics.draw(
+                button.imag,
+                button.x,
+                button.y,
+                button.orientation,
+                button.ratioX,
+                button.ratioY,
+                button.offsetX,
+                button.offsetY,
+                button.scalingcenterX,
+                button.scalingcenterY
+            )
+        end
+        return
+    end
 end
 
 -- mode==0时为点击，1为悬浮,2为松开
@@ -192,7 +256,6 @@ function Buttons.MouseState(mouseX, mouseY, mode)
                     inButton = true
                     if 0 == mode then
                         button.diaphaneity = ButtonsData.laterDiaphaneity
-                        name = "readyToClick"
                         break
                     elseif 1 == mode then
                         ButtonsBasic:MouseSuspension(button)
@@ -209,12 +272,59 @@ function Buttons.MouseState(mouseX, mouseY, mode)
         end
         return name
     end
+    if GameOver == Running then
+        local name = nil
+        local inButton = false
+        local selectedColor = {0.7, 0.7, 0.7, 1}
+        local ClickedColor = {0.867, 0.627, 0.867, 0.68}
+        for i, button in pairs(EachButton) do
+            if
+                mouseX > button.x and mouseX < button.x + 190 * love.graphics.getHeight() / 720 and mouseY > button.y and
+                    mouseY < button.y + 70 * love.graphics.getHeight() / 720
+             then
+                inButton = true
+                if 0 == mode then
+                    IsClicked = true
+                    ButtonsBasic:ChangeColor(button, ClickedColor)
+                    break
+                elseif 1 == mode and not IsClicked then
+                    ButtonsBasic:ChangeColor(button, selectedColor)
+                    break
+                elseif 2 == mode then
+                    IsClicked = false
+                    name = ButtonsBasic:ButtonsRelease(button)
+                    if button.name == "play again" then
+                        Switcher.keypressed("p")
+                    elseif button.name == "watch replay" then
+                        Switcher.keypressed("r")
+                    elseif button.name == "exit" then
+                        Switcher.keypressed("w")
+                    end
+                    break
+                end
+            end
+        end
+        if not inButton then
+            ButtonsBasic:ChangeColor()
+        end
+        return name
+    end
 end
 
 function ButtonsBasic:CleanAll()
     for i, button in pairs(EachButton) do
         button.diaphaneity = ButtonsData.initialDiaphaneity
     end
+end
+
+function ButtonsBasic:ChangeColor(v, color)
+    for i, button in pairs(EachButton) do
+        button.color = {1, 1, 1, 1}
+    end
+    if v ~= nil then
+        v.color = color
+    end
+    return
 end
 
 function ButtonsBasic:ButtonsRelease(button)
@@ -252,6 +362,21 @@ function Buttons.Update()
             button.ratioY = ButtonsData.initialRatio * windowWidth / 1080
         end
         Buttons.MouseState(love.mouse.getX(), love.mouse.getY(), 1)
+        return
+    end
+    if GameOver == Running then
+        local windowWidth, windowHeight = love.getDimensions()
+        local ratio = windowHeight / 720
+        for i, button in pairs(EachButton) do
+            button.x = windowWidth / 2 - 95 * ratio
+            if button.name == "play again" then
+                button.y = windowHeight / 2 - 70 * ratio
+            elseif button.name == "watch replay" then
+                button.y = windowHeight / 2 + 10 * ratio
+            elseif button.name == "exit" then
+                button.y = windowHeight / 2 + 90 * ratio
+            end
+        end
         return
     end
 end

@@ -1,7 +1,6 @@
 Welcome = {}
 
 function Welcome.Init()
-    -- PlayGame.Init()
     PressStart = false
     ReleaseStart = false
     OriColor = {1, 1, 1, 1}
@@ -99,27 +98,15 @@ function Welcome.mousereleased(pixelX, pixelY, button, istouch, presses)
 end
 
 function Welcome.keypressed(key, scancode, isrepeat)
-    -- if ReleaseStart == 1 then
-    --     PlayGame.keypressed(key, scancode, isrepeat)
-    -- end
 end
 
 function Welcome.keyreleased(key, scancode)
-    -- if ReleaseStart == 1 then
-    --     PlayGame.keyreleased(key, scancode)
-    -- end
 end
 
 function Welcome.wheelmoved(x, y)
-    -- if ReleaseStart then
-    --     PlayGame.wheelmoved(x, y)
-    -- end
 end
 
 function Welcome.update()
-    -- if ReleaseStart then
-    --     PlayGame.update()
-    -- end
     PixelWidth, PixelHeight = love.graphics.getPixelDimensions()
     Title.widthRatio = 0.6 * PixelHeight / 990
     Title.heightRatio = 0.6 * PixelHeight / 990
