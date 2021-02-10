@@ -2,7 +2,7 @@ Buttons = {}
 
 EachButton = {}
 ButtonsBasic = {}
-ButtonsGameOver = {}
+ButtonsData = {}
 
 IsPause = false
 IsClicked = false
@@ -21,13 +21,14 @@ function Buttons.Init()
         return
     end
     if GameOver == Running then
-        ButtonsGameOver:Load()
+        ButtonsBasic:LoadGameOverOpts()
         return
     end
 end
 
 function Buttons.DeInit()
     EachButton = {}
+    ButtonsData = {}
     IsPause = false
     IsClicked = false
 end
@@ -84,19 +85,19 @@ end
 
 function ButtonsBasic:Load()
     local windowWidth, windowHeight = love.graphics.getDimensions()
-    self.initialRatio = 0.2
-    self.laterRatio = 0.25
-    self.initialDiaphaneity = 0.5
-    self.laterDiaphaneity = 1
+    ButtonsData.initialRatio = 0.2
+    ButtonsData.laterRatio = 0.25
+    ButtonsData.initialDiaphaneity = 0.5
+    ButtonsData.laterDiaphaneity = 1
     Buttons.NewButton(
         "data/Picture/BUTTON_TYPE_LAST.png",
         "last",
         windowWidth * 0.35,
         windowHeight * 0,
         0,
-        self.initialRatio,
-        self.initialRatio,
-        self.initialDiaphaneity,
+        ButtonsData.initialRatio,
+        ButtonsData.initialRatio,
+        ButtonsData.initialDiaphaneity,
         -20,
         -20
     )
@@ -106,9 +107,9 @@ function ButtonsBasic:Load()
         windowWidth * 0.45,
         windowHeight * 0,
         0,
-        self.initialRatio,
-        self.initialRatio,
-        self.initialDiaphaneity,
+        ButtonsData.initialRatio,
+        ButtonsData.initialRatio,
+        ButtonsData.initialDiaphaneity,
         -20,
         -20
     )
@@ -118,9 +119,9 @@ function ButtonsBasic:Load()
         windowWidth * 0.45,
         windowHeight * 0,
         0,
-        self.initialRatio,
-        self.initialRatio,
-        self.initialDiaphaneity,
+        ButtonsData.initialRatio,
+        ButtonsData.initialRatio,
+        ButtonsData.initialDiaphaneity,
         -20,
         -20
     )
@@ -130,9 +131,9 @@ function ButtonsBasic:Load()
         windowWidth * 0.55,
         windowHeight * 0,
         0,
-        self.initialRatio,
-        self.initialRatio,
-        self.initialDiaphaneity,
+        ButtonsData.initialRatio,
+        ButtonsData.initialRatio,
+        ButtonsData.initialDiaphaneity,
         -20,
         -20
     )
@@ -142,25 +143,25 @@ function ButtonsBasic:Load()
         windowWidth * 0.65,
         windowHeight * 0,
         0,
-        self.initialRatio,
-        self.initialRatio,
-        self.initialDiaphaneity,
+        ButtonsData.initialRatio,
+        ButtonsData.initialRatio,
+        ButtonsData.initialDiaphaneity,
         -20,
         -20
     )
 end
 
 -- 裁决界面的按钮
-function ButtonsGameOver:Load()
-    self.optionRatio = 0.5
+function ButtonsBasic:LoadGameOverOpts()
+    ButtonsData.optionRatio = 0.5
     Buttons.NewButton(
         "data/Picture/OPTION_TYPE_PLAYAGAIN.PNG",
         "play again",
         445,
         290,
         0,
-        self.optionRatio,
-        self.optionRatio,
+        ButtonsData.optionRatio,
+        ButtonsData.optionRatio,
         1
     )
     Buttons.NewButton(
@@ -169,8 +170,8 @@ function ButtonsGameOver:Load()
         445,
         370,
         0,
-        self.optionRatio,
-        self.optionRatio,
+        ButtonsData.optionRatio,
+        ButtonsData.optionRatio,
         1
     )
     Buttons.NewButton(
@@ -179,8 +180,8 @@ function ButtonsGameOver:Load()
         445,
         450,
         0,
-        self.optionRatio,
-        self.optionRatio,
+        ButtonsData.optionRatio,
+        ButtonsData.optionRatio,
         1
     )
 end
@@ -212,8 +213,8 @@ function Buttons.DrawButtons()
                     button.scalingcenterX,
                     button.scalingcenterY
                 )
-                button.ratioX = ButtonsBasic.initialRatio
-                button.ratioY = ButtonsBasic.initialRatio
+                button.ratioX = ButtonsData.initialRatio
+                button.ratioY = ButtonsData.initialRatio
             end
         end
     end
@@ -261,7 +262,7 @@ function Buttons.MouseState(mouseX, mouseY, mode)
                  then
                     inButton = true
                     if 0 == mode then
-                        button.diaphaneity = ButtonsBasic.laterDiaphaneity
+                        button.diaphaneity = ButtonsData.laterDiaphaneity
                         name = "readyToClick"
                         break
                     elseif 1 == mode then
@@ -294,21 +295,18 @@ function Buttons.MouseState(mouseX, mouseY, mode)
                 inButton = true
                 if 0 == mode then
                     IsClicked = true
-                    ButtonsGameOver:ChangeColor(button, ClickedColor)
+                    ButtonsBasic:ChangeColor(button, ClickedColor)
                     break
                 elseif 1 == mode and not IsClicked then
-                    ButtonsGameOver:ChangeColor(button, selectedColor)
+                    ButtonsBasic:ChangeColor(button, selectedColor)
                     break
                 elseif 2 == mode then
                     IsClicked = false
                     name = ButtonsBasic:ButtonsRelease(button)
                     if button.name == "play again" then
                         PlayGame.GameState = "READY"
-                        Client:disconnect()
                         Switcher.To(PlayGame)
                     elseif button.name == "watch replay" then
-                        PlayGame.GameState = "READY"
-                        Client:disconnect()
                         Switcher.To(ReplayGame)
                     elseif button.name == "exit" then
                         PlayGame.GameState = "READY"
@@ -319,7 +317,7 @@ function Buttons.MouseState(mouseX, mouseY, mode)
             end
         end
         if not inButton then
-            ButtonsGameOver:ChangeColor()
+            ButtonsBasic:ChangeColor()
         end
         return name
     end
@@ -327,11 +325,11 @@ end
 
 function ButtonsBasic:CleanAll()
     for i, button in pairs(EachButton) do
-        button.diaphaneity = self.initialDiaphaneity
+        button.diaphaneity = ButtonsData.initialDiaphaneity
     end
 end
 
-function ButtonsGameOver:ChangeColor(v, color)
+function ButtonsBasic:ChangeColor(v, color)
     for i, button in pairs(EachButton) do
         button.color = {1, 1, 1, 1}
     end
@@ -342,7 +340,7 @@ function ButtonsGameOver:ChangeColor(v, color)
 end
 
 function ButtonsBasic:ButtonsRelease(button)
-    button.diaphaneity = self.initialDiaphaneity
+    button.diaphaneity = ButtonsData.initialDiaphaneity
     if "pause" == button.name then
         IsPause = true
     elseif "continue" == button.name then
@@ -353,8 +351,8 @@ function ButtonsBasic:ButtonsRelease(button)
 end
 
 function ButtonsBasic:MouseSuspension(button)
-    button.ratioX = self.laterRatio * love.graphics.getWidth() / 1080
-    button.ratioY = self.laterRatio * love.graphics.getWidth() / 1080
+    button.ratioX = ButtonsData.laterRatio * love.graphics.getWidth() / 1080
+    button.ratioY = ButtonsData.laterRatio * love.graphics.getWidth() / 1080
 end
 
 function Buttons.Update()
@@ -372,8 +370,8 @@ function Buttons.Update()
             else
                 button.x = windowWidth * (i * 0.1 + 0.15)
             end
-            button.ratioX = ButtonsBasic.initialRatio * windowWidth / 1080
-            button.ratioY = ButtonsBasic.initialRatio * windowWidth / 1080
+            button.ratioX = ButtonsData.initialRatio * windowWidth / 1080
+            button.ratioY = ButtonsData.initialRatio * windowWidth / 1080
         end
         Buttons.MouseState(love.mouse.getX(), love.mouse.getY(), 1)
         return
