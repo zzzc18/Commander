@@ -7,18 +7,7 @@ ButtonsData = {}
 IsPause = false
 
 function Buttons.Init()
-    if Welcome == Running then
-        --
-        return
-    end
-    if PlayGame == Running then
-        -- ButtonsBasic:Load()
-        return
-    end
-    if ReplayGame == Running then
-        ButtonsBasic:Load()
-        return
-    end
+    ButtonsBasic:Load()
 end
 
 function Buttons.DeInit()
@@ -146,6 +135,7 @@ function ButtonsBasic:Load()
             -20,
             -20
         )
+        return
     end
 end
 
@@ -177,6 +167,7 @@ function Buttons.DrawButtons()
                 button.ratioY = ButtonsData.initialRatio
             end
         end
+        return
     end
 end
 
