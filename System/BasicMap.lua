@@ -163,10 +163,7 @@ function BasicMap.DrawPath()
         local step = 0
         local srcX, srcY, dstX, dstY = CGameMap.GetArmyPath(i, step)
         while srcX ~= -1 do
-            if
-                not CGameMap.GetVision(srcX, srcY) and
-                    not CGameMap.GetVision(dstX, dstY)
-             then
+            if not CGameMap.GetVision(srcX, srcY) and not CGameMap.GetVision(dstX, dstY) then
                 break
             end
             local sx, sy = BasicMap.Coordinate2Pixel(srcX, srcY)
@@ -205,6 +202,23 @@ function BasicMap.Init()
     BasicMap.Focus.y = BasicMap.MapSize.y / 2
     BasicMap.horizontalDis = math.sqrt(3) * BasicMap.radius
     BasicMap.verticalDis = 1.5 * BasicMap.radius
+end
+
+function BasicMap.DrawReady()
+    love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.draw(Background.img, 0, 0, 0, Background.widthRatio, Background.heightRatio)
+    love.graphics.draw(
+        Title.img,
+        PixelWidth / 2,
+        PixelHeight / 3,
+        0,
+        Title.widthRatio,
+        Title.heightRatio,
+        Title.img:getWidth() / 2,
+        Title.img:getHeight() / 2
+    )
+    local waitingImag = love.graphics.newImage("data/Picture/Waiting.png")
+    love.graphics.draw(waitingImag, PixelWidth / 2, PixelHeight / 3 * 2, 0, 0.4, 0.4, 267, 73)
 end
 
 return BasicMap
