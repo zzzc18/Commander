@@ -2,6 +2,7 @@ Buttons = {}
 
 EachButton = {}
 ButtonsBasic = {}
+ButtonsData = {}
 
 IsPause = false
 
@@ -22,7 +23,7 @@ end
 
 function Buttons.DeInit()
     EachButton = {}
-    ButtonsBasic = {}
+    ButtonsData = {}
     IsPause = false
 end
 
@@ -73,71 +74,79 @@ function Buttons.NewButton(
 end
 
 function ButtonsBasic:Load()
-    local windowWidth, windowHeight = love.graphics.getDimensions()
-    self.initialRatio = 0.2
-    self.laterRatio = 0.25
-    self.initialDiaphaneity = 0.5
-    self.laterDiaphaneity = 1
-    Buttons.NewButton(
-        "data/Picture/BUTTON_TYPE_LAST.png",
-        "last",
-        windowWidth * 0.35,
-        windowHeight * 0,
-        0,
-        self.initialRatio,
-        self.initialRatio,
-        self.initialDiaphaneity,
-        -20,
-        -20
-    )
-    Buttons.NewButton(
-        "data/Picture/BUTTON_TYPE_PAUSE.png",
-        "pause",
-        windowWidth * 0.45,
-        windowHeight * 0,
-        0,
-        self.initialRatio,
-        self.initialRatio,
-        self.initialDiaphaneity,
-        -20,
-        -20
-    )
-    Buttons.NewButton(
-        "data/Picture/BUTTON_TYPE_CONTINUE.png",
-        "continue",
-        windowWidth * 0.45,
-        windowHeight * 0,
-        0,
-        self.initialRatio,
-        self.initialRatio,
-        self.initialDiaphaneity,
-        -20,
-        -20
-    )
-    Buttons.NewButton(
-        "data/Picture/BUTTON_TYPE_NEXT.png",
-        "next",
-        windowWidth * 0.55,
-        windowHeight * 0,
-        0,
-        self.initialRatio,
-        self.initialRatio,
-        self.initialDiaphaneity,
-        -20,
-        -20
-    )
-    Buttons.NewButton(
-        "data/Picture/BUTTON_TYPE_SHIFTSPEED.png",
-        "shiftSpeed",
-        windowWidth * 0.65,
-        windowHeight * 0,
-        0,
-        self.initialRatio,
-        self.initialRatio,
-        self.initialDiaphaneity,
-        -20,
-        -20
-    )
+    if Welcome == Running then
+        return
+    end
+    if PlayGame == Running then
+        return
+    end
+    if ReplayGame == Running then
+        local windowWidth, windowHeight = love.graphics.getDimensions()
+        ButtonsData.initialRatio = 0.2
+        ButtonsData.laterRatio = 0.25
+        ButtonsData.initialDiaphaneity = 0.5
+        ButtonsData.laterDiaphaneity = 1
+        Buttons.NewButton(
+            "data/Picture/BUTTON_TYPE_LAST.png",
+            "last",
+            windowWidth * 0.35,
+            windowHeight * 0,
+            0,
+            ButtonsData.initialRatio,
+            ButtonsData.initialRatio,
+            ButtonsData.initialDiaphaneity,
+            -20,
+            -20
+        )
+        Buttons.NewButton(
+            "data/Picture/BUTTON_TYPE_PAUSE.png",
+            "pause",
+            windowWidth * 0.45,
+            windowHeight * 0,
+            0,
+            ButtonsData.initialRatio,
+            ButtonsData.initialRatio,
+            ButtonsData.initialDiaphaneity,
+            -20,
+            -20
+        )
+        Buttons.NewButton(
+            "data/Picture/BUTTON_TYPE_CONTINUE.png",
+            "continue",
+            windowWidth * 0.45,
+            windowHeight * 0,
+            0,
+            ButtonsData.initialRatio,
+            ButtonsData.initialRatio,
+            ButtonsData.initialDiaphaneity,
+            -20,
+            -20
+        )
+        Buttons.NewButton(
+            "data/Picture/BUTTON_TYPE_NEXT.png",
+            "next",
+            windowWidth * 0.55,
+            windowHeight * 0,
+            0,
+            ButtonsData.initialRatio,
+            ButtonsData.initialRatio,
+            ButtonsData.initialDiaphaneity,
+            -20,
+            -20
+        )
+        Buttons.NewButton(
+            "data/Picture/BUTTON_TYPE_SHIFTSPEED.png",
+            "shiftSpeed",
+            windowWidth * 0.65,
+            windowHeight * 0,
+            0,
+            ButtonsData.initialRatio,
+            ButtonsData.initialRatio,
+            ButtonsData.initialDiaphaneity,
+            -20,
+            -20
+        )
+    end
 end
 
 function Buttons.DrawButtons()
@@ -164,8 +173,8 @@ function Buttons.DrawButtons()
                     button.scalingcenterX,
                     button.scalingcenterY
                 )
-                button.ratioX = ButtonsBasic.initialRatio
-                button.ratioY = ButtonsBasic.initialRatio
+                button.ratioX = ButtonsData.initialRatio
+                button.ratioY = ButtonsData.initialRatio
             end
         end
     end
@@ -191,7 +200,7 @@ function Buttons.MouseState(mouseX, mouseY, mode)
                  then
                     inButton = true
                     if 0 == mode then
-                        button.diaphaneity = ButtonsBasic.laterDiaphaneity
+                        button.diaphaneity = ButtonsData.laterDiaphaneity
                         name = "readyToClick"
                         break
                     elseif 1 == mode then
@@ -213,12 +222,12 @@ end
 
 function ButtonsBasic:CleanAll()
     for i, button in pairs(EachButton) do
-        button.diaphaneity = self.initialDiaphaneity
+        button.diaphaneity = ButtonsData.initialDiaphaneity
     end
 end
 
 function ButtonsBasic:ButtonsRelease(button)
-    button.diaphaneity = self.initialDiaphaneity
+    button.diaphaneity = ButtonsData.initialDiaphaneity
     if "pause" == button.name then
         IsPause = true
     elseif "continue" == button.name then
@@ -229,8 +238,8 @@ function ButtonsBasic:ButtonsRelease(button)
 end
 
 function ButtonsBasic:MouseSuspension(button)
-    button.ratioX = self.laterRatio * love.graphics.getWidth() / 1080
-    button.ratioY = self.laterRatio * love.graphics.getWidth() / 1080
+    button.ratioX = ButtonsData.laterRatio * love.graphics.getWidth() / 1080
+    button.ratioY = ButtonsData.laterRatio * love.graphics.getWidth() / 1080
 end
 
 function Buttons.Update()
@@ -248,8 +257,8 @@ function Buttons.Update()
             else
                 button.x = windowWidth * (i * 0.1 + 0.15)
             end
-            button.ratioX = ButtonsBasic.initialRatio * windowWidth / 1080
-            button.ratioY = ButtonsBasic.initialRatio * windowWidth / 1080
+            button.ratioX = ButtonsData.initialRatio * windowWidth / 1080
+            button.ratioY = ButtonsData.initialRatio * windowWidth / 1080
         end
         Buttons.MouseState(love.mouse.getX(), love.mouse.getY(), 1)
         return

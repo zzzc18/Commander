@@ -151,10 +151,8 @@ function GameOver.MouseStateForOpts(mouseX, mouseY, mode)
             elseif mode == 2 then
                 GameOver.isClicked = false
                 v.color = oriColor
-                print(v.name)
                 if v.name == "watch replay" then
-                    Running = ReplayGame
-                    ReplayGame.Init()
+                    Switcher.keypressed("r")
                 end
             end
         end

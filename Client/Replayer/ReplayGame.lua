@@ -54,7 +54,6 @@ function ReplayGame.draw()
     end
     BasicMap.DrawMap()
     Buttons.DrawButtons()
-    print("!!")
 end
 
 function ReplayGame.UpdateTimerSecond(dt)

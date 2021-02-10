@@ -25,6 +25,7 @@ end
 function Switcher.keypressed(key)
     if target[key] ~= nil and canchange[now][target[key]] ~= 0 then
         now = target[key]
+        print(target[key])
         Switcher.To(Scene[target[key]])
     end
 end

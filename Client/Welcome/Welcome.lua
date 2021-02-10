@@ -94,8 +94,7 @@ function Welcome.mousereleased(pixelX, pixelY, button, istouch, presses)
         PressStart = false
     end
     if ReleaseStart == true then
-        Running = PlayGame
-        PlayGame.Init()
+        Switcher.keypressed("p")
     end
 end
 
