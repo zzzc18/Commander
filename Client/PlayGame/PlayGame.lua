@@ -19,6 +19,7 @@ function PlayGame.Init()
 end
 
 function PlayGame.DeInit()
+    PlayGame.GameState = "READY"
     Buttons.DeInit()
     Client:disconnect()
 end
@@ -72,10 +73,10 @@ function PlayGame.draw()
     end
     BasicMap.DrawMap()
     Operation.DrawSelect()
-    Operation.DrawButtons()
     if PlayGame.GameState == "Menu" then
         Operation.DrawMenu()
     end
+    Operation.DrawButtons()
 end
 
 function PlayGame.UpdateTimerSecond(dt)

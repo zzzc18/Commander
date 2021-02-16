@@ -14,9 +14,7 @@ end
 
 function GameOver.DrawJudgeInfo(state, VanquisherID)
     local x, y, judgeMenuWidth, judgeMenuHeight
-    local title
     local fontScale
-    local titleOffset = 0
     local menu
     local fontDefault = love.graphics.getFont()
     love.graphics.setFont(Font.gillsans50)
