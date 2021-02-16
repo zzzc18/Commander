@@ -69,12 +69,25 @@ function GameOver.update(dt)
     MapAdjust.Update()
 end
 
+function GameOver.wheelmoved(x, y)
+    MapAdjust.Catchwheelmoved(x, y)
+end
+
 function GameOver.mousepressed(pixelX, pixelY, button, istouch, presses)
     Buttons.MouseState(pixelX, pixelY, 0)
 end
 
 function GameOver.mousereleased(pixelX, pixelY, button, istouch, presses)
-    Buttons.MouseState(pixelX, pixelY, 2)
+    local name = Buttons.MouseState(pixelX, pixelY, 2)
+    if "play again" == name then
+        Switcher.Switch("p")
+    end
+    if "watch replay" == name then
+        Switcher.Switch("r")
+    end
+    if "exit" == name then
+        Switcher.Switch("w")
+    end
 end
 
 function GameOver.keypressed(key, scancode, isrepeat)

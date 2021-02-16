@@ -46,7 +46,13 @@ function Welcome.mousepressed(pixelX, pixelY, button, istouch, presses)
 end
 
 function Welcome.mousereleased(pixelX, pixelY, button, istouch, presses)
-    Buttons.MouseState(pixelX, pixelY, 2)
+    local name = Buttons.MouseState(pixelX, pixelY, 2)
+    if "start" == name then
+        Switcher.Switch("p")
+    end
+    if "replay" == name then
+        Switcher.Switch("r")
+    end
 end
 
 function Welcome.keypressed(key, scancode, isrepeat)

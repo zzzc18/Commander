@@ -49,10 +49,16 @@ function PlayGame.mousepressed(pixelX, pixelY, button, istouch, presses)
 end
 
 function PlayGame.mousereleased(pixelX, pixelY, button, istouch, presses)
+    if PlayGame.GameState == "READY" then
+        return
+    end
     Operation.CatchMouseReleased(pixelX, pixelY, button, istouch, presses)
 end
 
 function PlayGame.keypressed(key, scancode, isrepeat)
+    if PlayGame.GameState == "READY" then
+        return
+    end
     Operation.CatchKeyPressed(key)
 end
 
