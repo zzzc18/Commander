@@ -109,10 +109,40 @@ function ButtonsBasic:Load()
         return
     end
     if PlayGame == Running then
+        ButtonsData.optionRatio = 0.5
         ButtonsData.ClickedColor = {0.439, 0.502, 1, 1}
         ButtonsData.SelectedColor = {0.7, 0.7, 0.7, 1}
-        -- Buttons.NewButton("data/Picture/MenuButton.png", "menu", 0, 0, 0, 1, 1, 1)
-        Buttons.NewButton("data/Picture/OPTION_TYPE_EXIT.png", "menu", 0, 0, 0, 1, 1, 1)
+        Buttons.NewButton(
+            "data/Picture/BUTTON_TYPE_MENU.png",
+            "menu",
+            windowWidth*0.01,
+            windowHeight*0.01,
+            0,
+            0.63,
+            0.63,
+            1
+        )
+        --[[Buttons.NewButton(
+            "data/Picture/OPTION_TYPE_CONTINUE.PNG",
+            "continue",
+            445,
+            290,
+            0,
+            ButtonsData.optionRatio,
+            ButtonsData.optionRatio,
+            1
+        )
+        Buttons.NewButton(
+            "data/Picture/OPTION_TYPE_EXIT.PNG",
+            "exit",
+            445,
+            370,
+            0,
+            ButtonsData.optionRatio,
+            ButtonsData.optionRatio,
+            1
+        )]]
+        -- Buttons.NewButton("data/Picture/OPTION_TYPE_EXIT.png", "menu", 0, 0, 0, 1, 1, 1)
         return
     end
     if ReplayGame == Running then
@@ -255,7 +285,10 @@ function Buttons.DrawButtons()
     end
     if ReplayGame == Running then
         for i, button in pairs(EachButton) do
-            if true == IsPause and "pause" == button.name or false == IsPause and "continue" == button.name then
+            if
+                true == IsPause and "pause" == button.name or
+                    false == IsPause and "continue" == button.name
+             then
             else
                 love.graphics.setColor(1, 1, 1, button.diaphaneity)
                 love.graphics.draw(
@@ -301,7 +334,8 @@ function Buttons.MouseState(mouseX, mouseY, mode)
         local inButton = false
         for i, button in pairs(EachButton) do
             if
-                mouseX >= button.x - button.offsetX and mouseX <= button.x + button.offsetX and
+                mouseX >= button.x - button.offsetX and
+                    mouseX <= button.x + button.offsetX and
                     mouseY >= button.y - button.offsetY and
                     mouseY <= button.y + button.offsetY
              then
@@ -330,7 +364,9 @@ function Buttons.MouseState(mouseX, mouseY, mode)
         local inButton = false
         for i, button in ipairs(EachButton) do
             if
-                mouseX > button.x and mouseX < button.x + 63 * love.graphics.getWidth() / 1080 and mouseY > button.y and
+                mouseX > button.x and
+                    mouseX < button.x + 63 * love.graphics.getWidth() / 1080 and
+                    mouseY > button.y and
                     mouseY < button.y + 63 * love.graphics.getWidth() / 1080
              then
                 inButton = true
@@ -354,10 +390,15 @@ function Buttons.MouseState(mouseX, mouseY, mode)
         local name
         local inButton = false
         for i, button in pairs(EachButton) do
-            if true == IsPause and "pause" == button.name or false == IsPause and "continue" == button.name then
+            if
+                true == IsPause and "pause" == button.name or
+                    false == IsPause and "continue" == button.name
+             then
             else
                 if
-                    mouseX > button.x and mouseX < button.x + 63 * love.graphics.getWidth() / 1080 and mouseY > button.y and
+                    mouseX > button.x and
+                        mouseX < button.x + 63 * love.graphics.getWidth() / 1080 and
+                        mouseY > button.y and
                         mouseY < button.y + 63 * love.graphics.getWidth() / 1080
                  then
                     inButton = true
@@ -383,7 +424,9 @@ function Buttons.MouseState(mouseX, mouseY, mode)
 
         for i, button in pairs(EachButton) do
             if
-                mouseX > button.x and mouseX < button.x + 190 * love.graphics.getHeight() / 720 and mouseY > button.y and
+                mouseX > button.x and
+                    mouseX < button.x + 190 * love.graphics.getHeight() / 720 and
+                    mouseY > button.y and
                     mouseY < button.y + 70 * love.graphics.getHeight() / 720
              then
                 inButton = true
