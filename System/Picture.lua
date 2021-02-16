@@ -3,24 +3,19 @@ Picture = {}
 NodeImageSet = {}
 SelectImage = {}
 ArrowImage = {}
+Menu = {}
 
 function NodeImageSet:Load()
     self.center = {}
     self.center.x = 97
     self.center.y = 97
     self.divRatio = 135
-    self["NODE_TYPE_BLANK"] =
-        love.graphics.newImage("data/Picture/NODE_TYPE_BLANK.png")
-    self["NODE_TYPE_HILL"] =
-        love.graphics.newImage("data/Picture/NODE_TYPE_HILL.png")
-    self["NODE_TYPE_FORT"] =
-        love.graphics.newImage("data/Picture/NODE_TYPE_FORT.png")
-    self["NODE_TYPE_KING"] =
-        love.graphics.newImage("data/Picture/NODE_TYPE_KING.png")
-    self["NODE_TYPE_OBSTACLE"] =
-        love.graphics.newImage("data/Picture/NODE_TYPE_OBSTACLE.png")
-    self["NODE_TYPE_MARSH"] =
-        love.graphics.newImage("data/Picture/NODE_TYPE_MARSH.png")
+    self["NODE_TYPE_BLANK"] = love.graphics.newImage("data/Picture/NODE_TYPE_BLANK.png")
+    self["NODE_TYPE_HILL"] = love.graphics.newImage("data/Picture/NODE_TYPE_HILL.png")
+    self["NODE_TYPE_FORT"] = love.graphics.newImage("data/Picture/NODE_TYPE_FORT.png")
+    self["NODE_TYPE_KING"] = love.graphics.newImage("data/Picture/NODE_TYPE_KING.png")
+    self["NODE_TYPE_OBSTACLE"] = love.graphics.newImage("data/Picture/NODE_TYPE_OBSTACLE.png")
+    self["NODE_TYPE_MARSH"] = love.graphics.newImage("data/Picture/NODE_TYPE_MARSH.png")
 end
 
 function SelectImage:Load()
@@ -37,10 +32,15 @@ function ArrowImage:Load()
     self.divRatio = 50
 end
 
+function Menu:Load()
+    self.image = love.graphics.newImage("data/Picture/menu.png")
+end
+
 function Picture.Init()
     NodeImageSet:Load()
     SelectImage:Load()
     ArrowImage:Load()
+    --Menu:Load()在Client的PlayGame.Init()里调用
 end
 
 function Picture.DrawNode(pixelX, pixelY, nodeType)
@@ -89,6 +89,49 @@ function Picture.DrawArrow(pixelX, pixelY, targetX, targetY)
         BasicMap.radius / ArrowImage.divRatio,
         ArrowImage.center.x,
         ArrowImage.center.y
+    )
+end
+
+function Picture.DrawReady()
+    love.graphics.setColor(1, 1, 1, 1)
+    local background = {img = love.graphics.newImage("data/Picture/BackGround.jpg"), ratioX = 3, ratioY = 3}
+    local title = {img = love.graphics.newImage("data/Picture/Title.png"), ratioX = 0.6, ratioY = 0.6}
+    local waiting = {img = love.graphics.newImage("data/Picture/Waiting.png"), ratioX = 0.4, ratioY = 0.4}
+    love.graphics.draw(background.img, 0, 0, 0, background.ratioX, background.ratioY)
+    love.graphics.draw(
+        title.img,
+        PixelWidth / 2,
+        PixelHeight / 3,
+        0,
+        title.ratioX,
+        title.ratioY,
+        title.img:getWidth() / 2,
+        title.img:getHeight() / 2
+    )
+    love.graphics.draw(
+        waiting.img,
+        PixelWidth / 2,
+        PixelHeight / 3 * 2,
+        0,
+        waiting.ratioX,
+        waiting.ratioY,
+        waiting.img:getWidth() / 2,
+        waiting.img:getHeight() / 2
+    )
+end
+
+function Picture.DrawMenu()
+    love.graphics.setColor(1, 1, 1, 1)
+    local windowWidth, windowHeight = love.graphics.getDimensions()
+    love.graphics.draw(
+        Menu.image,
+        windowWidth / 2,
+        windowHeight / 2,
+        0,
+        windowWidth / 1080 / 2,
+        windowHeight / 720 / 2,
+        Menu.image:getWidth() / 2,
+        Menu.image:getHeight() / 2
     )
 end
 

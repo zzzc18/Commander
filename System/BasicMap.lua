@@ -204,32 +204,32 @@ function BasicMap.Init()
     BasicMap.verticalDis = 1.5 * BasicMap.radius
 end
 
-function BasicMap.DrawReady()
-    love.graphics.setColor(1, 1, 1, 1)
-    local background = {img = love.graphics.newImage("data/Picture/BackGround.jpg"), widthRatio = 3, heightRatio = 3}
-    local title = {img = love.graphics.newImage("data/Picture/Title.png"), widthRatio = 0.6, heightRatio = 0.6}
-    local waiting = {img = love.graphics.newImage("data/Picture/Waiting.png"), widthRatio = 0.4, heightRatio = 0.4}
-    love.graphics.draw(background.img, 0, 0, 0, background.widthRatio, background.heightRatio)
-    love.graphics.draw(
-        title.img,
-        PixelWidth / 2,
-        PixelHeight / 3,
-        0,
-        title.widthRatio,
-        title.heightRatio,
-        title.img:getWidth() / 2,
-        title.img:getHeight() / 2
-    )
-    love.graphics.draw(
-        waiting.img,
-        PixelWidth / 2,
-        PixelHeight / 3 * 2,
-        0,
-        waiting.widthRatio,
-        waiting.heightRatio,
-        waiting.img:getWidth() / 2,
-        waiting.img:getHeight() / 2
-    )
-end
+-- function BasicMap.DrawReady()
+--     love.graphics.setColor(1, 1, 1, 1)
+--     local background = {img = love.graphics.newImage("data/Picture/BackGround.jpg"), widthRatio = 3, heightRatio = 3}
+--     local title = {img = love.graphics.newImage("data/Picture/Title.png"), widthRatio = 0.6, heightRatio = 0.6}
+--     local waiting = {img = love.graphics.newImage("data/Picture/Waiting.png"), widthRatio = 0.4, heightRatio = 0.4}
+--     love.graphics.draw(background.img, 0, 0, 0, background.widthRatio, background.heightRatio)
+--     love.graphics.draw(
+--         title.img,
+--         PixelWidth / 2,
+--         PixelHeight / 3,
+--         0,
+--         title.widthRatio,
+--         title.heightRatio,
+--         title.img:getWidth() / 2,
+--         title.img:getHeight() / 2
+--     )
+--     love.graphics.draw(
+--         waiting.img,
+--         PixelWidth / 2,
+--         PixelHeight / 3 * 2,
+--         0,
+--         waiting.widthRatio,
+--         waiting.heightRatio,
+--         waiting.img:getWidth() / 2,
+--         waiting.img:getHeight() / 2
+--     )
+-- end
 
 return BasicMap

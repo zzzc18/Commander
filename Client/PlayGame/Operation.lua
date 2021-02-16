@@ -123,7 +123,8 @@ end
 function Operation.CatchMouseReleased(pixelX, pixelY, button, istouch, presses)
     local name = Buttons.MouseState(pixelX, pixelY, 2)
     if "menu" == name then
-        Switcher.Switch("m")
+        PlayGame.GameState = "Menu"
+        print("Menu")
     end
 end
 
@@ -137,6 +138,10 @@ end
 
 function Operation.DrawButtons()
     Buttons.DrawButtons()
+end
+
+function Operation.DrawMenu()
+    Picture.DrawMenu()
 end
 
 function Operation.Update()

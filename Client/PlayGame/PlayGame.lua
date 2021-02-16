@@ -2,20 +2,20 @@ PlayGame = {}
 
 local Operation = require("PlayGame.Operation")
 
-PlayGame.GameState = "READY"
 --READY:游戏未开始，不显示界面，无法操作
 --Start:游戏进行中
 --Over:游戏介绍，显示界面，无法发送移动命令
+--Menu:菜单界面
+PlayGame.GameState = "READY"
 PlayGame.judgementState = "Running"
 PlayGame.armyID = nil
 PlayGame.armyNum = 0
 
 function PlayGame.Init()
     Picture.Init()
+    Menu:Load()
     ClientSock.Init()
     Buttons.Init()
-    PlayGame.judgementState = "Running"
-    PlayGame.GameState = "READY"
 end
 
 function PlayGame.DeInit()
@@ -67,12 +67,15 @@ end
 
 function PlayGame.draw()
     if PlayGame.GameState == "READY" then
-        BasicMap.DrawReady()
+        Picture.DrawReady()
         return
     end
     BasicMap.DrawMap()
     Operation.DrawSelect()
     Operation.DrawButtons()
+    if PlayGame.GameState == "Menu" then
+        Operation.DrawMenu()
+    end
 end
 
 function PlayGame.UpdateTimerSecond(dt)
@@ -80,7 +83,7 @@ end
 
 function PlayGame.update(dt)
     Client:update()
-    if PlayGame.GameState ~= "Start" then
+    if PlayGame.GameState ~= "Start" and PlayGame.GameState ~= "Menu" then
         return
     end
     MapAdjust.Update()
