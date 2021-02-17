@@ -124,7 +124,6 @@ function Operation.CatchMouseReleased(pixelX, pixelY, button, istouch, presses)
     local name = Buttons.MouseState(pixelX, pixelY, 2)
     if "menu" == name then
         PlayGame.GameState = "Menu"
-        print("Menu")
     elseif "continue" == name then
         PlayGame.GameState = "Start"
     elseif "exit" == name then

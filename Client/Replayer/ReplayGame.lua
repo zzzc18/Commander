@@ -5,7 +5,7 @@ ReplayGame.armyID = nil
 ReplayGame.armyNum = 0
 
 function ReplayGame.RunPermission()
-    return ReplayGame.GameState == "Start"
+    return ReplayGame.GameState == "Start" or ReplayGame.GameState == "Menu"
 end
 
 function ReplayGame.Init()
@@ -15,9 +15,12 @@ function ReplayGame.Init()
     ReplayGame.GameState = "Start"
     BasicMap.Init()
     Buttons.Init()
+    Menu:Load()
 end
 
 function ReplayGame.DeInit()
+    Buttons.DeInit()
+    ReplayGame.GameState = "READY"
 end
 
 function ReplayGame.Destroy()
@@ -40,7 +43,12 @@ end
 
 function ReplayGame.mousereleased(pixelX, pixelY, button, istouch, presses)
     local name = Buttons.MouseState(pixelX, pixelY, 2)
-    if name ~= nil then
+    if "menu" == name then
+        ReplayGame.GameState = "Menu"
+    elseif "continue_Opt" == name then
+        ReplayGame.GameState = "Start"
+    elseif "exit_Opt" == name then
+        Switcher.Switch("w")
     end
 end
 
@@ -55,6 +63,9 @@ function ReplayGame.draw()
         return
     end
     BasicMap.DrawMap()
+    if ReplayGame.GameState == "Menu" then
+        Picture.DrawMenu()
+    end
     Buttons.DrawButtons()
 end
 
