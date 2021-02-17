@@ -62,6 +62,7 @@ function ReplayGame.draw()
         return
     end
     BasicMap.DrawMap()
+    BasicMap.DrawPath()
     if ReplayGame.GameState == "Menu" then
         Picture.DrawMenu()
     end

@@ -71,6 +71,7 @@ function PlayGame.draw()
         return
     end
     BasicMap.DrawMap()
+    BasicMap.DrawPath()
     Operation.DrawSelect()
     if PlayGame.GameState == "Menu" then
         Operation.DrawMenu()

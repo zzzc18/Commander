@@ -182,7 +182,6 @@ function BasicMap.DrawMap()
             BasicMap.DrawNode(i, j)
         end
     end
-    BasicMap.DrawPath()
 end
 
 function BasicMap.Init()
