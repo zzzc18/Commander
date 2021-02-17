@@ -12,11 +12,8 @@ function Welcome.Init()
     -- Background = {}
     -- Background.img = love.graphics.newImage("data/Picture/Background.JPG")
     BGAnimation.load()
-    BGimg1.widthRatio = 3
-    BGimg1.heightRatio = 3
-    BGimg2.widthRatio = 3
-    BGimg2.heightRatio = 3
-
+    BGimg1.path = love.graphics.newImage("data/Picture/Background.JPG")
+    BGimg2.path = BGimg1.path
     Buttons.Init()
 end
 
@@ -30,22 +27,23 @@ function Welcome.draw()
     local PixelWidth, PixelHeight = love.graphics.getPixelDimensions()
     if Running == Welcome then
         love.graphics.setColor(1, 1, 1, 1)
-        love.graphics.draw(
-            BGimg1.path,
-            BGimg1.x,
-            BGimg1.y,
-            0,
-            BGimg1.widthRatio,
-            BGimg1.heightRatio
-        )
-        love.graphics.draw(
-            BGimg2.path,
-            BGimg2.x,
-            BGimg2.y,
-            0,
-            BGimg2.widthRatio,
-            BGimg2.heightRatio
-        )
+        -- love.graphics.draw(
+        --     BGimg1.path,
+        --     BGimg1.x,
+        --     BGimg1.y,
+        --     0,
+        --     BGimg1.widthRatio,
+        --     BGimg1.heightRatio
+        -- )
+        -- love.graphics.draw(
+        --     BGimg2.path,
+        --     BGimg2.x,
+        --     BGimg2.y,
+        --     0,
+        --     BGimg2.widthRatio,
+        --     BGimg2.heightRatio
+        -- )
+        BGAnimation.draw()
         love.graphics.draw(
             Title.img,
             PixelWidth / 2,

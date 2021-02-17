@@ -10,12 +10,18 @@ function NodeImageSet:Load()
     self.center.x = 97
     self.center.y = 97
     self.divRatio = 135
-    self["NODE_TYPE_BLANK"] = love.graphics.newImage("data/Picture/NODE_TYPE_BLANK.png")
-    self["NODE_TYPE_HILL"] = love.graphics.newImage("data/Picture/NODE_TYPE_HILL.png")
-    self["NODE_TYPE_FORT"] = love.graphics.newImage("data/Picture/NODE_TYPE_FORT.png")
-    self["NODE_TYPE_KING"] = love.graphics.newImage("data/Picture/NODE_TYPE_KING.png")
-    self["NODE_TYPE_OBSTACLE"] = love.graphics.newImage("data/Picture/NODE_TYPE_OBSTACLE.png")
-    self["NODE_TYPE_MARSH"] = love.graphics.newImage("data/Picture/NODE_TYPE_MARSH.png")
+    self["NODE_TYPE_BLANK"] =
+        love.graphics.newImage("data/Picture/NODE_TYPE_BLANK.png")
+    self["NODE_TYPE_HILL"] =
+        love.graphics.newImage("data/Picture/NODE_TYPE_HILL.png")
+    self["NODE_TYPE_FORT"] =
+        love.graphics.newImage("data/Picture/NODE_TYPE_FORT.png")
+    self["NODE_TYPE_KING"] =
+        love.graphics.newImage("data/Picture/NODE_TYPE_KING.png")
+    self["NODE_TYPE_OBSTACLE"] =
+        love.graphics.newImage("data/Picture/NODE_TYPE_OBSTACLE.png")
+    self["NODE_TYPE_MARSH"] =
+        love.graphics.newImage("data/Picture/NODE_TYPE_MARSH.png")
 end
 
 function SelectImage:Load()
@@ -96,12 +102,20 @@ function Picture.DrawArrow(pixelX, pixelY, targetX, targetY)
     )
 end
 
-function Picture.DrawReady()
+function Picture.DrawReady(BGAnimation)
     love.graphics.setColor(1, 1, 1, 1)
-    local background = {img = love.graphics.newImage("data/Picture/BackGround.jpg"), ratioX = 3, ratioY = 3}
-    local title = {img = love.graphics.newImage("data/Picture/Title.png"), ratioX = 0.6, ratioY = 0.6}
-    local waiting = {img = love.graphics.newImage("data/Picture/Waiting.png"), ratioX = 0.4, ratioY = 0.4}
-    love.graphics.draw(background.img, 0, 0, 0, background.ratioX, background.ratioY)
+
+    BGAnimation.draw()
+    local title = {
+        img = love.graphics.newImage("data/Picture/Title.png"),
+        ratioX = 0.6,
+        ratioY = 0.6
+    }
+    local waiting = {
+        img = love.graphics.newImage("data/Picture/Waiting.png"),
+        ratioX = 0.4,
+        ratioY = 0.4
+    }
     love.graphics.draw(
         title.img,
         PixelWidth / 2,
