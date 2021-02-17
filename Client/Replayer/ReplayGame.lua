@@ -15,7 +15,6 @@ function ReplayGame.Init()
     ReplayGame.GameState = "Start"
     BasicMap.Init()
     Buttons.Init()
-    Menu:Load()
 end
 
 function ReplayGame.DeInit()
