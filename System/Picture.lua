@@ -40,7 +40,9 @@ function Picture.Init()
     NodeImageSet:Load()
     SelectImage:Load()
     ArrowImage:Load()
-    --Menu:Load()在Client的PlayGame.Init()里调用
+    if ServerSock == nil then
+        Menu:Load()
+    end
 end
 
 function Picture.DrawNode(pixelX, pixelY, nodeType)

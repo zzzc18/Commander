@@ -13,7 +13,6 @@ PlayGame.armyNum = 0
 
 function PlayGame.Init()
     Picture.Init()
-    Menu:Load()
     ClientSock.Init()
     Buttons.Init()
 end
