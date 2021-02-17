@@ -77,20 +77,20 @@ end
 function ButtonsBasic:Load()
     local windowWidth, windowHeight = love.graphics.getDimensions()
     if Welcome == Running then
-        local startImg = love.graphics.newImage("data/Picture/start.PNG")
-        local replayImg = love.graphics.newImage("data/Picture/replay.PNG")
         ButtonsData.clickedColor = {0.439, 0.502, 1, 1}
         ButtonsData.selectedColor = {0.7, 0.7, 0.7, 1}
+        ButtonsData.startRatio = 0.8
+        ButtonsData.replayRatio = 0.7
         Buttons.NewButton(
             "data/Picture/start.PNG",
             "start",
             windowWidth / 2,
             windowHeight / 2,
             0,
-            0.8,
-            0.8,
-            startImg:getWidth() / 2,
-            startImg:getHeight() / 2
+            ButtonsData.startRatio,
+            ButtonsData.startRatio,
+            273 / 2,
+            107 / 2
         )
         Buttons.NewButton(
             "data/Picture/replay.PNG",
@@ -98,10 +98,10 @@ function ButtonsBasic:Load()
             windowWidth / 2,
             windowHeight * 7 / 10,
             0,
-            0.7,
-            0.7,
-            replayImg:getWidth() / 2,
-            replayImg:getHeight() / 2
+            ButtonsData.replayRatio,
+            ButtonsData.replayRatio,
+            344 / 2,
+            179 / 2
         )
         return
     end
@@ -357,9 +357,9 @@ function Buttons.MouseState(mouseX, mouseY, mode)
         local inButton = false
         for i, button in pairs(EachButton) do
             if
-                mouseX >= button.x - button.offsetX and mouseX <= button.x + button.offsetX and
-                    mouseY >= button.y - button.offsetY and
-                    mouseY <= button.y + button.offsetY
+                mouseX >= button.x - button.offsetX * button.ratioX and mouseX <= button.x + button.offsetX * button.ratioX and
+                    mouseY >= button.y - button.offsetY * button.ratioY and
+                    mouseY <= button.y + button.offsetY * button.ratioY
              then
                 inButton = true
                 if 0 == mode then
@@ -392,7 +392,6 @@ function Buttons.MouseState(mouseX, mouseY, mode)
                         name = "Clicked"
                         ButtonsBasic:ChangeColor(button, ButtonsData.clickedColor)
                     elseif 1 == mode and not love.mouse.isDown(1) then
-                        print(#button)
                         ButtonsBasic:ChangeColor(button, ButtonsData.selectedColor)
                     elseif 2 == mode then
                         name = ButtonsBasic:ButtonsRelease(button)
@@ -432,19 +431,14 @@ function Buttons.MouseState(mouseX, mouseY, mode)
                     inButton = true
                     if 0 == mode then
                         if "menu" == button.name then
-                            ButtonsBasic.ChangeColor(button, ButtonsData.clickedColor)
+                            ButtonsBasic:ChangeColor(button, ButtonsData.clickedColor)
                         else
                             table.remove(button.color, 4)
                             table.insert(button.color, ButtonsData.laterDiaphaneity)
                         end
                     elseif 1 == mode and not love.mouse.isDown(1) then
                         if "menu" == button.name then
-                            print(ButtonsData.selectedColor)
-                            print("#")
-                            print(#button)
-                            ButtonsBasic.ChangeColor(button, ButtonsData.selectedColor)
-                            -- ButtonsBasic.ChangeColor(button, {1, 1, 0.3, 1})
-                            print("##")
+                            ButtonsBasic:ChangeColor(button, ButtonsData.selectedColor)
                         else
                             button.ratioX = ButtonsData.laterRatio
                             button.ratioY = ButtonsData.laterRatio
@@ -499,9 +493,6 @@ end
 
 function ButtonsBasic:ChangeColor(v, color)
     if ReplayGame == Running then
-        if v ~= nil and color == nil then
-            print("%")
-        end
         if v == nil then
             for i, button in pairs(EachButton) do
                 if "menu" ~= button.name then
@@ -514,9 +505,6 @@ function ButtonsBasic:ChangeColor(v, color)
                 end
             end
         else
-            -- for key, value in pairs(v.color) do
-            --     print(value)
-            -- end
             v.color = color
         end
         return
