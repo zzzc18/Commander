@@ -1,6 +1,7 @@
 Welcome = {}
 
 function Welcome.Init()
+    require("Client.Welcome.BGAnimation")
     PixelWidth, PixelHeight = love.graphics.getPixelDimensions()
 
     Title = {}
@@ -8,17 +9,20 @@ function Welcome.Init()
     Title.widthRatio = 0.6
     Title.heightRatio = 0.6
 
-    Background = {}
-    Background.img = love.graphics.newImage("data/Picture/Background.JPG")
-    Background.widthRatio = 3
-    Background.heightRatio = 3
+    -- Background = {}
+    -- Background.img = love.graphics.newImage("data/Picture/Background.JPG")
+    BGAnimation.load()
+    BGimg1.widthRatio = 3
+    BGimg1.heightRatio = 3
+    BGimg2.widthRatio = 3
+    BGimg2.heightRatio = 3
 
     Buttons.Init()
 end
 
 function Welcome.DeInit()
     Title = {}
-    Background = {}
+    BGAnimation.deLoad()
     Buttons.DeInit()
 end
 
@@ -26,7 +30,22 @@ function Welcome.draw()
     local PixelWidth, PixelHeight = love.graphics.getPixelDimensions()
     if Running == Welcome then
         love.graphics.setColor(1, 1, 1, 1)
-        love.graphics.draw(Background.img, 0, 0, 0, Background.widthRatio, Background.heightRatio)
+        love.graphics.draw(
+            BGimg1.path,
+            BGimg1.x,
+            BGimg1.y,
+            0,
+            BGimg1.widthRatio,
+            BGimg1.heightRatio
+        )
+        love.graphics.draw(
+            BGimg2.path,
+            BGimg2.x,
+            BGimg2.y,
+            0,
+            BGimg2.widthRatio,
+            BGimg2.heightRatio
+        )
         love.graphics.draw(
             Title.img,
             PixelWidth / 2,
@@ -64,8 +83,9 @@ end
 function Welcome.wheelmoved(x, y)
 end
 
-function Welcome.update()
+function Welcome.update(dt)
     local PixelWidth, PixelHeight = love.graphics.getPixelDimensions()
+    BGAnimation.update(dt)
     Title.widthRatio = 0.6 * PixelHeight / 990
     Title.heightRatio = 0.6 * PixelHeight / 990
     Buttons.Update()
