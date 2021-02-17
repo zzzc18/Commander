@@ -38,9 +38,11 @@ end
 
 function Picture.Init()
     NodeImageSet:Load()
-    SelectImage:Load()
-    ArrowImage:Load()
     if ServerSock == nil then
+        SelectImage:Load()
+    end
+    if ClientSock ~= nil then
+        ArrowImage:Load()
         Menu:Load()
     end
 end
