@@ -4,93 +4,248 @@ EachButton = {}
 ButtonsBasic = {}
 
 IsPause = false
+ReplaySpeed = 1
 
 function Buttons.Init()
-    ButtonsBasic:Load()
+    if Welcome == Running then
+        --
+        return
+    end
+    if PlayGame == Running then
+        -- ButtonsBasic:Load()
+        return
+    end
+    if ReplayGame == Running then
+        ButtonsBasic:Load()
+        return
+    end
 end
 
-function ButtonsBasic:NewButton(path, name, x, y)
+function Buttons.DeInit()
+    --EachButton = {}
+    --ButtonsBasic = {}
+    --以上操作似乎会导致Buttons中的函数永久消失，暂时禁用
+    IsPause = false
+end
+
+--orientation:旋转角度;  ratioX,ratioY:X,Y方向上的缩放比例;  diaphaneity:透明度
+--offsetX,offsetY:偏移量（默认0）;  fun:按下时调用的函数;  scalingcenterX,scalingcenterY:？？（默认0）
+function Buttons.NewButton(
+    path,
+    name,
+    x,
+    y,
+    orientation,
+    ratioX,
+    ratioY,
+    diaphaneity,
+    offsetX,
+    offsetY,
+    fun,
+    scalingcenterX,
+    scalingcenterY)
     local button = {}
     button.imag = love.graphics.newImage(path)
     button.name = name
     button.x = x
     button.y = y
-    button.ratio = self.ratio
-    button.offset = -20
-    button.scalingcenterX = 0
-    button.scalingcenterY = 0
-    button.diaphaneity = self.initialDiaphaneity
-    return button
+    button.orientation = orientation
+    button.ratioX = ratioX
+    button.ratioY = ratioY
+    button.diaphaneity = diaphaneity
+    if nil == offsetX then
+        button.offsetX = 0
+    else
+        button.offsetX = offsetX
+    end
+    if nil == offsetY then
+        button.offsetY = 0
+    else
+        button.offsetY = offsetY
+    end
+    if nil == fun then
+        button.fun = function()
+        end
+    else
+        button.fun = fun
+    end
+    if nil == scalingcenterX then
+        button.scalingcenterX = 0
+    else
+        button.scalingcenterX = scalingcenterX
+    end
+    if nil == scalingcenterY then
+        button.scalingcenterY = 0
+    else
+        button.scalingcenterY = scalingcenterY
+    end
+    table.insert(EachButton, button)
 end
 
 function ButtonsBasic:Load()
     local windowWidth, windowHeight = love.graphics.getDimensions()
-    EachButton.Last = ButtonsBasic:NewButton("data/Picture/BUTTON_TYPE_LAST.png", "last", windowWidth * 0.35, windowHeight * 0)
-    EachButton.Pause =
-        ButtonsBasic:NewButton("data/Picture/BUTTON_TYPE_PAUSE.png", "pause", windowWidth * 0.45, windowHeight * 0)
-    EachButton.Continue =
-        ButtonsBasic:NewButton("data/Picture/BUTTON_TYPE_CONTINUE.png", "continue", windowWidth * 0.45, windowHeight * 0)
-    EachButton.Next = ButtonsBasic:NewButton("data/Picture/BUTTON_TYPE_NEXT.png", "next", windowWidth * 0.55, windowHeight * 0)
-    EachButton.ShiftSpeed =
-        ButtonsBasic:NewButton("data/Picture/BUTTON_TYPE_SHIFTSPEED.png", "shiftSpeed", windowWidth * 0.65, windowHeight * 0)
     self.initialRatio = 0.2
     self.laterRatio = 0.25
     self.initialDiaphaneity = 0.5
     self.laterDiaphaneity = 1
+    Buttons.NewButton(
+        "data/Picture/BUTTON_TYPE_LAST.png",
+        "last",
+        windowWidth * 0.35,
+        windowHeight * 0,
+        0,
+        self.initialRatio,
+        self.initialRatio,
+        self.initialDiaphaneity,
+        -20,
+        -20,
+        function()
+            CGameMap.LoadCheckPoint(0)
+        end
+    )
+    Buttons.NewButton(
+        "data/Picture/BUTTON_TYPE_PAUSE.png",
+        "pause",
+        windowWidth * 0.45,
+        windowHeight * 0,
+        0,
+        self.initialRatio,
+        self.initialRatio,
+        self.initialDiaphaneity,
+        -20,
+        -20,
+        function()
+            IsPause = true
+        end
+    )
+    Buttons.NewButton(
+        "data/Picture/BUTTON_TYPE_CONTINUE.png",
+        "continue",
+        windowWidth * 0.45,
+        windowHeight * 0,
+        0,
+        self.initialRatio,
+        self.initialRatio,
+        self.initialDiaphaneity,
+        -20,
+        -20,
+        function()
+            IsPause = false
+        end
+    )
+    Buttons.NewButton(
+        "data/Picture/BUTTON_TYPE_NEXT.png",
+        "next",
+        windowWidth * 0.55,
+        windowHeight * 0,
+        0,
+        self.initialRatio,
+        self.initialRatio,
+        self.initialDiaphaneity,
+        -20,
+        -20,
+        function()
+            CGameMap.LoadCheckPoint(1)
+        end
+    )
+    Buttons.NewButton(
+        "data/Picture/BUTTON_TYPE_SHIFTSPEED.png",
+        "shiftSpeed",
+        windowWidth * 0.65,
+        windowHeight * 0,
+        0,
+        self.initialRatio,
+        self.initialRatio,
+        self.initialDiaphaneity,
+        -20,
+        -20,
+        function()
+            ReplaySpeed = ReplaySpeed * 2
+            if ReplaySpeed == 4 then
+                ReplaySpeed = 0.5
+            end
+            print("set ReplaySpeed to: " .. ReplaySpeed)
+        end
+    )
 end
 
 function Buttons.DrawButtons()
-    for i, button in pairs(EachButton) do
-        if true == IsPause and "pause" == button.name or false == IsPause and "continue" == button.name then
-        else
-            love.graphics.setColor(1, 1, 1, button.diaphaneity)
-            love.graphics.draw(
-                button.imag,
-                button.x,
-                button.y,
-                0,
-                button.ratio,
-                button.ratio,
-                button.offset,
-                button.offset,
-                button.scalingcenterX,
-                button.scalingcenterY
-            )
-            button.ratio = ButtonsBasic.initialRatio
+    if Welcome == Running then
+        return
+    end
+    if PlayGame == Running then
+        return
+    end
+    if ReplayGame == Running then
+        for i, button in pairs(EachButton) do
+            if
+                true == IsPause and "pause" == button.name or
+                    false == IsPause and "continue" == button.name
+             then
+            else
+                love.graphics.setColor(1, 1, 1, button.diaphaneity)
+                love.graphics.draw(
+                    button.imag,
+                    button.x,
+                    button.y,
+                    button.orientation,
+                    button.ratioX,
+                    button.ratioY,
+                    button.offsetX,
+                    button.offsetY,
+                    button.scalingcenterX,
+                    button.scalingcenterY
+                )
+                button.ratioX = ButtonsBasic.initialRatio
+                button.ratioY = ButtonsBasic.initialRatio
+            end
         end
     end
 end
 
 -- mode==0时为点击，1为悬浮,2为松开
 function Buttons.MouseState(mouseX, mouseY, mode)
-    local name = nil
-    local inButton = false
-    for i, button in pairs(EachButton) do
-        if true == IsPause and "pause" == button.name or false == IsPause and "continue" == button.name then
-        else
+    if Welcome == Running then
+        return
+    end
+    if PlayGame == Running then
+        return
+    end
+    if ReplayGame == Running then
+        local name = nil
+        local inButton = false
+        for i, button in pairs(EachButton) do
             if
-                mouseX > button.x and mouseX < button.x + 63 * love.graphics.getWidth() / 1080 and mouseY > button.y and
-                    mouseY < button.y + 63 * love.graphics.getWidth() / 1080
+                true == IsPause and "pause" == button.name or
+                    false == IsPause and "continue" == button.name
              then
-                inButton = true
-                if 0 == mode then
-                    button.diaphaneity = ButtonsBasic.laterDiaphaneity
-                    name = "readyToClick"
-                    break
-                elseif 1 == mode then
-                    ButtonsBasic:MouseSuspension(button)
-                    break
-                elseif 2 == mode then
-                    name = ButtonsBasic:ButtonsRelease(button)
-                    break
+            else
+                if
+                    mouseX > button.x and
+                        mouseX < button.x + 63 * love.graphics.getWidth() / 1080 and
+                        mouseY > button.y and
+                        mouseY < button.y + 63 * love.graphics.getWidth() / 1080
+                 then
+                    inButton = true
+                    if 0 == mode then
+                        button.diaphaneity = ButtonsBasic.laterDiaphaneity
+                        name = "readyToClick"
+                        break
+                    elseif 1 == mode then
+                        ButtonsBasic:MouseSuspension(button)
+                        break
+                    elseif 2 == mode then
+                        name = ButtonsBasic:ButtonsRelease(button)
+                        break
+                    end
                 end
             end
         end
+        if not inButton then
+            ButtonsBasic:CleanAll()
+        end
+        return name
     end
-    if not inButton then
-        ButtonsBasic:CleanAll()
-    end
-    return name
 end
 
 function ButtonsBasic:CleanAll()
@@ -101,30 +256,37 @@ end
 
 function ButtonsBasic:ButtonsRelease(button)
     button.diaphaneity = self.initialDiaphaneity
-    if button == EachButton.Pause then
-        IsPause = true
-    elseif button == EachButton.Continue then
-        IsPause = false
-    end
-    print(button.name)
+    print("trigger: " .. button.name)
+    button.fun()
     return button.name
 end
 
 function ButtonsBasic:MouseSuspension(button)
-    button.ratio = self.laterRatio * love.graphics.getWidth() / 1080
+    button.ratioX = self.laterRatio * love.graphics.getWidth() / 1080
+    button.ratioY = self.laterRatio * love.graphics.getWidth() / 1080
 end
 
 function Buttons.Update()
-    local windowWidth = love.graphics.getWidth()
-    EachButton.Last.x = windowWidth * 0.35
-    EachButton.Pause.x = windowWidth * 0.45
-    EachButton.Continue.x = windowWidth * 0.45
-    EachButton.Next.x = windowWidth * 0.55
-    EachButton.ShiftSpeed.x = windowWidth * 0.65
-    for i, button in pairs(EachButton) do
-        button.ratio = ButtonsBasic.initialRatio * windowWidth / 1080
+    if Welcome == Running then
+        return
     end
-    Buttons.MouseState(love.mouse.getX(), love.mouse.getY(), 1)
+    if PlayGame == Running then
+        return
+    end
+    if ReplayGame == Running then
+        local windowWidth = love.graphics.getWidth()
+        for i, button in pairs(EachButton) do
+            if 1 == i or 2 == i then
+                button.x = windowWidth * (i * 0.1 + 0.25)
+            else
+                button.x = windowWidth * (i * 0.1 + 0.15)
+            end
+            button.ratioX = ButtonsBasic.initialRatio * windowWidth / 1080
+            button.ratioY = ButtonsBasic.initialRatio * windowWidth / 1080
+        end
+        Buttons.MouseState(love.mouse.getX(), love.mouse.getY(), 1)
+        return
+    end
 end
 
 return Buttons

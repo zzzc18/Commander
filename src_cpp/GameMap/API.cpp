@@ -33,7 +33,25 @@ static int LoadMap(lua_State *luaState) {
  * @return @c void
  */
 static int LoadReplayFile(lua_State *luaState) {
-    return APIreturn(luaState, MAP::Singleton().LoadReplayFile());
+    std::string ReplayFile;
+    APIparam(luaState, ReplayFile);
+    return APIreturn(luaState, MAP::Singleton().LoadReplayFile(ReplayFile));
+}
+/**
+ * @brief 读取上一个/下一个检查点的回放地图文件
+ * 如果变更了设置会导致出错
+ *
+ * @param int 0上一个，1下一个
+ * @return @c void
+ */
+static int LoadCheckPoint(lua_State *lua_State) {
+    int dst;
+    APIparam(lua_State, dst);
+    if (dst == 0) MAP::Singleton().ReplayOver = false;
+    int target =
+        ((MAP::Singleton().step - 1) / SaveMapStep + dst) * SaveMapStep;
+    return APIreturn(lua_State, MAP::Singleton().LoadReplayFile(
+                                    MAP::Singleton().ReplayFile, target));
 }
 /**
  * @brief 获取回放状态
@@ -232,8 +250,9 @@ static int Surrender(lua_State *luaState) {
  */
 LUA_REG_FUNC(GameMap, C_API(RandomGenMap), C_API(InitSavedata),
              C_API(SaveGameOver), C_API(LoadMap), C_API(LoadReplayFile),
-             C_API(GetReplayStatus), C_API(SaveEdit), C_API(WriteMap),
-             C_API(GetSize), C_API(GetVision), C_API(GetNodeType),
-             C_API(GetUnitNum), C_API(GetBelong), C_API(GetArmyPath),
-             C_API(PushMove), C_API(Judge), C_API(Surrender),
-             C_API(IncreaseOrDecrease), C_API(ChangeType), C_API(ChangeBelong))
+             C_API(LoadCheckPoint), C_API(GetReplayStatus), C_API(SaveEdit),
+             C_API(WriteMap), C_API(GetSize), C_API(GetVision),
+             C_API(GetNodeType), C_API(GetUnitNum), C_API(GetBelong),
+             C_API(GetArmyPath), C_API(PushMove), C_API(Judge),
+             C_API(Surrender), C_API(IncreaseOrDecrease), C_API(ChangeType),
+             C_API(ChangeBelong))

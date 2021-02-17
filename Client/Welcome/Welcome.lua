@@ -1,11 +1,13 @@
 Welcome = {}
 
+Welcome.name = "Welcome"
+
 function Welcome.Init()
-    PlayGame.Init()
+    -- PlayGame.Init()
     PressStart = false
     ReleaseStart = false
-    oriColor = {1, 1, 1, 1}
-    selectedColor = {0.7, 0.7, 0.7, 1}
+    OriColor = {1, 1, 1, 1}
+    SelectedColor = {0.7, 0.7, 0.7, 1}
     ClickedColor = {0.439, 0.502, 0.565, 1}
     PixelWidth, PixelHeight = love.graphics.getPixelDimensions()
 
@@ -27,12 +29,17 @@ function Welcome.Init()
     StartButton.width = StartButton.img:getWidth() / 2
     StartButton.height = StartButton.img:getHeight() / 2
 end
+
+function Welcome.DeInit()
+    Buttons.DeInit()
+end
+
 function Welcome.draw()
     if ReleaseStart then
         PlayGame.draw()
     end
     if not ReleaseStart then
-        love.graphics.setColor(oriColor)
+        love.graphics.setColor(OriColor)
         love.graphics.draw(
             Background.img,
             0,
@@ -60,7 +67,7 @@ function Welcome.draw()
             if love.mouse.isDown(1) then
                 love.graphics.setColor(ClickedColor)
             else
-                love.graphics.setColor(selectedColor)
+                love.graphics.setColor(SelectedColor)
             end
         end
         love.graphics.draw(
@@ -75,22 +82,6 @@ function Welcome.draw()
         )
     end
 end
-function Welcome.update()
-    if ReleaseStart then
-        PlayGame.update()
-    end
-    PixelWidth, PixelHeight = love.graphics.getPixelDimensions()
-    Title.widthRatio = 0.6 * PixelHeight / 990
-    Title.heightRatio = 0.6 * PixelHeight / 990
-    StartButton.widthRatio = 0.8 * PixelHeight / 990
-    StartButton.heightRatio = 0.8 * PixelHeight / 990
-    mouseX, mouseY = love.mouse.getPosition()
-end
-function Welcome.wheelmoved(x, y)
-    if ReleaseStart then
-        PlayGame.wheelmoved(x, y)
-    end
-end
 
 function Welcome.mousepressed(pixelX, pixelY, button, istouch, presses)
     if
@@ -100,9 +91,6 @@ function Welcome.mousepressed(pixelX, pixelY, button, istouch, presses)
             pixelY <= PixelHeight * 2 / 3 + StartButton.height / 2
      then
         PressStart = true
-    end
-    if ReleaseStart then
-        PlayGame.mousepressed(pixelX, pixelY, button, istouch, presses)
     end
 end
 
@@ -117,21 +105,41 @@ function Welcome.mousereleased(pixelX, pixelY, button, istouch, presses)
     else
         PressStart = false
     end
-    if ReleaseStart == 1 then
-        PlayGame.mousereleased(pixelX, pixelY, button, istouch, presses)
+    if ReleaseStart == true then
+        Switcher.To(PlayGame)
+    --Running = PlayGame
+    --PlayGame.Init()
     end
 end
 
 function Welcome.keypressed(key, scancode, isrepeat)
-    if ReleaseStart == 1 then
-        PlayGame.keypressed(key, scancode, isrepeat)
-    end
+    -- if ReleaseStart == 1 then
+    --     PlayGame.keypressed(key, scancode, isrepeat)
+    -- end
 end
 
 function Welcome.keyreleased(key, scancode)
-    if ReleaseStart == 1 then
-        PlayGame.keyreleased(key, scancode)
-    end
+    -- if ReleaseStart == 1 then
+    --     PlayGame.keyreleased(key, scancode)
+    -- end
+end
+
+function Welcome.wheelmoved(x, y)
+    -- if ReleaseStart then
+    --     PlayGame.wheelmoved(x, y)
+    -- end
+end
+
+function Welcome.update()
+    -- if ReleaseStart then
+    --     PlayGame.update()
+    -- end
+    PixelWidth, PixelHeight = love.graphics.getPixelDimensions()
+    Title.widthRatio = 0.6 * PixelHeight / 990
+    Title.heightRatio = 0.6 * PixelHeight / 990
+    StartButton.widthRatio = 0.8 * PixelHeight / 990
+    StartButton.heightRatio = 0.8 * PixelHeight / 990
+    mouseX, mouseY = love.mouse.getPosition()
 end
 
 return Welcome

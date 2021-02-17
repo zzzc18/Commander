@@ -11,6 +11,7 @@
 #define detail_LuaAPI_hpp
 
 #include <cstddef>
+#include <string>
 #include <type_traits>
 #include <utility>
 
@@ -41,7 +42,7 @@ int APIreturn(lua_State *luaState, types... args) {
 namespace detail {
 template <typename... types, std::size_t... indices>
 void APIparam_impl(lua_State *luaState, std::index_sequence<indices...>,
-                   types &... args) {
+                   types &...args) {
     auto Get = [luaState](auto &arg, std::size_t index) -> void {
         using type = std::remove_reference_t<decltype(arg)>;
         //按照 <lua.h> 中的声明顺序
@@ -53,6 +54,8 @@ void APIparam_impl(lua_State *luaState, std::index_sequence<indices...>,
             arg = lua_tointeger(luaState, index);
         else if constexpr (std::is_same_v<type, bool>)
             arg = lua_toboolean(luaState, index);
+        else if constexpr (std::is_same_v<type, std::string>)
+            arg = lua_tolstring(luaState, index, NULL);
         else  //等价于 static_assert(false)
             static_assert(std::is_void_v<type>, "argument has unknown type!");
     };
@@ -60,7 +63,7 @@ void APIparam_impl(lua_State *luaState, std::index_sequence<indices...>,
 }
 }  // namespace detail
 template <typename... types>
-void APIparam(lua_State *luaState, types &... args) {
+void APIparam(lua_State *luaState, types &...args) {
     detail::APIparam_impl(luaState, std::index_sequence_for<types...>{},
                           args...);
 }

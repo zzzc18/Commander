@@ -12,14 +12,11 @@ GameOver = require("GameOver.GameOver")
 ReplayGame = require("Replayer.ReplayGame")
 Welcome = require("Welcome.Welcome")
 
-Scene = {}
- --可切换的场景
-Scene["PlayGame"] = PlayGame
-Scene["ReplayGame"] = ReplayGame
-
 Font = {
     gillsans50 = love.graphics.newFont("Font/gillsans.ttf", 50)
 }
+DroppedDir = ""
+Step = 0
 
 require("System.Color")
 require("System.Picture")
@@ -58,6 +55,11 @@ function love.keyreleased(key, scancode)
     Running.keyreleased(key, scancode)
 end
 
+function love.directorydropped(path)
+    DroppedDir = path
+    print("Get dir: " .. path)
+end
+
 function love.draw()
     Running.draw()
 end
@@ -65,7 +67,7 @@ end
 function love.update(dt)
     -- 倍速开关，用于快速测试，可以通过注释和取消注释调整
     -- dt = dt * 10
-    Running.update()
+    Running.update(dt)
 end
 
 function love.quit()

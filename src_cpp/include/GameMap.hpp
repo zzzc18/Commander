@@ -112,10 +112,11 @@ class MAP final {
     //回放器：从回放文件读取当前步添加到命令队列的命令
     void ReadMove(int ReplayStep);
     //回放器：加载回放文件
-    int LoadReplayFile(
-        std::string_view file = "../Savedata/test_save_path/0.map");
+    int LoadReplayFile(std::string_view file, int loadstep = 0);
     //回放器：回放结束
     bool ReplayOver = false;
+    //回放器：回放文件目录
+    std::string ReplayFile;
 
     //以 level 为参数随机生成有 armyCnt 个军队的地图
     void RandomGen(int armyCnt, int level);

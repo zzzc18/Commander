@@ -288,6 +288,8 @@ void MAP::SaveMap(std::string_view file) {  // file="../Savedata/"
 void MAP::SaveStep(int armyID, VECTOR src, VECTOR dst) {
     std::ofstream outfile;
     outfile.open("../Savedata/" + StartTime + "/steps.txt", std::ios::app);
+    // 似乎file.data()相连后从string_view变成了string，因此可以直接和const
+    // char相连
     if (outfile.is_open()) {
         outfile << "\n" << step << "\n";
         outfile << armyID << " " << src.x << " " << src.y << " " << dst.x << " "
@@ -313,10 +315,11 @@ void MAP::SaveEdit(std::string_view file) {  // file = "../Output/"
     return;
 }
 
-int MAP::LoadReplayFile(
-    std::string_view file) {  // file="../Savedata/test_save_path/0.map"
-    step = 0;
-    std::ifstream fin(file.data());
+int MAP::LoadReplayFile(std::string_view file, int loadstep) {  // loadstep = 0
+    step = loadstep;
+    ReplayFile = std::string(file.data());
+    std::ifstream fin(ReplayFile + "/" + std::to_string(loadstep) + ".map");
+    if (!fin) return 0;
     fin >> *this;
     fin.close();
     return kingNum;
@@ -325,7 +328,7 @@ int MAP::LoadReplayFile(
 void MAP::ReadMove(int ReplayStep) {
     std::string line;
     std::ifstream replayfile;
-    replayfile.open("../Savedata/test_save_path/steps.txt", std::ios::in);
+    replayfile.open(ReplayFile + "/steps.txt", std::ios::in);
     if (replayfile.is_open()) {
         while (std::getline(replayfile, line)) {  //搜索step.txt的每一行
             if (line != std::to_string(ReplayStep)) continue;

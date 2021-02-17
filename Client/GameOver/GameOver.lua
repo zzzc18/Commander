@@ -1,5 +1,6 @@
 GameOver = {}
 
+GameOver.name = "GameOver"
 GameOver.VanquisherID = 0
 
 function GameOver.DrawJudgeInfo(state, VanquisherID)
@@ -176,6 +177,10 @@ function GameOver.MouseStateForOpts(mouseX, mouseY, mode)
                 GameOver.isClicked = false
                 v.color = oriColor
                 print(v.name)
+                if v.name == "watch replay" then
+                    Running = ReplayGame
+                    ReplayGame.Init()
+                end
             end
         end
     end
