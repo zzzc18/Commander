@@ -8,7 +8,7 @@ function ReplayGame.RunPermission()
     return ReplayGame.GameState == "Start"
 end
 
-function ReplayGame.Init(MapMode)
+function ReplayGame.Init()
     Picture.Init()
     ReplayGame.armyNum = CGameMap.LoadReplayFile()
     CVerify.Register(0, 2)
