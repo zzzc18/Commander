@@ -13,13 +13,6 @@ ReplayGame = require("Replayer.ReplayGame")
 Welcome = require("Welcome.Welcome")
 Switcher = require("Switcher")
 
---可切换的场景
-Scene = {}
-Scene["Welcome"] = Welcome
-Scene["PlayGame"] = PlayGame
-Scene["ReplayGame"] = ReplayGame
-Scene["GameOver"] = GameOver
-
 Font = {
     gillsans50 = love.graphics.newFont("Font/gillsans.ttf", 50)
 }

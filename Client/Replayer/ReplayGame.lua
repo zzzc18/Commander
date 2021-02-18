@@ -47,7 +47,7 @@ function ReplayGame.mousereleased(pixelX, pixelY, button, istouch, presses)
     elseif "continue_Opt" == name then
         ReplayGame.GameState = "Start"
     elseif "exit_Opt" == name then
-        Switcher.Switch("w")
+        Switcher.To(Welcome)
     end
 end
 

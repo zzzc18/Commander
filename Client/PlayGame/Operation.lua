@@ -127,7 +127,7 @@ function Operation.CatchMouseReleased(pixelX, pixelY, button, istouch, presses)
     elseif "continue" == name then
         PlayGame.GameState = "Start"
     elseif "exit" == name then
-        Switcher.Switch("w")
+        Switcher.To(Welcome)
     end
 end
 

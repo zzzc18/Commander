@@ -1,7 +1,7 @@
 BGAnimation = {}
 
 function BGAnimation.load()
-    PixelWidth, PixelHeight = love.graphics.getPixelDimensions()
+    BGAnimation.PixelWidth, BGAnimation.PixelHeight = love.graphics.getPixelDimensions()
     BGimg1 = {
         path = love.graphics.newImage("data/Picture/Background.png"),
         x = 0,
@@ -11,7 +11,7 @@ function BGAnimation.load()
     }
     BGimg2 = {
         path = love.graphics.newImage("data/Picture/Background.png"),
-        x = PixelWidth,
+        x = BGAnimation.PixelWidth,
         y = 0,
         widthRatio = 1,
         heightRatio = 1
@@ -31,13 +31,13 @@ function BGAnimation.draw()
 end
 
 function BGAnimation.update(dt)
-    if BGAnimation.moveDistance < PixelWidth then
+    if BGAnimation.moveDistance < BGAnimation.PixelWidth then
         BGimg1.x = BGimg1.x - dt * BGAnimation.moveRate
         BGimg2.x = BGimg2.x - dt * BGAnimation.moveRate
         BGAnimation.moveDistance = BGAnimation.moveDistance + dt * BGAnimation.moveRate
     else
         BGimg1.x = 0
-        BGimg2.x = PixelWidth
+        BGimg2.x = BGAnimation.PixelWidth
         BGAnimation.moveDistance = 0
     end
 end

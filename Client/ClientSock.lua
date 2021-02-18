@@ -49,7 +49,7 @@ function ClientSock.Init()
                 PlayGame.judgementState = "Lose"
                 PlayGame.GameState = "Over"
                 GameOver.VanquisherID = data.VanquisherID
-                Switcher.Switch("g")
+                Switcher.To(GameOver)
             end
         end
     )
@@ -60,7 +60,7 @@ function ClientSock.Init()
             if PlayGame.armyID == data.armyID then
                 PlayGame.judgementState = "Win"
                 PlayGame.GameState = "Over"
-                Switcher.Switch("g")
+                Switcher.To(GameOver)
             end
         end
     )

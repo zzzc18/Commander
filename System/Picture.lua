@@ -10,18 +10,12 @@ function NodeImageSet:Load()
     self.center.x = 97
     self.center.y = 97
     self.divRatio = 135
-    self["NODE_TYPE_BLANK"] =
-        love.graphics.newImage("data/Picture/NODE_TYPE_BLANK.png")
-    self["NODE_TYPE_HILL"] =
-        love.graphics.newImage("data/Picture/NODE_TYPE_HILL.png")
-    self["NODE_TYPE_FORT"] =
-        love.graphics.newImage("data/Picture/NODE_TYPE_FORT.png")
-    self["NODE_TYPE_KING"] =
-        love.graphics.newImage("data/Picture/NODE_TYPE_KING.png")
-    self["NODE_TYPE_OBSTACLE"] =
-        love.graphics.newImage("data/Picture/NODE_TYPE_OBSTACLE.png")
-    self["NODE_TYPE_MARSH"] =
-        love.graphics.newImage("data/Picture/NODE_TYPE_MARSH.png")
+    self["NODE_TYPE_BLANK"] = love.graphics.newImage("data/Picture/NODE_TYPE_BLANK.png")
+    self["NODE_TYPE_HILL"] = love.graphics.newImage("data/Picture/NODE_TYPE_HILL.png")
+    self["NODE_TYPE_FORT"] = love.graphics.newImage("data/Picture/NODE_TYPE_FORT.png")
+    self["NODE_TYPE_KING"] = love.graphics.newImage("data/Picture/NODE_TYPE_KING.png")
+    self["NODE_TYPE_OBSTACLE"] = love.graphics.newImage("data/Picture/NODE_TYPE_OBSTACLE.png")
+    self["NODE_TYPE_MARSH"] = love.graphics.newImage("data/Picture/NODE_TYPE_MARSH.png")
 end
 
 function SelectImage:Load()
@@ -118,8 +112,8 @@ function Picture.DrawReady(BGAnimation)
     }
     love.graphics.draw(
         title.img,
-        PixelWidth / 2,
-        PixelHeight / 3,
+        BGAnimation.PixelWidth / 2,
+        BGAnimation.PixelHeight / 3,
         0,
         title.ratioX,
         title.ratioY,
@@ -128,8 +122,8 @@ function Picture.DrawReady(BGAnimation)
     )
     love.graphics.draw(
         waiting.img,
-        PixelWidth / 2,
-        PixelHeight / 3 * 2,
+        BGAnimation.PixelWidth / 2,
+        BGAnimation.PixelHeight / 3 * 2,
         0,
         waiting.ratioX,
         waiting.ratioY,

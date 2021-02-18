@@ -80,13 +80,13 @@ end
 function GameOver.mousereleased(pixelX, pixelY, button, istouch, presses)
     local name = Buttons.MouseState(pixelX, pixelY, 2)
     if "play again" == name then
-        Switcher.Switch("p")
+        Switcher.To(PlayGame)
     end
     if "watch replay" == name then
-        Switcher.Switch("r")
+        Switcher.To(ReplayGame)
     end
     if "exit" == name then
-        Switcher.Switch("w")
+        Switcher.To(Welcome)
     end
 end
 

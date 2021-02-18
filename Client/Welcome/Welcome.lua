@@ -3,15 +3,10 @@ Welcome = {}
 require("Welcome.BGAnimation")
 
 function Welcome.Init()
-    PixelWidth, PixelHeight = love.graphics.getPixelDimensions()
-
     Title = {}
     Title.img = love.graphics.newImage("data/Picture/Title.PNG")
     Title.widthRatio = 0.6
     Title.heightRatio = 0.6
-
-    -- Background = {}
-    -- Background.img = love.graphics.newImage("data/Picture/Background.JPG")
     BGAnimation.load()
     Buttons.Init()
 end
@@ -48,10 +43,10 @@ end
 function Welcome.mousereleased(pixelX, pixelY, button, istouch, presses)
     local name = Buttons.MouseState(pixelX, pixelY, 2)
     if "start" == name then
-        Switcher.Switch("p")
+        Switcher.To(PlayGame)
     end
     if "replay" == name then
-        Switcher.Switch("r")
+        Switcher.To(ReplayGame)
     end
 end
 
