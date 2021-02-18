@@ -58,6 +58,8 @@ function GameOver.Init()
 end
 
 function GameOver.DeInit()
+    GameOver.VanquisherID = 0
+    GameOver.armyNum = 0
     Buttons.DeInit()
 end
 

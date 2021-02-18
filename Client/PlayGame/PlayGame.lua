@@ -1,6 +1,5 @@
 PlayGame = {}
 
-require("Client.Welcome.BGAnimation")
 local Operation = require("PlayGame.Operation")
 
 --READY:游戏未开始，不显示界面，无法操作
@@ -16,6 +15,7 @@ function PlayGame.Init()
     Picture.Init()
     ClientSock.Init()
     Buttons.Init()
+    BGAnimation.load()
 end
 
 function PlayGame.DeInit()
@@ -85,16 +85,9 @@ end
 
 function PlayGame.update(dt)
     if PlayGame.GameState == "READY" then
-        if BGimg1.path == nil then
-            BGAnimation.load()
-            BGimg1.path = love.graphics.newImage("data/Picture/Background.JPG")
-            BGimg2.path = BGimg1.path
-        end
         BGAnimation.update(dt)
-    else
-        BGAnimation.deLoad()
     end
-    Client:update()
+    -- Client:update()
     if PlayGame.GameState ~= "Start" and PlayGame.GameState ~= "Menu" then
         return
     end

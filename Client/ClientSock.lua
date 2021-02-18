@@ -31,6 +31,7 @@ function ClientSock.Init()
         "GameStart",
         function()
             PlayGame.GameState = "Start"
+            BGAnimation.deLoad()
         end
     )
     Client:on(
