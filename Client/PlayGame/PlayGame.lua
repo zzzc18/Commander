@@ -87,7 +87,7 @@ function PlayGame.update(dt)
     if PlayGame.GameState == "READY" then
         BGAnimation.update(dt)
     end
-    -- Client:update()
+    Client:update()
     if PlayGame.GameState ~= "Start" and PlayGame.GameState ~= "Menu" then
         return
     end
