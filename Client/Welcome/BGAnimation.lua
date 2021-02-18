@@ -3,18 +3,18 @@ BGAnimation = {}
 function BGAnimation.load()
     PixelWidth, PixelHeight = love.graphics.getPixelDimensions()
     BGimg1 = {
-        path = love.graphics.newImage("data/Picture/Background.JPG"),
+        path = love.graphics.newImage("data/Picture/Background.png"),
         x = 0,
         y = 0,
-        widthRatio = 3,
-        heightRatio = 3
+        widthRatio = 1,
+        heightRatio = 1
     }
     BGimg2 = {
-        path = love.graphics.newImage("data/Picture/Background.JPG"),
+        path = love.graphics.newImage("data/Picture/Background.png"),
         x = PixelWidth,
         y = 0,
-        widthRatio = 3,
-        heightRatio = 3
+        widthRatio = 1,
+        heightRatio = 1
     }
     BGAnimation.moveDistance = 0
     BGAnimation.moveRate = 50

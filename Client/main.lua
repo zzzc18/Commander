@@ -59,7 +59,7 @@ function love.keyreleased(key, scancode)
     Running.keyreleased(key, scancode)
 end
 
-function love.draw(dt)
+function love.draw()
     Running.draw()
 end
 
