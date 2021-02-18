@@ -6,15 +6,15 @@ function BGAnimation.load()
         path = nil,
         x = 0,
         y = 0,
-        widthRatio = 3,
-        heightRatio = 3
+        widthRatio = 1,
+        heightRatio = 1
     }
     BGimg2 = {
         path = nil,
         x = PixelWidth,
         y = 0,
-        widthRatio = 3,
-        heightRatio = 3
+        widthRatio = 1,
+        heightRatio = 1
     }
     BGAnimation.moveDistance = 0
     BGAnimation.moveRate = 50

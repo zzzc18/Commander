@@ -87,7 +87,7 @@ function PlayGame.update(dt)
     if PlayGame.GameState == "READY" then
         if BGimg1.path == nil then
             BGAnimation.load()
-            BGimg1.path = love.graphics.newImage("data/Picture/Background.JPG")
+            BGimg1.path = love.graphics.newImage("data/Picture/Background.PNG")
             BGimg2.path = BGimg1.path
         end
         BGAnimation.update(dt)

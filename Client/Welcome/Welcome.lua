@@ -12,7 +12,7 @@ function Welcome.Init()
     -- Background = {}
     -- Background.img = love.graphics.newImage("data/Picture/Background.JPG")
     BGAnimation.load()
-    BGimg1.path = love.graphics.newImage("data/Picture/Background.JPG")
+    BGimg1.path = love.graphics.newImage("data/Picture/Background.PNG")
     BGimg2.path = BGimg1.path
     Buttons.Init()
 end
