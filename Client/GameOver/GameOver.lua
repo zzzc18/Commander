@@ -40,7 +40,7 @@ function GameOver.DrawJudgeInfo(state, VanquisherID)
     )
     love.graphics.setColor(0.9, 0.9, 0.9)
     love.graphics.rectangle("fill", x - judgeMenuWidth / 2, y - judgeMenuHeight / 2, judgeMenuWidth, judgeMenuHeight)
-    GameOver.DrawGameOverOptions()
+    -- GameOver.DrawGameOverOptions()
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.draw(menu, x - judgeMenuWidth / 2, y - judgeMenuHeight / 2, 0, 0.5 * ratio, 0.5 * ratio, 1)
     Buttons.DrawButtons() --创建选项
