@@ -1,5 +1,7 @@
 Welcome = {}
 
+require("Welcome.BGAnimation")
+
 Welcome.name = "Welcome"
 
 function Welcome.Init()
@@ -10,27 +12,20 @@ function Welcome.Init()
     SelectedColor = {0.7, 0.7, 0.7, 1}
     ClickedColor = {0.439, 0.502, 0.565, 1}
     PixelWidth, PixelHeight = love.graphics.getPixelDimensions()
+end
 
-    Title = {
-        img = love.graphics.newImage("data/Picture/Title.PNG"),
-        widthRatio = 0.6,
-        heightRatio = 0.6
-    }
-    Background = {
-        img = love.graphics.newImage("data/Picture/Background.JPG"),
-        widthRatio = 3,
-        heightRatio = 3
-    }
-    StartButton = {
-        img = love.graphics.newImage("data/Picture/start.PNG"),
-        widthRatio = 0.8,
-        heightRatio = 0.8
-    }
-    StartButton.width = StartButton.img:getWidth() / 2
-    StartButton.height = StartButton.img:getHeight() / 2
+function Welcome.Init()
+    Title = {}
+    Title.img = love.graphics.newImage("data/Picture/Title.PNG")
+    Title.widthRatio = 0.6
+    Title.heightRatio = 0.6
+    BGAnimation.load()
+    Buttons.Init()
 end
 
 function Welcome.DeInit()
+    Title = {}
+    BGAnimation.deLoad()
     Buttons.DeInit()
 end
 
@@ -38,108 +33,53 @@ function Welcome.draw()
     if ReleaseStart then
         PlayGame.draw()
     end
-    if not ReleaseStart then
-        love.graphics.setColor(OriColor)
-        love.graphics.draw(
-            Background.img,
-            0,
-            0,
-            0,
-            Background.widthRatio,
-            Background.heightRatio
-        )
+    local PixelWidth, PixelHeight = love.graphics.getPixelDimensions()
+    if Running == Welcome then
+        love.graphics.setColor(1, 1, 1, 1)
+        BGAnimation.draw()
         love.graphics.draw(
             Title.img,
             PixelWidth / 2,
-            PixelHeight / 3,
+            PixelHeight / 4,
             0,
             Title.widthRatio,
             Title.heightRatio,
             Title.img:getWidth() / 2,
             Title.img:getHeight() / 2
         )
-        if
-            mouseX >= PixelWidth / 2 - StartButton.width / 2 and
-                mouseX <= PixelWidth / 2 + StartButton.width / 2 and
-                mouseY >= PixelHeight * 2 / 3 - StartButton.height / 2 and
-                mouseY <= PixelHeight * 2 / 3 + StartButton.height / 2
-         then
-            if love.mouse.isDown(1) then
-                love.graphics.setColor(ClickedColor)
-            else
-                love.graphics.setColor(SelectedColor)
-            end
-        end
-        love.graphics.draw(
-            StartButton.img,
-            PixelWidth / 2,
-            PixelHeight * 2 / 3,
-            0,
-            StartButton.widthRatio,
-            StartButton.heightRatio,
-            StartButton.width,
-            StartButton.height
-        )
+        Buttons.DrawButtons()
     end
 end
 
 function Welcome.mousepressed(pixelX, pixelY, button, istouch, presses)
-    if
-        pixelX >= PixelWidth / 2 - StartButton.width / 2 and
-            pixelX <= PixelWidth / 2 + StartButton.width / 2 and
-            pixelY >= PixelHeight * 2 / 3 - StartButton.height / 2 and
-            pixelY <= PixelHeight * 2 / 3 + StartButton.height / 2
-     then
-        PressStart = true
-    end
+    Buttons.MouseState(pixelX, pixelY, 0)
 end
 
 function Welcome.mousereleased(pixelX, pixelY, button, istouch, presses)
-    if
-        pixelX >= PixelWidth / 2 - StartButton.width / 2 and
-            pixelX <= PixelWidth / 2 + StartButton.width / 2 and
-            pixelY >= PixelHeight * 2 / 3 - StartButton.height / 2 and
-            pixelY <= PixelHeight * 2 / 3 + StartButton.height / 2
-     then
-        ReleaseStart = true
-    else
-        PressStart = false
-    end
-    if ReleaseStart == true then
+    local name = Buttons.MouseState(pixelX, pixelY, 2)
+    if "start" == name then
         Switcher.To(PlayGame)
-    --Running = PlayGame
-    --PlayGame.Init()
+    end
+    if "replay" == name then
+        Switcher.To(ReplayGame)
     end
 end
 
 function Welcome.keypressed(key, scancode, isrepeat)
-    -- if ReleaseStart == 1 then
-    --     PlayGame.keypressed(key, scancode, isrepeat)
-    -- end
 end
 
 function Welcome.keyreleased(key, scancode)
-    -- if ReleaseStart == 1 then
-    --     PlayGame.keyreleased(key, scancode)
-    -- end
 end
 
 function Welcome.wheelmoved(x, y)
-    -- if ReleaseStart then
-    --     PlayGame.wheelmoved(x, y)
-    -- end
 end
 
-function Welcome.update()
-    -- if ReleaseStart then
-    --     PlayGame.update()
-    -- end
-    PixelWidth, PixelHeight = love.graphics.getPixelDimensions()
+function Welcome.update(dt)
+    local PixelWidth, PixelHeight = love.graphics.getPixelDimensions()
+    BGAnimation.update(dt)
     Title.widthRatio = 0.6 * PixelHeight / 990
     Title.heightRatio = 0.6 * PixelHeight / 990
-    StartButton.widthRatio = 0.8 * PixelHeight / 990
-    StartButton.heightRatio = 0.8 * PixelHeight / 990
-    mouseX, mouseY = love.mouse.getPosition()
+    Buttons.Update()
 end
 
 return Welcome

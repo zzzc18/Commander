@@ -11,6 +11,7 @@ PlayGame = require("PlayGame.PlayGame")
 GameOver = require("GameOver.GameOver")
 ReplayGame = require("Replayer.ReplayGame")
 Welcome = require("Welcome.Welcome")
+Switcher = require("Switcher")
 
 Font = {
     gillsans50 = love.graphics.newFont("Font/gillsans.ttf", 50)
@@ -24,7 +25,6 @@ require("System.BasicMap")
 require("System.MapAdjust")
 require("System.Buttons")
 require("ClientSock")
-require("Switcher")
 
 Running = {}
 
@@ -47,7 +47,6 @@ function love.mousereleased(pixelX, pixelY, button, istouch, presses)
 end
 
 function love.keypressed(key, scancode, isrepeat)
-    Switcher.keypressed(key)
     Running.keypressed(key, scancode, isrepeat)
 end
 

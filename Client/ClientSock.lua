@@ -31,6 +31,7 @@ function ClientSock.Init()
         "GameStart",
         function()
             PlayGame.GameState = "Start"
+            BGAnimation.deLoad()
         end
     )
     Client:on(
@@ -43,8 +44,12 @@ function ClientSock.Init()
         "Lose",
         function(data)
             -- 说明所在部队的王死了
+            CGameMap.Surrender(data.armyID, data.VanquisherID)
             if PlayGame.armyID == data.armyID then
                 PlayGame.judgementState = "Lose"
+                PlayGame.GameState = "Over"
+                GameOver.VanquisherID = data.VanquisherID
+                Switcher.To(GameOver)
             end
         end
     )
@@ -54,16 +59,8 @@ function ClientSock.Init()
             -- 说明所在部队获胜了
             if PlayGame.armyID == data.armyID then
                 PlayGame.judgementState = "Win"
-            end
-        end
-    )
-    Client:on(
-        "VanquisherID",
-        function(data)
-            -- 传递击败玩家者的ID
-            CGameMap.Surrender(data.armyID, data.VanquisherID)
-            if PlayGame.armyID == data.armyID then
-                GameOver.VanquisherID = data.VanquisherID
+                PlayGame.GameState = "Over"
+                Switcher.To(GameOver)
             end
         end
     )

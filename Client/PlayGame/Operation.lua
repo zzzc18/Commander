@@ -101,16 +101,10 @@ end
 function Operation.CatchMousePressed(pixelX, pixelY, button, istouch, presses)
     -- 鼠标坐标转换为地图坐标
     local x, y = BasicMap.Pixel2Coordinate(pixelX, pixelY)
-    -- local buttonName = Buttons.MouseState(pixelX, pixelY, 0)
-    if PlayGame.judgementState == "Win" or PlayGame.judgementState == "Lose" then
-        GameOver.MouseStateForOpts(pixelX, pixelY, 0)
+    local name = Buttons.MouseState(pixelX, pixelY, 0)
+    if "Clicked" == name then
         return
     end
-    -- --说明鼠标点了按钮
-    -- if buttonName ~= nil then
-    --     return
-    -- end
-
     -- 说明鼠标点的位置不在地图中
     if x == -1 and y == -1 then
         return
@@ -127,9 +121,13 @@ function Operation.CatchMousePressed(pixelX, pixelY, button, istouch, presses)
 end
 
 function Operation.CatchMouseReleased(pixelX, pixelY, button, istouch, presses)
-    -- Buttons.MouseState(pixelX, pixelY, 2)
-    if PlayGame.judgementState == "Win" or PlayGame.judgementState == "Lose" then
-        GameOver.MouseStateForOpts(pixelX, pixelY, 2)
+    local name = Buttons.MouseState(pixelX, pixelY, 2)
+    if "menu" == name then
+        PlayGame.GameState = "Menu"
+    elseif "continue" == name then
+        PlayGame.GameState = "Start"
+    elseif "exit" == name then
+        Switcher.To(Welcome)
     end
 end
 
@@ -142,11 +140,15 @@ function Operation.DrawSelect()
 end
 
 function Operation.DrawButtons()
-    -- Buttons.DrawButtons()
+    Buttons.DrawButtons()
+end
+
+function Operation.DrawMenu()
+    Picture.DrawMenu()
 end
 
 function Operation.Update()
-    -- Buttons.Update()
+    Buttons.Update()
 end
 
 return Operation

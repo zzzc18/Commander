@@ -5,7 +5,6 @@ CVerify = require("lib.Verify")
 CGameMap = require("lib.GameMap")
 CSystem = require("lib.System")
 
-Sock = require("sock")
 Bitser = require("spec.bitser")
 PlayGame = require("PlayGame.PlayGame")
 

@@ -19,6 +19,10 @@ local target = {
 local now = "Welcome"
 
 function Switcher.Init()
+    Welcome.name = "Welcome"
+    PlayGame.name = "PlayGame"
+    GameOver.name = "GameOver"
+    ReplayGame.name = "ReplayGame"
     for key_i, value_i in pairs(target) do
         switchable[value_i] = {}
         for key_j, value_j in pairs(target) do
@@ -47,6 +51,8 @@ function Switcher.To(newState)
     Running.DeInit()
     Running = newState
     Running.Init()
+    now = Running.name
+    print(now)
 end
 
 return Switcher

@@ -2,8 +2,10 @@ PlayGame = {}
 
 local Operation = require("PlayGame.Operation")
 
-PlayGame.name = "PlayGame"
---READY:游戏未开始，不显示界面，无法操作 Start:游戏进行中 Over:游戏结束，显示界面，无法发送移动命令
+--READY:游戏未开始，不显示界面，无法操作
+--Start:游戏进行中
+--Over:游戏介绍，显示界面，无法发送移动命令
+--Menu:菜单界面
 PlayGame.GameState = "READY"
 PlayGame.judgementState = "Running"
 PlayGame.armyID = nil
@@ -12,11 +14,12 @@ PlayGame.armyNum = 0
 function PlayGame.Init()
     Picture.Init()
     ClientSock.Init()
-    Buttons.Init(PlayGame)
-    GameOver.GameOverOptInit()
+    Buttons.Init()
+    BGAnimation.load()
 end
 
 function PlayGame.DeInit()
+    PlayGame.GameState = "READY"
     Buttons.DeInit()
     Client:disconnect()
 end
@@ -47,10 +50,16 @@ function PlayGame.mousepressed(pixelX, pixelY, button, istouch, presses)
 end
 
 function PlayGame.mousereleased(pixelX, pixelY, button, istouch, presses)
+    if PlayGame.GameState == "READY" then
+        return
+    end
     Operation.CatchMouseReleased(pixelX, pixelY, button, istouch, presses)
 end
 
 function PlayGame.keypressed(key, scancode, isrepeat)
+    if PlayGame.GameState == "READY" then
+        return
+    end
     Operation.CatchKeyPressed(key)
 end
 
@@ -60,28 +69,28 @@ end
 function PlayGame.draw()
     if PlayGame.GameState == "READY" then
         love.graphics.print("Waiting...", 300, 300, 0, 2)
+        Picture.DrawReady(BGAnimation)
         return
     end
     love.graphics.print("Step:" .. Step, 0, 0, 0, 2)
     BasicMap.DrawMap()
+    BasicMap.DrawPath()
     Operation.DrawSelect()
-    Operation.DrawButtons()
-    if PlayGame.judgementState == "Lose" then
-        GameOver.DrawJudgeInfo("Lose", GameOver.VanquisherID)
-    elseif PlayGame.judgementState == "Win" then
-        GameOver.DrawJudgeInfo("Win", nil)
+    if PlayGame.GameState == "Menu" then
+        Operation.DrawMenu()
     end
+    Operation.DrawButtons()
 end
 
 function PlayGame.UpdateTimerSecond(dt)
 end
 
 function PlayGame.update(dt)
-    Client:update()
-    if PlayGame.judgementState == "Lose" or PlayGame.judgementState == "Win" then
-        GameOver.Update(love.mouse.getX(), love.mouse.getY())
+    if PlayGame.GameState == "READY" then
+        BGAnimation.update(dt)
     end
-    if PlayGame.GameState ~= "Start" then
+    Client:update()
+    if PlayGame.GameState ~= "Start" and PlayGame.GameState ~= "Menu" then
         return
     end
     MapAdjust.Update()

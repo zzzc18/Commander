@@ -6,7 +6,7 @@ ReplayGame.armyID = nil
 ReplayGame.armyNum = 0
 
 function ReplayGame.RunPermission()
-    return ReplayGame.GameState == "Start"
+    return ReplayGame.GameState == "Start" or ReplayGame.GameState == "Menu"
 end
 
 function ReplayGame.Init(MapMode)
@@ -25,6 +25,8 @@ function ReplayGame.Init(MapMode)
 end
 
 function ReplayGame.DeInit()
+    Buttons.DeInit()
+    ReplayGame.GameState = "READY"
 end
 
 function ReplayGame.Destroy()
@@ -46,7 +48,14 @@ function ReplayGame.mousepressed(pixelX, pixelY, button, istouch, presses)
 end
 
 function ReplayGame.mousereleased(pixelX, pixelY, button, istouch, presses)
-    Buttons.MouseState(pixelX, pixelY, 2)
+    local name = Buttons.MouseState(pixelX, pixelY, 2)
+    if "menu" == name then
+        ReplayGame.GameState = "Menu"
+    elseif "continue_Opt" == name then
+        ReplayGame.GameState = "Start"
+    elseif "exit_Opt" == name then
+        Switcher.To(Welcome)
+    end
 end
 
 function ReplayGame.keypressed(key, scancode, isrepeat)
@@ -61,6 +70,10 @@ function ReplayGame.draw()
     end
     love.graphics.print("Step:" .. Step, 0, 0, 0, 2)
     BasicMap.DrawMap()
+    BasicMap.DrawPath()
+    if ReplayGame.GameState == "Menu" then
+        Picture.DrawMenu()
+    end
     Buttons.DrawButtons()
 end
 
