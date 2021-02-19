@@ -1,32 +1,34 @@
-ReplayGame = {}
+local ReplayGame = {}
 
+ReplayGame.droppedDir = ""
+ReplayGame.step = 0
 ReplayGame.name = "ReplayGame"
-ReplayGame.GameState = "READY"
+ReplayGame.gameState = "READY"
 ReplayGame.armyID = nil
 ReplayGame.armyNum = 0
 
 function ReplayGame.RunPermission()
-    return ReplayGame.GameState == "Start" or ReplayGame.GameState == "Menu"
+    return ReplayGame.gameState == "Start" or ReplayGame.gameState == "Menu"
 end
 
 function ReplayGame.Init(MapMode)
-    if DroppedDir == "" then
+    if ReplayGame.droppedDir == "" then
         print("replay dir undefined, return to Playgame")
         print("drag replay folder to game window before switch to ReplayGame")
         Switcher.To(PlayGame)
         return
     end
     Picture.Init()
-    ReplayGame.armyNum = CGameMap.LoadReplayFile(DroppedDir)
+    ReplayGame.armyNum = CGameMap.LoadReplayFile(ReplayGame.droppedDir)
     CVerify.Register(0, 2)
-    ReplayGame.GameState = "Start"
+    ReplayGame.gameState = "Start"
     BasicMap.Init()
     Buttons.Init()
 end
 
 function ReplayGame.DeInit()
     Buttons.DeInit()
-    ReplayGame.GameState = "READY"
+    ReplayGame.gameState = "READY"
 end
 
 function ReplayGame.Destroy()
@@ -50,9 +52,9 @@ end
 function ReplayGame.mousereleased(pixelX, pixelY, button, istouch, presses)
     local name = Buttons.MouseState(pixelX, pixelY, 2)
     if "menu" == name then
-        ReplayGame.GameState = "Menu"
+        ReplayGame.gameState = "Menu"
     elseif "continue_Opt" == name then
-        ReplayGame.GameState = "Start"
+        ReplayGame.gameState = "Start"
     elseif "exit_Opt" == name then
         Switcher.To(Welcome)
     end
@@ -68,10 +70,10 @@ function ReplayGame.draw()
     if not ReplayGame.RunPermission() then
         return
     end
-    love.graphics.print("Step:" .. Step, 0, 0, 0, 2)
+    love.graphics.print("Step:" .. ReplayGame.step, 0, 0, 0, 2)
     BasicMap.DrawMap()
     BasicMap.DrawPath()
-    if ReplayGame.GameState == "Menu" then
+    if ReplayGame.gameState == "Menu" then
         Picture.DrawMenu()
     end
     Buttons.DrawButtons()
@@ -92,8 +94,8 @@ function ReplayGame.update(dt)
         --游戏结束，停止地图更新
         end
     end
-    if not IsPause then
-        Step = CSystem.Update(ReplaySpeed * dt)
+    if not Buttons.isPause then
+        ReplayGame.step = CSystem.Update(Buttons.replaySpeed * dt)
     end
 end
 

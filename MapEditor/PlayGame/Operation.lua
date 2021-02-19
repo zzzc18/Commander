@@ -1,4 +1,4 @@
-Operation = {}
+local Operation = {}
 
 function Operation.Select(x, y)
     if true or CGameMap.GetBelong(x, y) == PlayGame.armyID then -- TODO: fix true

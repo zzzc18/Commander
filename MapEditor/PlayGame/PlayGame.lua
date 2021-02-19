@@ -1,4 +1,4 @@
-PlayGame = {}
+local PlayGame = {}
 
 local Operation = require("PlayGame.Operation")
 

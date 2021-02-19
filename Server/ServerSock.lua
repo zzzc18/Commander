@@ -13,13 +13,13 @@ function ServerSock.Init(armyNum)
             client:send("SetArmyID", {armyID = client:getIndex()})
             ServerSock.clientNum = ServerSock.clientNum + 1
             -- TODO为了前期调试方便用的2个而不是自动加载的个数
-            if PlayGame.GameState == "Over" then
-                PlayGame.GameState = "READY"
+            if PlayGame.gameState == "Over" then
+                PlayGame.gameState = "READY"
                 Running.Init()
             end
             if ServerSock.clientNum == armyNum then
                 Server:sendToAll("GameStart")
-                PlayGame.GameState = "Start"
+                PlayGame.gameState = "Start"
             end
         end
     )
@@ -47,8 +47,8 @@ function ServerSock.SendGameOver()
     Server:sendToAll("GameOver")
 end
 
-function ServerSock.SendLose(armyID, VanquisherID)
-    Server:sendToAll("Lose", {armyID = armyID, VanquisherID = VanquisherID})
+function ServerSock.SendLose(armyID, vanquisherID)
+    Server:sendToAll("Lose", {armyID = armyID, vanquisherID = vanquisherID})
 end
 
 function ServerSock.SendWin(armyID)

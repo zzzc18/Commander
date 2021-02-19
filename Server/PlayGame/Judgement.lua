@@ -1,4 +1,4 @@
-Judgement = {}
+local Judgement = {}
 
 -- 储存各部队状态，1表示存活，0表示死亡
 Judgement.state = {}
@@ -13,12 +13,12 @@ function Judgement.Judge()
     -- 存活部队数
     local aliveCnt = 0
     for i = 1, PlayGame.armyNum do
-        local Vanquisher = CGameMap.Judge(i)
-        -- i为要判断的ID，若其被击败，则Vanquisher是击败i的玩家ID,否则Vanquisher为0
-        if Vanquisher ~= 0 and Judgement.state[i] == 1 then
+        local vanquisher = CGameMap.Judge(i)
+        -- i为要判断的ID，若其被击败，则vanquisher是击败i的玩家ID,否则vanquisher为0
+        if vanquisher ~= 0 and Judgement.state[i] == 1 then
             Judgement.state[i] = 0
-            ServerSock.SendLose(i, Vanquisher)
-            CGameMap.Surrender(i, Vanquisher) -- 改归属
+            ServerSock.SendLose(i, vanquisher)
+            CGameMap.Surrender(i, vanquisher) -- 改归属
         end
         if Judgement.state[i] == 1 then
             aliveCnt = aliveCnt + 1
@@ -34,7 +34,7 @@ function Judgement.Judge()
             end
         end
         ServerSock.SendGameOver()
-        PlayGame.GameState = "Over"
+        PlayGame.gameState = "Over"
     end
 end
 
