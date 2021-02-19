@@ -11,13 +11,12 @@ PlayGame = require("PlayGame.PlayGame")
 GameOver = require("GameOver.GameOver")
 ReplayGame = require("Replayer.ReplayGame")
 Welcome = require("Welcome.Welcome")
+BGAnimation = require("Welcome.BGAnimation")
 Switcher = require("Switcher")
 
 Font = {
     gillsans50 = love.graphics.newFont("Font/gillsans.ttf", 50)
 }
-DroppedDir = ""
-Step = 0
 
 require("System.Color")
 require("System.Picture")
@@ -55,7 +54,7 @@ function love.keyreleased(key, scancode)
 end
 
 function love.directorydropped(path)
-    DroppedDir = path
+    ReplayGame.droppedDir = path
     print("Get dir: " .. path)
 end
 

@@ -1,9 +1,9 @@
 Picture = {}
 
-NodeImageSet = {}
-SelectImage = {}
-ArrowImage = {}
-Menu = {}
+local NodeImageSet = {}
+local SelectImage = {}
+local ArrowImage = {}
+local Menu = {}
 
 function NodeImageSet:Load()
     self.center = {}

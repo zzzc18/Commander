@@ -1,4 +1,4 @@
-Operation = {}
+local Operation = {}
 
 -- 这段代码 if 里面去掉 true 是否还能正常运转？？
 -- 将x,y格设为选中状态
@@ -33,19 +33,19 @@ end
 
 --发送移动命令
 function Operation.MoveTo(x, y)
-    if PlayGame.GameState ~= "Start" then
+    if PlayGame.gameState ~= "Start" then
         return
     --只有游戏进行时才能发送
     end
     if x == -1 and y == -1 then --撤销移动
-        local newRequest = {
+        local NewRequest = {
             armyID = PlayGame.armyID,
             srcX = -1,
             srcY = -1,
             dstX = -1,
             dstY = -1
         }
-        ClientSock.SendMove(newRequest)
+        ClientSock.SendMove(NewRequest)
         return
     end
 
@@ -53,14 +53,14 @@ function Operation.MoveTo(x, y)
         return
     end
 
-    local newRequest = {
+    local NewRequest = {
         armyID = PlayGame.armyID,
         srcX = Operation.SelectPos.x,
         srcY = Operation.SelectPos.y,
         dstX = x,
         dstY = y
     }
-    ClientSock.SendMove(newRequest)
+    ClientSock.SendMove(NewRequest)
 end
 
 --依按下的键盘按键进行操作
@@ -123,9 +123,9 @@ end
 function Operation.CatchMouseReleased(pixelX, pixelY, button, istouch, presses)
     local name = Buttons.MouseState(pixelX, pixelY, 2)
     if "menu" == name then
-        PlayGame.GameState = "Menu"
+        PlayGame.gameState = "Menu"
     elseif "continue" == name then
-        PlayGame.GameState = "Start"
+        PlayGame.gameState = "Start"
     elseif "exit" == name then
         Switcher.To(Welcome)
     end

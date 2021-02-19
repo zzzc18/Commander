@@ -1,17 +1,12 @@
-Welcome = {}
-
-require("Welcome.BGAnimation")
+local Welcome = {}
+local Title = {}
 
 Welcome.name = "Welcome"
 
 function Welcome.Init()
     -- PlayGame.Init()
-    PressStart = false
-    ReleaseStart = false
-    OriColor = {1, 1, 1, 1}
-    SelectedColor = {0.7, 0.7, 0.7, 1}
-    ClickedColor = {0.439, 0.502, 0.565, 1}
-    PixelWidth, PixelHeight = love.graphics.getPixelDimensions()
+    Welcome.pressStart = false
+    Welcome.releaseStart = false
 end
 
 function Welcome.Init()
@@ -30,17 +25,17 @@ function Welcome.DeInit()
 end
 
 function Welcome.draw()
-    if ReleaseStart then
+    if Welcome.releaseStart then
         PlayGame.draw()
     end
-    local PixelWidth, PixelHeight = love.graphics.getPixelDimensions()
+    local pixelWidth, pixelHeight = love.graphics.getPixelDimensions()
     if Running == Welcome then
         love.graphics.setColor(1, 1, 1, 1)
         BGAnimation.draw()
         love.graphics.draw(
             Title.img,
-            PixelWidth / 2,
-            PixelHeight / 4,
+            pixelWidth / 2,
+            pixelHeight / 4,
             0,
             Title.widthRatio,
             Title.heightRatio,
@@ -75,10 +70,10 @@ function Welcome.wheelmoved(x, y)
 end
 
 function Welcome.update(dt)
-    local PixelWidth, PixelHeight = love.graphics.getPixelDimensions()
+    local pixelWidth, pixelHeight = love.graphics.getPixelDimensions()
     BGAnimation.update(dt)
-    Title.widthRatio = 0.6 * PixelHeight / 990
-    Title.heightRatio = 0.6 * PixelHeight / 990
+    Title.widthRatio = 0.6 * pixelHeight / 990
+    Title.heightRatio = 0.6 * pixelHeight / 990
     Buttons.Update()
 end
 

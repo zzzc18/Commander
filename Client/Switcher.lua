@@ -1,16 +1,16 @@
 --场景切换器
-Switcher = {}
+local Switcher = {}
 
 --可切换的场景
-Scene = {}
+local Scene = {}
 Scene["Welcome"] = Welcome
 Scene["PlayGame"] = PlayGame
 Scene["ReplayGame"] = ReplayGame
 
---switchable["x"]["y"]==1代表可以从场景x切换到场景y
-local switchable = {}
+--Switchable["x"]["y"]==1代表可以从场景x切换到场景y
+local Switchable = {}
 --场景切换快捷键和名称的对应关系
-local target = {
+local Target = {
     ["p"] = "PlayGame",
     ["r"] = "ReplayGame",
     ["w"] = "Welcome"
@@ -23,24 +23,24 @@ function Switcher.Init()
     PlayGame.name = "PlayGame"
     GameOver.name = "GameOver"
     ReplayGame.name = "ReplayGame"
-    for key_i, value_i in pairs(target) do
-        switchable[value_i] = {}
-        for key_j, value_j in pairs(target) do
-            switchable[value_i][value_j] = 0
+    for key_i, value_i in pairs(Target) do
+        Switchable[value_i] = {}
+        for key_j, value_j in pairs(Target) do
+            Switchable[value_i][value_j] = 0
         end
     end
-    switchable["Welcome"]["PlayGame"] = 1
-    switchable["Welcome"]["ReplayGame"] = 1
-    switchable["PlayGame"]["ReplayGame"] = 1
-    switchable["ReplayGame"]["Welcome"] = 1
+    Switchable["Welcome"]["PlayGame"] = 1
+    Switchable["Welcome"]["ReplayGame"] = 1
+    Switchable["PlayGame"]["ReplayGame"] = 1
+    Switchable["ReplayGame"]["Welcome"] = 1
 end
 
 --用按键切换场景的功能不会在正常游戏中使用
 function Switcher.keypressed(key)
     print(now)
-    if target[key] ~= nil and switchable[now][target[key]] ~= 0 then
-        now = target[key]
-        Switcher.To(Scene[target[key]])
+    if Target[key] ~= nil and Switchable[now][Target[key]] ~= 0 then
+        now = Target[key]
+        Switcher.To(Scene[Target[key]])
     end
 end
 

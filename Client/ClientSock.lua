@@ -24,31 +24,31 @@ function ClientSock.Init()
     Client:on(
         "Update",
         function(data)
-            Step = CSystem.Update(data)
+            ReplayGame.step = CSystem.Update(data)
         end
     )
     Client:on(
         "GameStart",
         function()
-            PlayGame.GameState = "Start"
+            PlayGame.gameState = "Start"
             BGAnimation.deLoad()
         end
     )
     Client:on(
         "GameOver",
         function()
-            PlayGame.GameState = "Over"
+            PlayGame.gameState = "Over"
         end
     )
     Client:on(
         "Lose",
         function(data)
             -- 说明所在部队的王死了
-            CGameMap.Surrender(data.armyID, data.VanquisherID)
+            CGameMap.Surrender(data.armyID, data.vanquisherID)
             if PlayGame.armyID == data.armyID then
                 PlayGame.judgementState = "Lose"
-                PlayGame.GameState = "Over"
-                GameOver.VanquisherID = data.VanquisherID
+                PlayGame.gameState = "Over"
+                GameOver.vanquisherID = data.vanquisherID
                 Switcher.To(GameOver)
             end
         end
@@ -59,7 +59,7 @@ function ClientSock.Init()
             -- 说明所在部队获胜了
             if PlayGame.armyID == data.armyID then
                 PlayGame.judgementState = "Win"
-                PlayGame.GameState = "Over"
+                PlayGame.gameState = "Over"
                 Switcher.To(GameOver)
             end
         end

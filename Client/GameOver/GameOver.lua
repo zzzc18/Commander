@@ -1,19 +1,19 @@
-GameOver = {}
+local GameOver = {}
 
 GameOver.name = "GameOver"
-GameOver.VanquisherID = 0
+GameOver.vanquisherID = 0
 GameOver.armyNum = 0
 
 function GameOver.draw()
     BasicMap.DrawMap()
     if PlayGame.judgementState == "Lose" then
-        GameOver.DrawJudgeInfo("Lose", GameOver.VanquisherID)
+        GameOver.DrawJudgeInfo("Lose", GameOver.vanquisherID)
     elseif PlayGame.judgementState == "Win" then
         GameOver.DrawJudgeInfo("Win", nil)
     end
 end
 
-function GameOver.DrawJudgeInfo(state, VanquisherID)
+function GameOver.DrawJudgeInfo(state, vanquisherID)
     local x, y, judgeMenuWidth, judgeMenuHeight
     local fontScale
     local menu
@@ -26,28 +26,17 @@ function GameOver.DrawJudgeInfo(state, VanquisherID)
     judgeMenuHeight = 360 * ratio
     fontScale = 1.75 * y / 720
     if state == "Win" then
-        menu = GameOver.MenuV
+        menu = GameOver.menuV
     elseif state == "Lose" then
-        menu = GameOver.MenuD
+        menu = GameOver.menuD
     end --标题设置
-    love.graphics.setColor(0.333, 0.102, 0.545)
-    love.graphics.rectangle(
-        "fill",
-        x - (judgeMenuWidth - 12) / 2,
-        y - (judgeMenuHeight - 16) / 2,
-        judgeMenuWidth,
-        judgeMenuHeight
-    )
-    love.graphics.setColor(0.9, 0.9, 0.9)
-    love.graphics.rectangle("fill", x - judgeMenuWidth / 2, y - judgeMenuHeight / 2, judgeMenuWidth, judgeMenuHeight)
-    -- GameOver.DrawGameOverOptions()
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.draw(menu, x - judgeMenuWidth / 2, y - judgeMenuHeight / 2, 0, 0.5 * ratio, 0.5 * ratio, 1)
     Buttons.DrawButtons() --创建选项
     -- 上为选项框，下为文字内容
     love.graphics.setColor(0, 0, 0)
     if state == "Lose" then
-        local nameText = string.format("Player %d", VanquisherID)
+        local nameText = string.format("Player %d", vanquisherID)
         love.graphics.print(
             nameText,
             x + (judgeMenuWidth - 145 * fontScale) / 2,
@@ -61,58 +50,16 @@ function GameOver.DrawJudgeInfo(state, VanquisherID)
     -- 确保只有裁决信息使用了新字体
 end
 
-EachOption = {}
-
-GameOver.isClicked = false
-
-function GameOver.Update(mouseX, mouseY)
-    GameOver.MouseStateForOpts(mouseX, mouseY, 1)
-end
-
--- 初始化裁决界面的选项的参数
-function GameOver.LoadGameOverOpts()
-    local optionColor = {1, 1, 1, 1}
-    local optionRatio = 0.5
-    local options = {}
-    options.button_play_again =
-        GameOver.NewOptions(
-        "play again",
-        "data/Picture/OPTION_TYPE_PLAYAGAIN.PNG",
-        445,
-        290,
-        190,
-        70,
-        optionRatio,
-        optionColor
-    )
-    options.button_watch_replay =
-        GameOver.NewOptions(
-        "watch replay",
-        "data/Picture/OPTION_TYPE_WATCHREPLAY.PNG",
-        445,
-        370,
-        190,
-        70,
-        optionRatio,
-        optionColor
-    )
-    options.button_exit =
-        GameOver.NewOptions("exit", "data/Picture/OPTION_TYPE_EXIT.PNG", 445, 450, 190, 70, optionRatio, optionColor)
-    for i, v in pairs(options) do
-        GameOver.insertOpts(v)
-    end
-end
-
--- 初始化裁决界面选项
+-- 初始化
 function GameOver.Init()
     GameOver.armyNum = PlayGame.armyNum
-    GameOver.MenuV = love.graphics.newImage("data/Picture/OPTION_TYPE_VICTORY.PNG")
-    GameOver.MenuD = love.graphics.newImage("data/Picture/OPTION_TYPE_DEFEATED.PNG")
+    GameOver.menuV = love.graphics.newImage("data/Picture/OPTION_TYPE_VICTORY.PNG")
+    GameOver.menuD = love.graphics.newImage("data/Picture/OPTION_TYPE_DEFEATED.PNG")
     Buttons.Init()
 end
 
 function GameOver.DeInit()
-    GameOver.VanquisherID = 0
+    GameOver.vanquisherID = 0
     GameOver.armyNum = 0
     Buttons.DeInit()
 end
