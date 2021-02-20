@@ -1,6 +1,5 @@
 local GameOver = {}
 
-GameOver.name = "GameOver"
 GameOver.vanquisherID = 0
 GameOver.armyNum = 0
 
@@ -61,6 +60,8 @@ end
 function GameOver.DeInit()
     GameOver.vanquisherID = 0
     GameOver.armyNum = 0
+    GameOver.menuD = nil
+    GameOver.menuV = nil
     Buttons.DeInit()
 end
 

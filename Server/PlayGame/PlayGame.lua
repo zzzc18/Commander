@@ -10,7 +10,6 @@ PlayGame.armyID = nil
 PlayGame.armyNum = 0
 
 function PlayGame.Init(MapMode)
-    Picture.Init()
     -- CGameMap.RandomGenMap()
     -- CGameMap.WriteMap()
     PlayGame.armyNum = CGameMap.LoadMap()

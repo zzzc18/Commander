@@ -12,14 +12,14 @@ PlayGame.armyID = nil
 PlayGame.armyNum = 0
 
 function PlayGame.Init()
-    Picture.Init()
+    PlayGame.gameState = "READY"
+    PlayGame.judgementState = "Running"
     ClientSock.Init()
     Buttons.Init()
     BGAnimation.load()
 end
 
 function PlayGame.DeInit()
-    PlayGame.gameState = "READY"
     Buttons.DeInit()
     Client:disconnect()
 end
@@ -68,10 +68,10 @@ end
 
 function PlayGame.draw()
     if PlayGame.gameState == "READY" then
-        love.graphics.print("Waiting...", 300, 300, 0, 2)
         Picture.DrawReady(BGAnimation)
         return
     end
+    love.graphics.setColor(1, 1, 1, 1)
     love.graphics.print("Step:" .. ReplayGame.step, 0, 0, 0, 2)
     BasicMap.DrawMap()
     BasicMap.DrawPath()

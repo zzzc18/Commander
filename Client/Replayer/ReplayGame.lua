@@ -2,7 +2,6 @@ local ReplayGame = {}
 
 ReplayGame.droppedDir = ""
 ReplayGame.step = 0
-ReplayGame.name = "ReplayGame"
 ReplayGame.gameState = "READY"
 ReplayGame.armyID = nil
 ReplayGame.armyNum = 0
@@ -13,17 +12,17 @@ end
 
 function ReplayGame.Init(MapMode)
     if ReplayGame.droppedDir == "" then
-        print("replay dir undefined, return to Playgame")
         print("drag replay folder to game window before switch to ReplayGame")
-        Switcher.To(PlayGame)
+        ReplayGame.gameState = "READY"
+        BGAnimation.load()
         return
+    else
+        ReplayGame.armyNum = CGameMap.LoadReplayFile(ReplayGame.droppedDir)
+        CVerify.Register(0, 2)
+        ReplayGame.gameState = "Start"
+        BasicMap.Init()
+        Buttons.Init()
     end
-    Picture.Init()
-    ReplayGame.armyNum = CGameMap.LoadReplayFile(ReplayGame.droppedDir)
-    CVerify.Register(0, 2)
-    ReplayGame.gameState = "Start"
-    BasicMap.Init()
-    Buttons.Init()
 end
 
 function ReplayGame.DeInit()
@@ -50,6 +49,9 @@ function ReplayGame.mousepressed(pixelX, pixelY, button, istouch, presses)
 end
 
 function ReplayGame.mousereleased(pixelX, pixelY, button, istouch, presses)
+    if not ReplayGame.RunPermission() then
+        return
+    end
     local name = Buttons.MouseState(pixelX, pixelY, 2)
     if "menu" == name then
         ReplayGame.gameState = "Menu"
@@ -68,8 +70,10 @@ end
 
 function ReplayGame.draw()
     if not ReplayGame.RunPermission() then
+        Picture.DrawReady(BGAnimation)
         return
     end
+    love.graphics.setColor(1, 1, 1, 1)
     love.graphics.print("Step:" .. ReplayGame.step, 0, 0, 0, 2)
     BasicMap.DrawMap()
     BasicMap.DrawPath()
@@ -84,7 +88,13 @@ end
 
 function ReplayGame.update(dt)
     if not ReplayGame.RunPermission() then
-        return
+        if ReplayGame.droppedDir == "" then
+            BGAnimation.update(dt)
+            return
+        else
+            ReplayGame.Init()
+            BGAnimation.deLoad()
+        end
     end
     MapAdjust.Update()
     Buttons.Update()

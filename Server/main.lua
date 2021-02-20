@@ -19,6 +19,7 @@ function love.load()
     CVerify.Register(0, 3)
     Running = PlayGame
     Running.Init()
+    Picture.Init()
     ServerSock.Init(PlayGame.armyNum)
 end
 function love.wheelmoved(x, y)
