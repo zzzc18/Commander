@@ -7,7 +7,6 @@ PlayGame.armyNum = 0
 function PlayGame.Init()
     CVerify.Register(0, 3)
     PlayGame.LoadMap()
-    Picture.Init()
 end
 
 function PlayGame.LoadMap()

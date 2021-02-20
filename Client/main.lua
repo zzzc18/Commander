@@ -31,6 +31,7 @@ function love.load()
     Running = Welcome
     Running.Init()
     Switcher.Init()
+    Picture.Init()
 end
 
 function love.wheelmoved(x, y)
