@@ -148,6 +148,9 @@ bool MAP::IncreaseOrDecrease(VECTOR aim, int mode) {
 }
 
 bool MAP::ChangeType(VECTOR aim, int type) {
+    if (_mat[aim.x][aim.y].type == NODE_TYPE::KING) {
+        _armyCnt--;
+    }
     switch (type) {
         case 1:
             _mat[aim.x][aim.y].type = NODE_TYPE::HILL;
@@ -271,6 +274,7 @@ void MAP::InitSavedata() {
 
 int MAP::LoadMap(std::string_view file) {  // file = "../Data/"
     step = 0;
+    kingNum = 0;
     std::ifstream fin(std::string(file.data()) + "3Player.map");
     fin >> *this;
     fin.close();
@@ -316,6 +320,8 @@ void MAP::SaveEdit(std::string_view file) {  // file = "../Output/"
 }
 
 int MAP::LoadReplayFile(std::string_view file, int loadstep) {  // loadstep = 0
+    ReplayOver = false;
+    kingNum = 0;
     step = loadstep;
     ReplayFile = std::string(file.data());
     std::ifstream fin(ReplayFile + "/" + std::to_string(loadstep) + ".map");
@@ -396,6 +402,8 @@ int MAP::Surrender(int armyID, int vanquisherID) {
     MAP::_mat[MAP::Singleton().kingState.kingPos[armyID].x]
              [MAP::Singleton().kingState.kingPos[armyID].y]
                  .type = NODE_TYPE::FORT;
+    //投降后kingNum减一，但_armyCnt不变
+    kingNum--;
     return 0;
 }
 
