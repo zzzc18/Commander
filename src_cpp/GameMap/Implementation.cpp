@@ -316,6 +316,7 @@ void MAP::SaveEdit(std::string_view file) {  // file = "../Output/"
 }
 
 int MAP::LoadReplayFile(std::string_view file, int loadstep) {  // loadstep = 0
+    ReplayOver = false;
     step = loadstep;
     ReplayFile = std::string(file.data());
     std::ifstream fin(ReplayFile + "/" + std::to_string(loadstep) + ".map");
