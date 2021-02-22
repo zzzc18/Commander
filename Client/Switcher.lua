@@ -7,6 +7,7 @@ Scene["Welcome"] = Welcome
 Scene["PlayGame"] = PlayGame
 Scene["ReplayGame"] = ReplayGame
 Scene["GameOver"] = GameOver
+Scene["AI_SDK"] = AI_SDK
 
 local Switchable = {}
 --场景切换快捷键和名称的对应关系
@@ -14,7 +15,8 @@ local Target = {
     ["p"] = "PlayGame",
     ["r"] = "ReplayGame",
     ["w"] = "Welcome",
-    ["g"] = "GameOver"
+    ["g"] = "GameOver",
+    ["a"] = "AI_SDK"
 }
 --当前场景
 local now = "Welcome"
@@ -22,6 +24,7 @@ local now = "Welcome"
 function Switcher.Init()
     Welcome.name = "Welcome"
     PlayGame.name = "PlayGame"
+    AI_SDK.name = "AI_SDK"
     GameOver.name = "GameOver"
     ReplayGame.name = "ReplayGame"
     for key_i, value_i in pairs(Target) do
@@ -31,9 +34,12 @@ function Switcher.Init()
         end
     end
     Switchable["Welcome"]["PlayGame"] = 1
+    Switchable["Welcome"]["AI_SDK"] = 1
     Switchable["Welcome"]["ReplayGame"] = 1
     Switchable["PlayGame"]["GameOver"] = 1
     Switchable["PlayGame"]["Welcome"] = 1
+    Switchable["AI_SDK"]["GameOver"] = 1
+    Switchable["AI_SDK"]["Welcome"] = 1
     Switchable["ReplayGame"]["Welcome"] = 1
     Switchable["GameOver"]["Welcome"] = 1
     Switchable["GameOver"]["PlayGame"] = 1

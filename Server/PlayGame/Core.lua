@@ -4,7 +4,7 @@
 local Core = {}
 
 function Core.PushMove(data)
-    CGameMap.PushMove(data.armyID, data.srcX, data.srcY, data.dstX, data.dstY)
+    CGameMap.PushMove(data.armyID, data.srcX, data.srcY, data.dstX, data.dstY, data.num)
 end
 
 return Core

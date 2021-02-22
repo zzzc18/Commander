@@ -9,16 +9,27 @@ function ClientSock.Init()
         "SetArmyID",
         function(data)
             print("Received Data")
-            PlayGame.armyID = data.armyID
+            Running.armyID = data.armyID
+            if PlayGame == Running then
+                PlayGame.armyID = Running.armyID
+            elseif AI_SDK == Running then
+                AI_SDK.armyID = Running.armyID
+            end
             print("armyID:" .. data.armyID)
             CVerify.Register(data.armyID)
-            PlayGame.LoadMap()
+            Running.LoadMap()
         end
     )
     Client:on(
         "PushMove",
         function(data)
             PlayGameCore.PushMove(data)
+        end
+    )
+    Client:on(
+        "PushMove_AI",
+        function(data)
+            AI_SDK.PushMove(data)
         end
     )
     Client:on(
@@ -30,7 +41,7 @@ function ClientSock.Init()
     Client:on(
         "GameStart",
         function()
-            PlayGame.gameState = "Start"
+            Running.gameState = "Start"
             BGAnimation.deLoad()
         end
     )
@@ -45,9 +56,9 @@ function ClientSock.Init()
         function(data)
             -- 说明所在部队的王死了
             CGameMap.Surrender(data.armyID, data.vanquisherID)
-            if PlayGame.armyID == data.armyID then
-                PlayGame.judgementState = "Lose"
-                PlayGame.gameState = "Over"
+            if Running.armyID == data.armyID then
+                Running.judgementState = "Lose"
+                Running.gameState = "Over"
                 GameOver.vanquisherID = data.vanquisherID
                 Switcher.To(GameOver)
             end
@@ -57,9 +68,9 @@ function ClientSock.Init()
         "Win",
         function(data)
             -- 说明所在部队获胜了
-            if PlayGame.armyID == data.armyID then
-                PlayGame.judgementState = "Win"
-                PlayGame.gameState = "Over"
+            if Running.armyID == data.armyID then
+                Running.judgementState = "Win"
+                Running.gameState = "Over"
                 Switcher.To(GameOver)
             end
         end
@@ -71,6 +82,10 @@ end
 -- srcX,Y是出发点 dstX,Y是目标点，显然二者应当相邻
 function ClientSock.SendMove(data)
     Client:send("PushMove", data)
+end
+
+function ClientSock.SendMove_AI(data)
+    Client:send("PushMove_AI", data)
 end
 
 return ClientSock

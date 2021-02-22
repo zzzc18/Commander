@@ -67,30 +67,37 @@ void MAP::BigUpdate() {
 }
 
 bool MAP::MoveUpdate() {
-    auto Move = [this](int armyID, VECTOR _src, VECTOR _dst) -> bool {
+    auto Move = [this](int armyID, VECTOR _src, VECTOR _dst, int num) -> bool {
         NODE &src = _mat[_src.x][_src.y], &dst = _mat[_dst.x][_dst.y];
         if (src.belong != armyID || src.unitNum <= 1)
             return false;  // FIXME magic number 1
         if (dst.type == NODE_TYPE::HILL) return false;
-        if (dst.belong == armyID)
-            dst.unitNum += src.unitNum - 1;  // FIXME magic number 1
+        if (num == 0 || num >= src.unitNum) num = src.unitNum - 1;
+        else if(1 > num || num > 0) {
+            num *= src.unitNum - 1;
+            if (num < 0) return false;
+        }
+        else if(num < 0) return false;
+        if (dst.belong == armyID) dst.unitNum += num; // FIXME magic number 1
         else {
-            dst.unitNum -= src.unitNum - 1;  // FIXME magic number 1
+            dst.unitNum -= num;  // FIXME magic number 1
             if (dst.unitNum < 0) {
                 dst.unitNum = -dst.unitNum;
                 dst.belong = armyID;
             }
         }
-        src.unitNum = 1;  // FIXME magic number 1
+        src.unitNum -= num;  // FIXME magic number 1
         return true;
     };
     bool ret = false;
     for (int i = 1; i <= _armyCnt; ++i) {
         while (!moveCommands[i].empty()) {
             auto& cmd = moveCommands[i].back();
+            int cmdNum = moveNumCmd[i].back();
             // cerr << cmd.first << cmd.second << endl;
             moveCommands[i].pop_back();
-            if (Move(i, cmd.first, cmd.second)) break;
+            moveNumCmd[i].pop_back();
+            if (Move(i, cmd.first, cmd.second, cmdNum)) break;
         }
     }
     return ret;
@@ -117,9 +124,9 @@ void MAP::Update() {
     return;
 }
 
-bool MAP::PushMove(int armyID, VECTOR src, VECTOR dst) {
+bool MAP::PushMove(int armyID, VECTOR src, VECTOR dst, int num) {
     if (VERIFY::Singleton().GetPrivilege() == 3) {
-        SaveStep(armyID, src, dst);
+        SaveStep(armyID, src, dst, num);
     }
     VECTOR j = {-1, -1};
     if (src == j && dst == j) {  //撤销移动命令
@@ -129,6 +136,7 @@ bool MAP::PushMove(int armyID, VECTOR src, VECTOR dst) {
         }
     }
     moveCommands[armyID].insert(moveCommands[armyID].begin(), {src, dst});
+    moveNumCmd[armyID].insert(moveNumCmd[armyID].begin(), num);
     return true;
 }
 
@@ -285,7 +293,7 @@ void MAP::SaveMap(std::string_view file) {  // file="../Savedata/"
     return;
 }
 
-void MAP::SaveStep(int armyID, VECTOR src, VECTOR dst) {
+void MAP::SaveStep(int armyID, VECTOR src, VECTOR dst, int num) {
     std::ofstream outfile;
     outfile.open("../Savedata/" + StartTime + "/steps.txt", std::ios::app);
     // 似乎file.data()相连后从string_view变成了string，因此可以直接和const
@@ -293,14 +301,14 @@ void MAP::SaveStep(int armyID, VECTOR src, VECTOR dst) {
     if (outfile.is_open()) {
         outfile << "\n" << step << "\n";
         outfile << armyID << " " << src.x << " " << src.y << " " << dst.x << " "
-                << dst.y << "\n";
+                << dst.y << " " << num << "\n";
         outfile.close();
     }
     return;
 }
 
 void MAP::SaveGameOver(int armyID) {
-    SaveStep(armyID, {-3, -3}, {0, 0});
+    SaveStep(armyID, {-3, -3}, {0, 0}, 0);
     return;
 }
 
@@ -334,8 +342,8 @@ void MAP::ReadMove(int ReplayStep) {
             if (line != std::to_string(ReplayStep)) continue;
             std::getline(replayfile, line);
             char* move = (char*)line.c_str();
-            int army, sx, sy, dx, dy;
-            sscanf(move, "%d %d %d %d %d", &army, &sx, &sy, &dx, &dy);
+            int army, sx, sy, dx, dy, num;
+            sscanf(move, "%d %d %d %d %d %d", &army, &sx, &sy, &dx, &dy, &num);
             if (sx == sy && sy == -2) {  //某支军队归属改变
                 Surrender(dx, dy);
             }
@@ -343,7 +351,7 @@ void MAP::ReadMove(int ReplayStep) {
                 ReplayOver = true;
                 return;
             }
-            PushMove(army, {sx, sy}, {dx, dy});
+            PushMove(army, {sx, sy}, {dx, dy}, num);
         }
     }
     replayfile.close();
@@ -384,7 +392,7 @@ int MAP::Judge(int armyID) {
 
 int MAP::Surrender(int armyID, int vanquisherID) {
     if (VERIFY::Singleton().GetPrivilege() == 3) {
-        SaveStep(0, {-2, -2}, {armyID, vanquisherID});
+        SaveStep(0, {-2, -2}, {armyID, vanquisherID}, 0);
     }
     for (int i = 0; i < MAX_GRAPH_SIZE; i++) {
         for (int j = 0; j < MAX_GRAPH_SIZE; j++) {
@@ -427,6 +435,11 @@ std::pair<VECTOR, VECTOR> MAP::GetArmyPath(int armyID, int step) const {
     } else {
         return {{-1, -1}, {-1, -1}};
     }
+}
+std::pair<int, int> MAP::GetKingPos(int armyID) const {
+    int x = MAP::Singleton().kingState.kingPos[armyID].x;
+    int y = MAP::Singleton().kingState.kingPos[armyID].y;
+    return {x, y};
 }
 
 void MAP::NODE::Update() {

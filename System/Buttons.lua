@@ -114,7 +114,7 @@ function ButtonsBasic:Load()
         )
         return
     end
-    if PlayGame == Running then
+    if PlayGame == Running or AI_SDK == Running then
         ButtonsData.ClickedColor = {0.439, 0.502, 1, 1}
         ButtonsData.SelectedColor = {0.7, 0.7, 0.7, 1}
         ButtonsData.optionRatio = 0.5
@@ -318,9 +318,9 @@ function Buttons.DrawButtons()
         end
         return
     end
-    if PlayGame == Running then
+    if PlayGame == Running or AI_SDK == Running then
         for i, button in pairs(EachButton) do
-            if "menu" == button.name and "Start" == PlayGame.gameState then
+            if "menu" == button.name and "Start" == Running.gameState then
                 love.graphics.setColor(button.Color)
                 love.graphics.draw(
                     button.imag,
@@ -332,7 +332,7 @@ function Buttons.DrawButtons()
                     button.offsetX,
                     button.offsetY
                 )
-            elseif "menu" ~= button.name and "Menu" == PlayGame.gameState then
+            elseif "menu" ~= button.name and "Menu" == Running.gameState then
                 love.graphics.setColor(button.Color)
                 love.graphics.draw(
                     button.imag,
@@ -435,11 +435,11 @@ function Buttons.MouseState(mouseX, mouseY, mode)
         end
         return name
     end
-    if PlayGame == Running then
+    if PlayGame == Running or AI_SDK == Running then
         local name
         local inButton = false
         for i, button in pairs(EachButton) do
-            if "menu" == button.name and "Start" == PlayGame.gameState then
+            if "menu" == button.name and "Start" == Running.gameState then
                 if mouseX > button.x and mouseX < button.x + 63 and mouseY > button.y and mouseY < button.y + 63 then
                     inButton = true
                     if 0 == mode then
@@ -452,7 +452,7 @@ function Buttons.MouseState(mouseX, mouseY, mode)
                     end
                     break
                 end
-            elseif "menu" ~= button.name and "Menu" == PlayGame.gameState then
+            elseif "menu" ~= button.name and "Menu" == Running.gameState then
                 if
                     mouseX > button.x and mouseX < button.x + 190 * love.graphics.getWidth() / 1080 and mouseY > button.y and
                         mouseY < button.y + 70 * love.graphics.getHeight() / 720
@@ -581,7 +581,7 @@ function ButtonsBasic:ChangeColor(v, Color)
         end
         return
     end
-    if Welcome == Running or GameOver == Running or PlayGame == Running then
+    if Welcome == Running or GameOver == Running or PlayGame == Running or AI_SDK == Running then
         for i, button in pairs(EachButton) do
             button.Color = {1, 1, 1, 1}
         end
@@ -619,7 +619,7 @@ function Buttons.Update()
     --     Buttons.MouseState(mouseX, mouseY, 1)
     --     return
     -- end
-    -- if PlayGame == Running then
+    -- if PlayGame == Running or AI_SDK == Running then
     --     for i, button in pairs(EachButton) do
     --         if "menu" ~= button.name and "Menu" == PlayGame.gameState then
     --             button.x = windowWidth / 2 - 95 * windowWidth / 1080

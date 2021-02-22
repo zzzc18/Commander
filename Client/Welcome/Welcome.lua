@@ -47,6 +47,9 @@ function Welcome.mousereleased(pixelX, pixelY, button, istouch, presses)
 end
 
 function Welcome.keypressed(key, scancode, isrepeat)
+    if "a" == key then
+        Switcher.To(AI_SDK)
+    end
 end
 
 function Welcome.keyreleased(key, scancode)
