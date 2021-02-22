@@ -148,6 +148,9 @@ bool MAP::IncreaseOrDecrease(VECTOR aim, int mode) {
 }
 
 bool MAP::ChangeType(VECTOR aim, int type) {
+    if (_mat[aim.x][aim.y].type == NODE_TYPE::KING) {
+        _armyCnt--;
+    }
     switch (type) {
         case 1:
             _mat[aim.x][aim.y].type = NODE_TYPE::HILL;
@@ -399,6 +402,8 @@ int MAP::Surrender(int armyID, int vanquisherID) {
     MAP::_mat[MAP::Singleton().kingState.kingPos[armyID].x]
              [MAP::Singleton().kingState.kingPos[armyID].y]
                  .type = NODE_TYPE::FORT;
+    //投降后kingNum减一，但_armyCnt不变
+    kingNum--;
     return 0;
 }
 
