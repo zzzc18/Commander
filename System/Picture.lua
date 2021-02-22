@@ -151,7 +151,9 @@ function Picture.PrintStepAndSpeed(step, speed)
     local windowWidth, windowHeight = love.graphics.getDimensions()
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.print("Step:" .. step, windowWidth - 120, 0, 0, 2)
-    love.graphics.print("Speed:" .. speed, windowWidth - 120, 25, 0, 2)
+    if speed ~= nil then
+        love.graphics.print("Speed:" .. speed, windowWidth - 120, 25, 0, 2)
+    end
 end
 
 return Picture

@@ -71,7 +71,7 @@ function PlayGame.draw()
         Picture.DrawReady(BGAnimation)
         return
     end
-    Picture.PrintStep(ReplayGame.step)
+    Picture.PrintStepAndSpeed(ReplayGame.step)
     BasicMap.DrawMap()
     BasicMap.DrawPath()
     Operation.DrawSelect()

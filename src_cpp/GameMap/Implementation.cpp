@@ -271,6 +271,7 @@ void MAP::InitSavedata() {
 
 int MAP::LoadMap(std::string_view file) {  // file = "../Data/"
     step = 0;
+    kingNum = 0;
     std::ifstream fin(std::string(file.data()) + "3Player.map");
     fin >> *this;
     fin.close();
@@ -317,6 +318,7 @@ void MAP::SaveEdit(std::string_view file) {  // file = "../Output/"
 
 int MAP::LoadReplayFile(std::string_view file, int loadstep) {  // loadstep = 0
     ReplayOver = false;
+    kingNum = 0;
     step = loadstep;
     ReplayFile = std::string(file.data());
     std::ifstream fin(ReplayFile + "/" + std::to_string(loadstep) + ".map");
