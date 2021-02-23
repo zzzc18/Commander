@@ -22,6 +22,7 @@ function AI_SDK.Init()
     ClientSock.Init()
     Buttons.Init()
     BGAnimation.load()
+    math.randomseed(tonumber(tostring(os.time()):reverse():sub(1, 9)))
 end
 
 function AI_SDK.DeInit()

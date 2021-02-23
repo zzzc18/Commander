@@ -27,7 +27,6 @@ function Core.AIMove_mode1(data)
     end
     local chance = 10 -- 随机选择的机会
     local mode
-    math.randomseed(tonumber(tostring(os.time()):reverse():sub(1, 9)))
     while true do
         x, y = Core.SelectPos.x, Core.SelectPos.y
         Core.rdmDirection = math.random(6)
