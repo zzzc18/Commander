@@ -16,7 +16,7 @@ function Core.AIMove_mode1(data)
     end
     local x, y = Core.SelectPos.x, Core.SelectPos.y
     local unitNum = CGameMap.GetUnitNum(x, y)
-    local moveNum = 0
+    local moveNum = 0 -- 为0时移动全部，为0到1之间实数时按比例移动，大于1时移动moveNum整数部分
     if AI_SDK.armyID ~= CGameMap.GetBelong(x, y) or unitNum <= 1 then -- 不移动，并让下次移动从王开始
         Core.SelectPos.x = AI_SDK.KingPos.x
         Core.SelectPos.y = AI_SDK.KingPos.y
@@ -25,7 +25,7 @@ function Core.AIMove_mode1(data)
     elseif unitNum >= 50 then
         moveNum = 0.5 -- 只移动一半
     end
-    local chance = 9 -- 随机选择的机会
+    local chance = 10 -- 随机选择的机会
     local mode
     math.randomseed(tonumber(tostring(os.time()):reverse():sub(1, 9)))
     while true do
@@ -38,6 +38,7 @@ function Core.AIMove_mode1(data)
             "NODE_TYPE_BLANK" == CGameMap.GetNodeType(x, y) or
                 "NODE_TYPE_KING" == CGameMap.GetNodeType(x, y)
          then
+            -- 尽可能地去攻占BLANK和进攻KING
             if AI_SDK.armyID ~= CGameMap.GetBelong(x, y) then
                 Core.MoveTo(x, y, moveNum)
                 Core.SelectPos.x, Core.SelectPos.y = x, y
@@ -45,6 +46,7 @@ function Core.AIMove_mode1(data)
             else
                 chance = chance - 1
                 if chance < 3 then
+                    -- 向己方地区移动
                     Core.MoveTo(x, y, moveNum)
                     Core.SelectPos.x, Core.SelectPos.y = x, y
                     break
@@ -53,12 +55,14 @@ function Core.AIMove_mode1(data)
         elseif "NODE_TYPE_FORT" == CGameMap.GetNodeType(x, y) then
             local fortNum = CGameMap.GetUnitNum(x, y)
             if fortNum - 10 < unitNum then
+                -- 在兵力足够时选择进攻FORT
                 Core.MoveTo(x, y, moveNum)
                 Core.SelectPos.x, Core.SelectPos.y = x, y
                 break
             else
                 chance = chance - 1
                 if chance < 0 then
+                    -- 重新从王的位置开始
                     Core.SelectPos.x = AI_SDK.KingPos.x
                     Core.SelectPos.y = AI_SDK.KingPos.y
                     break
@@ -67,6 +71,7 @@ function Core.AIMove_mode1(data)
         else
             chance = chance - 1
             if chance <= 0 then
+                -- 重新从王的位置开始
                 Core.SelectPos.x = AI_SDK.KingPos.x
                 Core.SelectPos.y = AI_SDK.KingPos.y
                 break

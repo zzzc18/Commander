@@ -27,12 +27,6 @@ function ClientSock.Init()
         end
     )
     Client:on(
-        "PushMove_AI",
-        function(data)
-            AI_SDK.PushMove(data)
-        end
-    )
-    Client:on(
         "Update",
         function(data)
             ReplayGame.step = CSystem.Update(data)
@@ -82,10 +76,6 @@ end
 -- srcX,Y是出发点 dstX,Y是目标点，显然二者应当相邻
 function ClientSock.SendMove(data)
     Client:send("PushMove", data)
-end
-
-function ClientSock.SendMove_AI(data)
-    Client:send("PushMove_AI", data)
 end
 
 return ClientSock

@@ -67,17 +67,21 @@ void MAP::BigUpdate() {
 }
 
 bool MAP::MoveUpdate() {
-    auto Move = [this](int armyID, VECTOR _src, VECTOR _dst, int num) -> bool {
+    auto Move = [this](int armyID, VECTOR _src, VECTOR _dst, double num) -> bool {
         NODE &src = _mat[_src.x][_src.y], &dst = _mat[_dst.x][_dst.y];
         if (src.belong != armyID || src.unitNum <= 1)
             return false;  // FIXME magic number 1
         if (dst.type == NODE_TYPE::HILL) return false;
         if (num == 0 || num >= src.unitNum) num = src.unitNum - 1;
-        else if(1 > num || num > 0) {
-            num *= src.unitNum - 1;
-            if (num < 0) return false;
+        else if (src.unitNum > num && num >= 1) num = int(num);
+        else if (1 > num && num > 0) {
+            num = num * src.unitNum;
+            if (num < 1) return false;
         }
-        else if(num < 0) return false;
+        else if(num < 0) {
+            printf("An error occurred when the army is trying to move: moveNum is %lf.\n", num);
+            return false;
+        }
         if (dst.belong == armyID) dst.unitNum += num; // FIXME magic number 1
         else {
             dst.unitNum -= num;  // FIXME magic number 1
@@ -93,7 +97,7 @@ bool MAP::MoveUpdate() {
     for (int i = 1; i <= _armyCnt; ++i) {
         while (!moveCommands[i].empty()) {
             auto& cmd = moveCommands[i].back();
-            int cmdNum = moveNumCmd[i].back();
+            double cmdNum = moveNumCmd[i].back();
             // cerr << cmd.first << cmd.second << endl;
             moveCommands[i].pop_back();
             moveNumCmd[i].pop_back();
@@ -124,7 +128,7 @@ void MAP::Update() {
     return;
 }
 
-bool MAP::PushMove(int armyID, VECTOR src, VECTOR dst, int num) {
+bool MAP::PushMove(int armyID, VECTOR src, VECTOR dst, double num) {
     if (VERIFY::Singleton().GetPrivilege() == 3) {
         SaveStep(armyID, src, dst, num);
     }
@@ -293,7 +297,7 @@ void MAP::SaveMap(std::string_view file) {  // file="../Savedata/"
     return;
 }
 
-void MAP::SaveStep(int armyID, VECTOR src, VECTOR dst, int num) {
+void MAP::SaveStep(int armyID, VECTOR src, VECTOR dst, double num) {
     std::ofstream outfile;
     outfile.open("../Savedata/" + StartTime + "/steps.txt", std::ios::app);
     // 似乎file.data()相连后从string_view变成了string，因此可以直接和const
@@ -342,8 +346,9 @@ void MAP::ReadMove(int ReplayStep) {
             if (line != std::to_string(ReplayStep)) continue;
             std::getline(replayfile, line);
             char* move = (char*)line.c_str();
-            int army, sx, sy, dx, dy, num;
-            sscanf(move, "%d %d %d %d %d %d", &army, &sx, &sy, &dx, &dy, &num);
+            int army, sx, sy, dx, dy;
+            double num;
+            sscanf(move, "%d %d %d %d %d %lf", &army, &sx, &sy, &dx, &dy, &num);
             if (sx == sy && sy == -2) {  //某支军队归属改变
                 Surrender(dx, dy);
             }

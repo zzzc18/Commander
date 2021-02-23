@@ -206,7 +206,8 @@ static int GetKingPos(lua_State *luaState) {
  * @return @c bool 操作是否合法
  */
 static int PushMove(lua_State *luaState) {
-    int armyID, srcX, srcY, dstX, dstY, num;
+    int armyID, srcX, srcY, dstX, dstY;
+    double num;
     APIparam(luaState, armyID, srcX, srcY, dstX, dstY, num);
     return APIreturn(luaState, MAP::Singleton().PushMove(armyID, {srcX, srcY},
                                                          {dstX, dstY}, num));
