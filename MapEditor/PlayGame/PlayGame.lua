@@ -1,22 +1,16 @@
-PlayGame = {}
+local PlayGame = {}
 
 local Operation = require("PlayGame.Operation")
 
--- PlayGame.GameState = "READY"
-PlayGame.judgementState = "Running"
-PlayGame.armyID = nil
+PlayGame.armyNum = 0
 
 function PlayGame.Init()
     CVerify.Register(0, 3)
     PlayGame.LoadMap()
-    Picture.Init()
-    Buttons.Init()
 end
 
 function PlayGame.LoadMap()
-    -- CGameMap.RandomGenMap()
-    -- CGameMap.WriteMap()
-    CGameMap.LoadMap()
+    PlayGame.armyNum = CGameMap.LoadMap()
     BasicMap.Init()
 end
 
@@ -44,13 +38,12 @@ end
 
 function PlayGame.update(dt)
     MapAdjust.Update()
-    Operation.Update(love.mouse.getX(), love.mouse.getY())
+    Operation.Update()
 end
 
 function PlayGame.draw()
     BasicMap.DrawMap()
     Operation.DrawSelect()
-    Operation.DrawButtons()
 end
 
 return PlayGame

@@ -82,8 +82,6 @@ class MAP final {
     int step = 0;
     //判断胜负
     int Judge(int);
-    //在判断胜负时候用于获取ID
-    int ReturnBelong(int);
     //玩家被击败后改变军队归属
     int Surrender(int, int);
 
@@ -114,8 +112,11 @@ class MAP final {
     //回放器：从回放文件读取当前步添加到命令队列的命令
     void ReadMove(int ReplayStep);
     //回放器：加载回放文件
-    int LoadReplayFile(
-        std::string_view file = "../Savedata/test_save_path/0.map");
+    int LoadReplayFile(std::string_view file, int loadstep = 0);
+    //回放器：回放结束
+    bool ReplayOver = false;
+    //回放器：回放文件目录
+    std::string ReplayFile;
 
     //以 level 为参数随机生成有 armyCnt 个军队的地图
     void RandomGen(int armyCnt, int level);
@@ -123,11 +124,13 @@ class MAP final {
     //初始化存档文件夹，以游戏开始时间命名
     void InitSavedata();
     //从 file 读取地图
-    int LoadMap(std::string_view file = "../Data/map.map");
+    int LoadMap(std::string_view file = "../Data/");
     //将地图保存至 file，以步数命名
     void SaveMap(std::string_view file = "../Savedata/");
     //向steps.txt保存当前步数的操作
     void SaveStep(int armyID, VECTOR src, VECTOR dst);
+    //向steps.txt保存游戏结束声明
+    void SaveGameOver(int armyID);
     //保存生成的地图
     void SaveEdit(std::string_view file = "../Output/");
 

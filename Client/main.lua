@@ -8,6 +8,11 @@ CSystem = require("lib.System")
 Sock = require("sock")
 Bitser = require("spec.bitser")
 PlayGame = require("PlayGame.PlayGame")
+GameOver = require("GameOver.GameOver")
+ReplayGame = require("Replayer.ReplayGame")
+Welcome = require("Welcome.Welcome")
+BGAnimation = require("Welcome.BGAnimation")
+Switcher = require("Switcher")
 
 Font = {
     gillsans50 = love.graphics.newFont("Font/gillsans.ttf", 50)
@@ -19,13 +24,14 @@ require("System.BasicMap")
 require("System.MapAdjust")
 require("System.Buttons")
 require("ClientSock")
-require("GameOver")
 
 Running = {}
 
 function love.load()
-    Running = PlayGame
+    Running = Welcome
     Running.Init()
+    Switcher.Init()
+    Picture.Init()
 end
 
 function love.wheelmoved(x, y)
@@ -48,6 +54,11 @@ function love.keyreleased(key, scancode)
     Running.keyreleased(key, scancode)
 end
 
+function love.directorydropped(path)
+    ReplayGame.droppedDir = path
+    print("Get dir: " .. path)
+end
+
 function love.draw()
     Running.draw()
 end
@@ -55,7 +66,6 @@ end
 function love.update(dt)
     -- 倍速开关，用于快速测试，可以通过注释和取消注释调整
     -- dt = dt * 10
-    Client:update()
     Running.update(dt)
 end
 

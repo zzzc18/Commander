@@ -1,51 +1,61 @@
--- Switcher = {}
--- local preRunning = {}
--- local newState = {}
--- local delay = 0
--- -- delay s
--- function Switcher.To(info, _delay)
---     if _delay == nil then
---         delay = 0
---     else
---         delay = _delay
---     end
---     if info == "本地对局" then
---         newState = PlayGame
---     elseif info == "对局回放" then
---         newState = ReplayGame
---     end
---     Running.DeInit()
---     preRunning = Running
---     Running = Switcher
--- end
--- function Switcher.Destroy()
---     preRunning.Destroy()
--- end
--- function Switcher.wheelmoved(x, y)
---     preRunning.wheelmoved(x, y)
--- end
--- function Switcher.mousepressed(pixelX, pixelY, button, istouch, presses)
---     preRunning.mousepressed(pixelX, pixelY, button, istouch, presses)
--- end
--- function Switcher.mousereleased(pixelX, pixelY, button, istouch, presses)
---     preRunning.mousereleased(pixelX, pixelY, button, istouch, presses)
--- end
--- function Switcher.keypressed(key, scancode, isrepeat)
---     preRunning.keypressed(key, scancode, isrepeat)
--- end
--- function Switcher.keyreleased(key, scancode)
---     preRunning.keyreleased(key, scancode)
--- end
--- function Switcher.draw()
---     preRunning.draw()
--- end
--- function Switcher.update(dt)
---     delay = delay - dt
---     if delay <= 0 then
---         Running.Destroy()
---         Running = newState
---         Running.Init()
---     end
---     preRunning.update(dt)
--- end
--- return Switcher
+--场景切换器
+local Switcher = {}
+
+--可切换的场景
+local Scene = {}
+Scene["Welcome"] = Welcome
+Scene["PlayGame"] = PlayGame
+Scene["ReplayGame"] = ReplayGame
+Scene["GameOver"] = GameOver
+
+local Switchable = {}
+--场景切换快捷键和名称的对应关系
+local Target = {
+    ["p"] = "PlayGame",
+    ["r"] = "ReplayGame",
+    ["w"] = "Welcome",
+    ["g"] = "GameOver"
+}
+--当前场景
+local now = "Welcome"
+
+function Switcher.Init()
+    Welcome.name = "Welcome"
+    PlayGame.name = "PlayGame"
+    GameOver.name = "GameOver"
+    ReplayGame.name = "ReplayGame"
+    for key_i, value_i in pairs(Target) do
+        Switchable[value_i] = {}
+        for key_j, value_j in pairs(Target) do
+            Switchable[value_i][value_j] = 0
+        end
+    end
+    Switchable["Welcome"]["PlayGame"] = 1
+    Switchable["Welcome"]["ReplayGame"] = 1
+    Switchable["PlayGame"]["GameOver"] = 1
+    Switchable["PlayGame"]["Welcome"] = 1
+    Switchable["ReplayGame"]["Welcome"] = 1
+    Switchable["GameOver"]["Welcome"] = 1
+    Switchable["GameOver"]["PlayGame"] = 1
+    Switchable["GameOver"]["ReplayGame"] = 1
+    --Switchable["x"]["y"]==1代表可以从场景x切换到场景y
+end
+
+--用按键切换场景的功能不会在正常游戏中使用
+function Switcher.keypressed(key)
+    if Target[key] ~= nil and Switchable[now][Target[key]] ~= 0 then
+        now = Target[key]
+        Switcher.To(Scene[Target[key]])
+    end
+end
+
+--取消初始化当前场景，然后将Running切换到newState(table)
+function Switcher.To(newState)
+    print("switch to " .. newState.name)
+    now = newState.name
+    Running.DeInit()
+    Running = newState
+    Running.Init()
+end
+
+return Switcher

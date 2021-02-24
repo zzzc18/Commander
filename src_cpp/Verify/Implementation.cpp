@@ -8,7 +8,7 @@
 #include "Verify.hpp"
 
 int VERIFY::Register(int armyID, int privilege) {  // FIXME magic numbers
-    if (singletonPtr_) return 1;
+    if (singletonPtr_) delete singletonPtr_;
     try {
         singletonPtr_ = new VERIFY(armyID, privilege);
     } catch (int error) {

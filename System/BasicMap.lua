@@ -167,20 +167,23 @@ function BasicMap.DrawNode(x, y)
     end
 end
 
---绘制从x,y格子延伸出的路径
-function BasicMap.DrawPath(x, y)
-    if CGameMap.GetVision(x, y) and CGameMap.GetUnitNum(x, y) ~= 0 then
-        local belong = CGameMap.GetBelong(x, y)
-        if belong ~= 0 then
-            local step = 0
-            local srcX, srcY, dstX, dstY = CGameMap.GetArmyPath(belong, step)
-            while srcX ~= -1 do
-                local sx, sy = BasicMap.Coordinate2Pixel(srcX, srcY)
-                local ds, dy = BasicMap.Coordinate2Pixel(dstX, dstY)
-                Picture.DrawArrow(sx, sy, ds, dy)
-                step = step + 1
-                srcX, srcY, dstX, dstY = CGameMap.GetArmyPath(belong, step)
+--绘制可见的路径
+function BasicMap.DrawPath()
+    for i = 1, Running.armyNum do
+        local step = 0
+        local srcX, srcY, dstX, dstY = CGameMap.GetArmyPath(i, step)
+        while srcX ~= -1 do
+            if
+                not CGameMap.GetVision(srcX, srcY) and
+                    not CGameMap.GetVision(dstX, dstY)
+             then
+                break
             end
+            local sx, sy = BasicMap.Coordinate2Pixel(srcX, srcY)
+            local ds, dy = BasicMap.Coordinate2Pixel(dstX, dstY)
+            Picture.DrawArrow(sx, sy, ds, dy)
+            step = step + 1
+            srcX, srcY, dstX, dstY = CGameMap.GetArmyPath(i, step)
         end
     end
 end
@@ -190,7 +193,6 @@ function BasicMap.DrawMap()
         for j = 0, BasicMap.MapSize.y - 1 do
             BasicMap.Map[i][j].nodeType = CGameMap.GetNodeType(i, j)
             BasicMap.DrawNode(i, j)
-            BasicMap.DrawPath(i, j)
         end
     end
 end
@@ -213,5 +215,33 @@ function BasicMap.Init()
     BasicMap.horizontalDis = math.sqrt(3) * BasicMap.radius
     BasicMap.verticalDis = 1.5 * BasicMap.radius
 end
+
+-- function BasicMap.DrawReady()
+--     love.graphics.setColor(1, 1, 1, 1)
+--     local background = {img = love.graphics.newImage("data/Picture/BackGround.jpg"), widthRatio = 3, heightRatio = 3}
+--     local title = {img = love.graphics.newImage("data/Picture/Title.png"), widthRatio = 0.6, heightRatio = 0.6}
+--     local waiting = {img = love.graphics.newImage("data/Picture/Waiting.png"), widthRatio = 0.4, heightRatio = 0.4}
+--     love.graphics.draw(background.img, 0, 0, 0, background.widthRatio, background.heightRatio)
+--     love.graphics.draw(
+--         title.img,
+--         PixelWidth / 2,
+--         PixelHeight / 3,
+--         0,
+--         title.widthRatio,
+--         title.heightRatio,
+--         title.img:getWidth() / 2,
+--         title.img:getHeight() / 2
+--     )
+--     love.graphics.draw(
+--         waiting.img,
+--         PixelWidth / 2,
+--         PixelHeight / 3 * 2,
+--         0,
+--         waiting.widthRatio,
+--         waiting.heightRatio,
+--         waiting.img:getWidth() / 2,
+--         waiting.img:getHeight() / 2
+--     )
+-- end
 
 return BasicMap

@@ -14,7 +14,7 @@ using namespace System;
  *  Lua 每 @c dt 秒调用一次，该函数计数达到StepTime秒时触发地图更新
  *
  * @param dt @c double Lua 调用的时间间隔，单位：秒
- * @return @c void
+ * @return @c int 地图当前步数
  */
 static int Update(lua_State* luaState) {
     static double totalTime;
@@ -25,7 +25,7 @@ static int Update(lua_State* luaState) {
         totalTime -= StepTime;
         MAP::Singleton().Update();
     }
-    return APIreturn(luaState);
+    return APIreturn(luaState, MAP::Singleton().step);
 }
 
 /**

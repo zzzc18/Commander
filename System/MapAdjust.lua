@@ -9,8 +9,8 @@ function MapAdjust.ChangeFocusUpdate()
         return
     end
     if
-        (love.keyboard.isDown("rctrl") or love.keyboard.isDown("lctrl")) and
-            love.mouse.isDown(1)
+        (love.keyboard.isDown("rctrl") or love.keyboard.isDown("lctrl")) and love.mouse.isDown(1) or
+            love.mouse.isDown(3)
      then
         local x, y = love.mouse.getPosition()
         local det = {}
@@ -47,7 +47,7 @@ function MapAdjust.ChangeSizeUpdate()
         (love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl")) and
             (love.keyboard.isDown("0") or love.keyboard.isDown("kp0"))
      then
-        BasicMap.radius = 50
+        BasicMap.radius = 40
     end
     BasicMap.horizontalDis = math.sqrt(3) * BasicMap.radius
     BasicMap.verticalDis = 1.5 * BasicMap.radius
@@ -68,12 +68,11 @@ function MapAdjust.Update()
     MapAdjust.ChangeSizeUpdate()
     MapAdjust.ChangeFocusUpdate()
     if
-        (love.keyboard.isDown("rctrl") or love.keyboard.isDown("lctrl")) and
-            love.mouse.isDown(1)
+        (love.keyboard.isDown("rctrl") or love.keyboard.isDown("lctrl")) and love.mouse.isDown(1) or
+            love.mouse.isDown(3)
      then
         MapAdjust.mousePrePos = {}
-        MapAdjust.mousePrePos.x, MapAdjust.mousePrePos.y =
-            love.mouse.getPosition()
+        MapAdjust.mousePrePos.x, MapAdjust.mousePrePos.y = love.mouse.getPosition()
     else
         MapAdjust.mousePrePos = nil
     end

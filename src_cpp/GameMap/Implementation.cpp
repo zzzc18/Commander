@@ -148,6 +148,9 @@ bool MAP::IncreaseOrDecrease(VECTOR aim, int mode) {
 }
 
 bool MAP::ChangeType(VECTOR aim, int type) {
+    if (_mat[aim.x][aim.y].type == NODE_TYPE::KING) {
+        _armyCnt--;
+    }
     switch (type) {
         case 1:
             _mat[aim.x][aim.y].type = NODE_TYPE::HILL;
@@ -269,8 +272,10 @@ void MAP::InitSavedata() {
     return;
 }
 
-int MAP::LoadMap(std::string_view file) {  // file = "../Data/map.map"
-    std::ifstream fin(file.data());
+int MAP::LoadMap(std::string_view file) {  // file = "../Data/"
+    step = 0;
+    kingNum = 0;
+    std::ifstream fin(std::string(file.data()) + "3Player.map");
     fin >> *this;
     fin.close();
     return this->_armyCnt;
@@ -281,11 +286,14 @@ void MAP::SaveMap(std::string_view file) {  // file="../Savedata/"
                        ".map");
     fout << *this;
     fout.close();
+    return;
 }
 
 void MAP::SaveStep(int armyID, VECTOR src, VECTOR dst) {
     std::ofstream outfile;
     outfile.open("../Savedata/" + StartTime + "/steps.txt", std::ios::app);
+    // 似乎file.data()相连后从string_view变成了string，因此可以直接和const
+    // char相连
     if (outfile.is_open()) {
         outfile << "\n" << step << "\n";
         outfile << armyID << " " << src.x << " " << src.y << " " << dst.x << " "
@@ -294,6 +302,12 @@ void MAP::SaveStep(int armyID, VECTOR src, VECTOR dst) {
     }
     return;
 }
+
+void MAP::SaveGameOver(int armyID) {
+    SaveStep(armyID, {-3, -3}, {0, 0});
+    return;
+}
+
 void MAP::SaveEdit(std::string_view file) {  // file = "../Output/"
     std::time_t t = std::time(&t) + 28800;
     char cst[80];
@@ -302,11 +316,16 @@ void MAP::SaveEdit(std::string_view file) {  // file = "../Output/"
     std::ofstream fout(file.data() + StartTime + ".map");
     fout << *this;
     fout.close();
+    return;
 }
 
-int MAP::LoadReplayFile(
-    std::string_view file) {  // file="../Savedata/test_save_path/0.map"
-    std::ifstream fin(file.data());
+int MAP::LoadReplayFile(std::string_view file, int loadstep) {  // loadstep = 0
+    ReplayOver = false;
+    kingNum = 0;
+    step = loadstep;
+    ReplayFile = std::string(file.data());
+    std::ifstream fin(ReplayFile + "/" + std::to_string(loadstep) + ".map");
+    if (!fin) return 0;
     fin >> *this;
     fin.close();
     return kingNum;
@@ -315,7 +334,7 @@ int MAP::LoadReplayFile(
 void MAP::ReadMove(int ReplayStep) {
     std::string line;
     std::ifstream replayfile;
-    replayfile.open("../Savedata/test_save_path/steps.txt", std::ios::in);
+    replayfile.open(ReplayFile + "/steps.txt", std::ios::in);
     if (replayfile.is_open()) {
         while (std::getline(replayfile, line)) {  //搜索step.txt的每一行
             if (line != std::to_string(ReplayStep)) continue;
@@ -323,10 +342,18 @@ void MAP::ReadMove(int ReplayStep) {
             char* move = (char*)line.c_str();
             int army, sx, sy, dx, dy;
             sscanf(move, "%d %d %d %d %d", &army, &sx, &sy, &dx, &dy);
+            if (sx == sy && sy == -2) {  //某支军队归属改变
+                Surrender(dx, dy);
+            }
+            if (sx == sy && sy == -3) {  //游戏结束
+                ReplayOver = true;
+                return;
+            }
             PushMove(army, {sx, sy}, {dx, dy});
         }
     }
     replayfile.close();
+    return;
 }
 
 std::pair<int, int> MAP::GetSize() const { return {_sizeX, _sizeY}; }
@@ -336,8 +363,12 @@ bool MAP::InMap(VECTOR pos) const {
 }
 
 bool MAP::IsViewable(VECTOR pos) const {
+    if (SERVER == VERIFY::Singleton().GetArmyID()) {
+        return true;
+    }
     if (_mat[pos.x][pos.y].belong == VERIFY::Singleton().GetArmyID())
         return true;
+    if (VERIFY::Singleton().GetArmyID() == SERVER) return true;
     for (auto dta : DIR[pos.x & 1]) {  //判断是奇数行还是偶数行
         if (VECTOR next = pos + dta; this->InMap(next)) {
             if (_mat[next.x][next.y].belong == VERIFY::Singleton().GetArmyID())
@@ -357,11 +388,10 @@ int MAP::Judge(int armyID) {
     return 0;
 }
 
-int MAP::ReturnBelong(int x) {
-    return MAP::Singleton().kingState.kingBelong[x];
-}
-
 int MAP::Surrender(int armyID, int vanquisherID) {
+    if (VERIFY::Singleton().GetPrivilege() == 3) {
+        SaveStep(0, {-2, -2}, {armyID, vanquisherID});
+    }
     for (int i = 0; i < MAX_GRAPH_SIZE; i++) {
         for (int j = 0; j < MAX_GRAPH_SIZE; j++) {
             if (MAP::_mat[i][j].belong == armyID) {
@@ -369,6 +399,11 @@ int MAP::Surrender(int armyID, int vanquisherID) {
             }
         }
     }
+    MAP::_mat[MAP::Singleton().kingState.kingPos[armyID].x]
+             [MAP::Singleton().kingState.kingPos[armyID].y]
+                 .type = NODE_TYPE::FORT;
+    //投降后kingNum减一，但_armyCnt不变
+    kingNum--;
     return 0;
 }
 
