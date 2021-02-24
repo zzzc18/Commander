@@ -10,14 +10,12 @@ function ClientSock.Init()
         function(data)
             print("Received Data")
             Running.armyID = data.armyID
-            if PlayGame == Running then
-                PlayGame.armyID = Running.armyID
-            elseif AI_SDK == Running then
-                AI_SDK.armyID = Running.armyID
-            end
             print("armyID:" .. data.armyID)
             CVerify.Register(data.armyID)
             Running.LoadMap()
+            if Running == AI_SDK then
+                AI_SDK.KingPos.x, AI_SDK.KingPos.y = CGameMap.GetKingPos(AI_SDK.armyID)
+            end
         end
     )
     Client:on(

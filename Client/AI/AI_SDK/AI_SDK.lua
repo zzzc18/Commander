@@ -14,7 +14,6 @@ AI_SDK.armyNum = 0
 AI_SDK.KingPos = {x = -1, y = -1}
 
 local timer = 0
-local isGaming = false
 
 function AI_SDK.Init()
     AI_SDK.gameState = "READY"
@@ -27,6 +26,7 @@ end
 
 function AI_SDK.DeInit()
     Buttons.DeInit()
+    AI_SDK.KingPos = {x = -1, y = -1}
     Client:disconnect()
 end
 
@@ -85,6 +85,67 @@ function AI_SDK.draw()
     Operation.DrawButtons()
 end
 
+-- 移动的函数
+function AI_SDK.MoveTo(x, y, moveNum)
+    if AI_SDK.gameState ~= "Start" then
+        return
+    --只有游戏进行时才能发送
+    end
+    if x == -1 and y == -1 then --撤销移动
+        local NewRequest = {
+            armyID = AI_SDK.armyID,
+            srcX = -1,
+            srcY = -1,
+            dstX = -1,
+            dstY = -1,
+            num = 0
+        }
+        ClientSock.SendMove(NewRequest)
+        return
+    end
+
+    if not AI_SDK.IsConnected(Core.SelectPos.x, Core.SelectPos.y, x, y) then
+        return
+    end
+
+    local NewRequest = {
+        armyID = AI_SDK.armyID,
+        srcX = Core.SelectPos.x,
+        srcY = Core.SelectPos.y,
+        dstX = x,
+        dstY = y,
+        num = moveNum
+    }
+    ClientSock.SendMove(NewRequest)
+end
+
+--检查pos之间是否相邻
+-- 参数分别为点1和点2的坐标
+function AI_SDK.IsConnected(posX1, posY1, posX2, posY2)
+    if posX1 == posX2 then
+        if posY1 - posY2 == 1 or posY2 - posY1 == 1 then
+            return true
+        end
+    end
+
+    if posX1 % 2 == 1 then
+        if
+            (posX1 == posX2 + 1 or posX1 == posX2 - 1) and
+                (posY1 == posY2 or posY1 == posY2 - 1)
+         then
+            return true
+        end
+    else
+        if
+            (posX1 == posX2 + 1 or posX1 == posX2 - 1) and
+                (posY1 == posY2 or posY1 == posY2 + 1)
+         then
+            return true
+        end
+    end
+    return false
+end
+
 function AI_SDK.UpdateTimerSecond(dt)
 end
 
@@ -103,10 +164,6 @@ end
 function AI_SDK.update(dt)
     if AI_SDK.gameState == "READY" then
         BGAnimation.update(dt)
-    end
-    if not isGaming and AI_SDK.gameState == "Start" then
-        isGaming = true
-        AI_SDK.KingPos.x, AI_SDK.KingPos.y = CGameMap.GetKingPos(AI_SDK.armyID)
     end
     timer = ReplayGame.step
     Client:update()

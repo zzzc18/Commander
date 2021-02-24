@@ -20,14 +20,13 @@ function Core.AIMove_mode1(data)
     if AI_SDK.armyID ~= CGameMap.GetBelong(x, y) or unitNum <= 1 then -- 不移动，并让下次移动从王开始
         Core.SelectPos.x = AI_SDK.KingPos.x
         Core.SelectPos.y = AI_SDK.KingPos.y
-        Core.MoveTo(-1, -1)
         return
-    elseif unitNum >= 50 then
+    elseif unitNum >= 50 and "NODE_TYPE_KING" == CGameMap.GetNodeType(x, y) then
         moveNum = 0.5 -- 只移动一半
     end
     local chance = 10 -- 随机选择的机会
     local mode
-    while true do
+    while chance > 0 do
         x, y = Core.SelectPos.x, Core.SelectPos.y
         Core.rdmDirection = math.random(6)
         mode = x % 2 + 1
@@ -39,104 +38,47 @@ function Core.AIMove_mode1(data)
          then
             -- 尽可能地去攻占BLANK和进攻KING
             if AI_SDK.armyID ~= CGameMap.GetBelong(x, y) then
-                Core.MoveTo(x, y, moveNum)
+                AI_SDK.MoveTo(x, y, moveNum)
                 Core.SelectPos.x, Core.SelectPos.y = x, y
                 break
             else
                 chance = chance - 1
                 if chance < 3 then
                     -- 向己方地区移动
-                    Core.MoveTo(x, y, moveNum)
+                    AI_SDK.MoveTo(x, y, moveNum)
                     Core.SelectPos.x, Core.SelectPos.y = x, y
                     break
                 end
             end
         elseif "NODE_TYPE_FORT" == CGameMap.GetNodeType(x, y) then
             local fortNum = CGameMap.GetUnitNum(x, y)
-            if fortNum - 10 < unitNum then
+            if
+                AI_SDK.armyID ~= CGameMap.GetBelong(x, y) and
+                    fortNum - 10 < unitNum
+             then
                 -- 在兵力足够时选择进攻FORT
-                Core.MoveTo(x, y, moveNum)
+                AI_SDK.MoveTo(x, y, moveNum)
                 Core.SelectPos.x, Core.SelectPos.y = x, y
                 break
             else
-                chance = chance - 1
-                if chance < 0 then
-                    -- 重新从王的位置开始
-                    Core.SelectPos.x = AI_SDK.KingPos.x
-                    Core.SelectPos.y = AI_SDK.KingPos.y
+                if AI_SDK.armyID == CGameMap.GetBelong(x, y) then
+                    -- 向己方FORT移动
+                    AI_SDK.MoveTo(x, y, moveNum)
+                    Core.SelectPos.x, Core.SelectPos.y = x, y
                     break
+                else
+                    chance = chance - 1
                 end
             end
         else
             chance = chance - 1
-            if chance <= 0 then
-                -- 重新从王的位置开始
-                Core.SelectPos.x = AI_SDK.KingPos.x
-                Core.SelectPos.y = AI_SDK.KingPos.y
-                break
-            end
         end
     end
-end
-
-function Core.MoveTo(x, y, moveNum)
-    if AI_SDK.gameState ~= "Start" then
-        return
-    --只有游戏进行时才能发送
+    if chance <= 0 then
+        -- 重新从王的位置开始
+        Core.SelectPos.x = AI_SDK.KingPos.x
+        Core.SelectPos.y = AI_SDK.KingPos.y
     end
-    if x == -1 and y == -1 then --撤销移动
-        local NewRequest = {
-            armyID = AI_SDK.armyID,
-            srcX = -1,
-            srcY = -1,
-            dstX = -1,
-            dstY = -1,
-            num = 0
-        }
-        ClientSock.SendMove(NewRequest)
-        return
-    end
-
-    if not Core.IsConnected(Core.SelectPos.x, Core.SelectPos.y, x, y) then
-        return
-    end
-
-    local NewRequest = {
-        armyID = AI_SDK.armyID,
-        srcX = Core.SelectPos.x,
-        srcY = Core.SelectPos.y,
-        dstX = x,
-        dstY = y,
-        num = moveNum
-    }
-    ClientSock.SendMove(NewRequest)
-end
-
---检查pos之间是否相邻
--- 参数分别为点1和点2的坐标
-function Core.IsConnected(posX1, posY1, posX2, posY2)
-    if posX1 == posX2 then
-        if posY1 - posY2 == 1 or posY2 - posY1 == 1 then
-            return true
-        end
-    end
-
-    if posX1 % 2 == 1 then
-        if
-            (posX1 == posX2 + 1 or posX1 == posX2 - 1) and
-                (posY1 == posY2 or posY1 == posY2 - 1)
-         then
-            return true
-        end
-    else
-        if
-            (posX1 == posX2 + 1 or posX1 == posX2 - 1) and
-                (posY1 == posY2 or posY1 == posY2 + 1)
-         then
-            return true
-        end
-    end
-    return false
 end
 
 return Core

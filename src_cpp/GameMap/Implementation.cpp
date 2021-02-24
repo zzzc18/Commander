@@ -75,7 +75,7 @@ bool MAP::MoveUpdate() {
         if (num == 0 || num >= src.unitNum) num = src.unitNum - 1;
         else if (src.unitNum > num && num >= 1) num = int(num);
         else if (1 > num && num > 0) {
-            num = num * src.unitNum;
+            num = int (num * src.unitNum);
             if (num < 1) return false;
         }
         else if(num < 0) {
