@@ -1,0 +1,3 @@
+C:/Users/Summorile/Desktop/Cryptogram/sources/build/CMakeFiles/operators.dir
+C:/Users/Summorile/Desktop/Cryptogram/sources/build/CMakeFiles/edit_cache.dir
+C:/Users/Summorile/Desktop/Cryptogram/sources/build/CMakeFiles/rebuild_cache.dir

@@ -1,0 +1,3 @@
+C:\cmake-3.17.3-win64-x64\bin\cmake.exe -E rm -f CMakeFiles\operators.dir/objects.a
+C:\mingw64\mingw64\bin\ar.exe cr CMakeFiles\operators.dir/objects.a @CMakeFiles\operators.dir\objects1.rsp
+C:\mingw64\mingw64\bin\g++.exe    -shared -o C:\Users\Summorile\Desktop\Cryptogram\libraries\operators.dll -Wl,--out-implib,liboperators.dll.a -Wl,--major-image-version,0,--minor-image-version,0 -Wl,--whole-archive CMakeFiles\operators.dir/objects.a -Wl,--no-whole-archive @CMakeFiles\operators.dir\linklibs.rsp
