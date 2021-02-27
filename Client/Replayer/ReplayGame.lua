@@ -12,7 +12,7 @@ end
 
 function ReplayGame.Init(MapMode)
     if ReplayGame.droppedDir == "" then
-        print("drag replay folder to game window before switch to ReplayGame")
+        Debug.Log("warning", "no folder to replay")
         ReplayGame.gameState = "READY"
         BGAnimation.load()
         return

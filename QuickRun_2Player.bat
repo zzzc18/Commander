@@ -9,8 +9,4 @@ cd ..\Client
 start lovec .
 @cscript ..\sleep.vbs >nul
 start lovec .
-@cscript ..\sleep.vbs >nul
-start lovec .
-@cscript ..\sleep.vbs >nul
-start lovec .
 del /f /s /q ..\sleep.vbs
