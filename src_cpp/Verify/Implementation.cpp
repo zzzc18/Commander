@@ -4,7 +4,14 @@
  * @brief @c Verify 模块类相关函数的定义
  */
 
+#include <windows.h>
+
+#include <cstdlib>
+#include <ctime>
+#include <fstream>
+
 #include "Constant.hpp"
+#include "Debug.hpp"
 #include "Verify.hpp"
 
 int VERIFY::Register(int armyID, int privilege) {  // FIXME magic numbers
@@ -46,3 +53,42 @@ VERIFY::VERIFY(int armyID, int privilege) {  // FIXME magic numbers
 // 如果是inline在hpp里好像会在GameMap.dll也有一个？然后delete两次，需要研究一下这个问题
 VERIFY::DELETER VERIFY::deleter_;
 VERIFY::DELETER::~DELETER() { delete singletonPtr_; }
+
+Debug& Debug::Singleton() {
+    static Debug singleton;
+    return singleton;
+}
+
+bool Debug::DirExist(const std::string& dirName_in) {
+    DWORD ftyp = GetFileAttributesA(dirName_in.c_str());
+    if (ftyp == INVALID_FILE_ATTRIBUTES) return false;  // 调用参数错误
+    if (ftyp & FILE_ATTRIBUTE_DIRECTORY) return true;
+    return false;
+}
+
+void Debug::InitDebugLog() {
+    std::time_t t = std::time(&t) + 28800;  //转换到东八区
+    struct tm* gmt = gmtime(&t);
+    char cst[80];
+    strftime(cst, 80, "%Y-%m-%d_%H.%M.%S", gmt);
+    LogTime = cst;
+    system("cd ..&mkdir GameLog");
+    while (DirExist("../GameLog/" + LogTime + "_" + std::to_string(LogIndex))) {
+        LogIndex++;
+    }
+    system(("cd ../GameLog&mkdir " + LogTime + "_" + std::to_string(LogIndex))
+               .c_str());
+    return;
+}
+
+void Debug::Log(std::string priority, std::string text) {
+    std::ofstream logfile;
+    logfile.open("../GameLog/" + LogTime + "_" + std::to_string(LogIndex) +
+                     "/Running.log",
+                 std::ios::app);
+    if (logfile.is_open()) {
+        logfile << "[" << priority << "] " << text << std::endl;
+        logfile.close();
+    }
+    return;
+}

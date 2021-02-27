@@ -261,7 +261,7 @@ void MAP::RandomGen(int armyCnt, int level) {
 }
 
 void MAP::InitSavedata() {
-    std::time_t t = std::time(&t) + 28800;
+    std::time_t t = std::time(&t) + 28800;  //转换到东八区
     struct tm* gmt = gmtime(&t);
     char cst[80];
     strftime(cst, 80, "%Y-%m-%d_%H.%M.%S", gmt);
@@ -273,6 +273,7 @@ void MAP::InitSavedata() {
 }
 
 int MAP::LoadMap(std::string_view file) {  // file = "../Data/"
+    Debug::Singleton().Log("info", "LoadMap");
     step = 0;
     kingNum = 0;
     std::ifstream fin(std::string(file.data()) + "3Player.map");
@@ -282,6 +283,7 @@ int MAP::LoadMap(std::string_view file) {  // file = "../Data/"
 }
 
 void MAP::SaveMap(std::string_view file) {  // file="../Savedata/"
+    Debug::Singleton().Log("info", "SaveMap");
     std::ofstream fout(file.data() + StartTime + "/" + std::to_string(step) +
                        ".map");
     fout << *this;
@@ -320,8 +322,7 @@ void MAP::SaveEdit(std::string_view file) {  // file = "../Output/"
 }
 
 int MAP::LoadReplayFile(std::string_view file, int loadstep) {  // loadstep = 0
-    ReplayOver = false;
-    kingNum = 0;
+    Debug::Singleton().Log("info", "LoadReplayFile");
     step = loadstep;
     ReplayFile = std::string(file.data());
     std::ifstream fin(ReplayFile + "/" + std::to_string(loadstep) + ".map");

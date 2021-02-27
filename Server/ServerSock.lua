@@ -32,6 +32,7 @@ function ServerSock.Init(armyNum)
     Server:on(
         "PushMove",
         function(data)
+            Debug.Log("info", "Received PushMove")
             Server:sendToAll("PushMove", data)
             PlayGameCore.PushMove(data)
         end

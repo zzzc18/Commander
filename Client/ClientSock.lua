@@ -1,5 +1,7 @@
 ClientSock = {}
 
+local Connected = 0
+
 local PlayGameCore = require("PlayGame.Core")
 
 function ClientSock.Init()
@@ -8,9 +10,8 @@ function ClientSock.Init()
     Client:on(
         "SetArmyID",
         function(data)
-            print("Received Data")
+            Debug.Log("info", "Received armyID: " .. data.armyID)
             PlayGame.armyID = data.armyID
-            print("armyID:" .. data.armyID)
             CVerify.Register(data.armyID)
             PlayGame.LoadMap()
         end
@@ -71,6 +72,17 @@ end
 -- srcX,Y是出发点 dstX,Y是目标点，显然二者应当相邻
 function ClientSock.SendMove(data)
     Client:send("PushMove", data)
+end
+
+function ClientSock.Update()
+    Client:update()
+    if Connected == 0 and Client:isConnected() then
+        Connected = 1
+        Debug.Log("info", "connect")
+    elseif Connected == 1 and not Client:isConnected() then
+        Connected = 0
+        Debug.Log("error", "disconnect")
+    end
 end
 
 return ClientSock

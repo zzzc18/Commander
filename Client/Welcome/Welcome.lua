@@ -7,6 +7,7 @@ function Welcome.Init()
     Welcome.Title.heightRatio = 0.6
     BGAnimation.load()
     Buttons.Init()
+    Debug.Log("info", "init Welcome")
 end
 
 function Welcome.DeInit()

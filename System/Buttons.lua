@@ -11,6 +11,7 @@ Buttons.isPause = false
 
 function Buttons.Init()
     ButtonsBasic:Load()
+    Debug.Log("info", "init Buttons")
 end
 
 function Buttons.DeInit()
@@ -19,6 +20,7 @@ function Buttons.DeInit()
     EachButton = {}
     ButtonsData = {}
     Buttons.isPause = false
+    Debug.Log("info", "deinit Buttons")
 end
 
 --orientation:旋转角度;
@@ -453,9 +455,15 @@ function Buttons.MouseState(mouseX, mouseY, mode)
                     inButton = true
                     if 0 == mode then
                         name = "Clicked"
-                        ButtonsBasic:ChangeColor(button, ButtonsData.ClickedColor)
+                        ButtonsBasic:ChangeColor(
+                            button,
+                            ButtonsData.ClickedColor
+                        )
                     elseif 1 == mode and not love.mouse.isDown(1) then
-                        ButtonsBasic:ChangeColor(button, ButtonsData.SelectedColor)
+                        ButtonsBasic:ChangeColor(
+                            button,
+                            ButtonsData.SelectedColor
+                        )
                     elseif 2 == mode then
                         name = ButtonsBasic:ButtonsRelease(button)
                     end
@@ -470,9 +478,15 @@ function Buttons.MouseState(mouseX, mouseY, mode)
                     inButton = true
                     if 0 == mode then
                         name = "Clicked"
-                        ButtonsBasic:ChangeColor(button, ButtonsData.ClickedColor)
+                        ButtonsBasic:ChangeColor(
+                            button,
+                            ButtonsData.ClickedColor
+                        )
                     elseif 1 == mode and not love.mouse.isDown(1) then
-                        ButtonsBasic:ChangeColor(button, ButtonsData.SelectedColor)
+                        ButtonsBasic:ChangeColor(
+                            button,
+                            ButtonsData.SelectedColor
+                        )
                     elseif 2 == mode then
                         name = ButtonsBasic:ButtonsRelease(button)
                     end
@@ -505,14 +519,23 @@ function Buttons.MouseState(mouseX, mouseY, mode)
                         inButton = true
                         if 0 == mode then
                             if "menu" == button.name then
-                                ButtonsBasic:ChangeColor(button, ButtonsData.ClickedColor)
+                                ButtonsBasic:ChangeColor(
+                                    button,
+                                    ButtonsData.ClickedColor
+                                )
                             else
                                 table.remove(button.Color, 4)
-                                table.insert(button.Color, ButtonsData.laterDiaphaneity)
+                                table.insert(
+                                    button.Color,
+                                    ButtonsData.laterDiaphaneity
+                                )
                             end
                         elseif 1 == mode and not love.mouse.isDown(1) then
                             if "menu" == button.name then
-                                ButtonsBasic:ChangeColor(button, ButtonsData.SelectedColor)
+                                ButtonsBasic:ChangeColor(
+                                    button,
+                                    ButtonsData.SelectedColor
+                                )
                             else
                                 button.ratioX = ButtonsData.laterRatio
                                 button.ratioY = ButtonsData.laterRatio
@@ -521,7 +544,10 @@ function Buttons.MouseState(mouseX, mouseY, mode)
                             if "menu" == button.name then
                             else
                                 table.remove(button.Color, 4)
-                                table.insert(button.Color, ButtonsData.initialDiaphaneity)
+                                table.insert(
+                                    button.Color,
+                                    ButtonsData.initialDiaphaneity
+                                )
                             end
                             name = ButtonsBasic:ButtonsRelease(button)
                         end
@@ -540,9 +566,15 @@ function Buttons.MouseState(mouseX, mouseY, mode)
                     inButton = true
                     if 0 == mode then
                         name = "Clicked"
-                        ButtonsBasic:ChangeColor(button, ButtonsData.ClickedColor)
+                        ButtonsBasic:ChangeColor(
+                            button,
+                            ButtonsData.ClickedColor
+                        )
                     elseif 1 == mode and not love.mouse.isDown(1) then
-                        ButtonsBasic:ChangeColor(button, ButtonsData.SelectedColor)
+                        ButtonsBasic:ChangeColor(
+                            button,
+                            ButtonsData.SelectedColor
+                        )
                     elseif 2 == mode then
                         name = ButtonsBasic:ButtonsRelease(button)
                     end
@@ -617,8 +649,8 @@ function ButtonsBasic:ChangeColor(v, Color)
 end
 
 function ButtonsBasic:ButtonsRelease(button)
-    print("trigger: " .. button.name)
     button.fun()
+    Debug.Log("info", "trigger button: " .. button.name)
     return button.name
 end
 
