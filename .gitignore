@@ -1,5 +1,7 @@
 lib
 src_cpp/Build
+Cryptogram/Build
+Cryptogram/libraries
 .vscode
 tmp
 *.code-workspace
