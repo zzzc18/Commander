@@ -11,7 +11,7 @@ function ClientSock.Init()
         "SetArmyID",
         function(data)
             Debug.Log("info", "Received armyID: " .. data.armyID)
-            PlayGame.armyID = data.armyID
+            Running.armyID = data.armyID
             CVerify.Register(data.armyID)
             Running.LoadMap()
             if Running == AI_SDK then
