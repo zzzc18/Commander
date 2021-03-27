@@ -71,8 +71,7 @@ function PlayGame.draw()
         Picture.DrawReady(BGAnimation)
         return
     end
-    love.graphics.setColor(1, 1, 1, 1)
-    love.graphics.print("Step:" .. ReplayGame.step, 0, 0, 0, 2)
+    Picture.PrintStepAndSpeed(ReplayGame.step)
     BasicMap.DrawMap()
     BasicMap.DrawPath()
     Operation.DrawSelect()
@@ -89,7 +88,7 @@ function PlayGame.update(dt)
     if PlayGame.gameState == "READY" then
         BGAnimation.update(dt)
     end
-    Client:update()
+    ClientSock.Update()
     if PlayGame.gameState ~= "Start" and PlayGame.gameState ~= "Menu" then
         return
     end

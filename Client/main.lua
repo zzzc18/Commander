@@ -24,11 +24,14 @@ require("System.Picture")
 require("System.BasicMap")
 require("System.MapAdjust")
 require("System.Buttons")
+require("System.Debug")
 require("ClientSock")
 
 Running = {}
 
 function love.load()
+    Debug.Init()
+    Debug.Log("info", "game start as client")
     Running = Welcome
     Running.Init()
     Switcher.Init()
@@ -48,6 +51,7 @@ function love.mousereleased(pixelX, pixelY, button, istouch, presses)
 end
 
 function love.keypressed(key, scancode, isrepeat)
+    Debug.Log("info", "keypressed " .. key)
     Running.keypressed(key, scancode, isrepeat)
 end
 
@@ -56,8 +60,8 @@ function love.keyreleased(key, scancode)
 end
 
 function love.directorydropped(path)
+    Debug.Log("info", "directorydropped " .. path)
     ReplayGame.droppedDir = path
-    print("Get dir: " .. path)
 end
 
 function love.draw()
@@ -71,5 +75,6 @@ function love.update(dt)
 end
 
 function love.quit()
+    Debug.Log("info", "game quit")
     return false
 end

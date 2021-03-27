@@ -12,10 +12,13 @@ require("System.Color")
 require("System.Picture")
 require("System.BasicMap")
 require("System.MapAdjust")
+require("System.Debug")
 require("ServerSock")
 require("PlayGame.PlayGame")
 
 function love.load()
+    Debug.Init()
+    Debug.Log("info", "game start as server")
     CVerify.Register(0, 3)
     Running = PlayGame
     Running.Init()
@@ -54,5 +57,6 @@ function love.update(dt)
 end
 
 function love.quit()
+    Debug.Log("info", "game quit")
     return false
 end

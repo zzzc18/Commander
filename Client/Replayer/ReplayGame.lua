@@ -3,8 +3,8 @@ local ReplayGame = {}
 ReplayGame.droppedDir = ""
 ReplayGame.step = 0
 ReplayGame.gameState = "READY"
-ReplayGame.armyID = nil
 ReplayGame.armyNum = 0
+ReplayGame.replaySpeed = 1
 
 function ReplayGame.RunPermission()
     return ReplayGame.gameState == "Start" or ReplayGame.gameState == "Menu"
@@ -12,7 +12,7 @@ end
 
 function ReplayGame.Init(MapMode)
     if ReplayGame.droppedDir == "" then
-        print("drag replay folder to game window before switch to ReplayGame")
+        Debug.Log("warning", "no folder to replay")
         ReplayGame.gameState = "READY"
         BGAnimation.load()
         return
@@ -27,7 +27,9 @@ end
 
 function ReplayGame.DeInit()
     Buttons.DeInit()
+    ReplayGame.droppedDir = ""
     ReplayGame.gameState = "READY"
+    ReplayGame.replaySpeed = 1
 end
 
 function ReplayGame.Destroy()
@@ -59,6 +61,11 @@ function ReplayGame.mousereleased(pixelX, pixelY, button, istouch, presses)
         ReplayGame.gameState = "Start"
     elseif "exit_Opt" == name then
         Switcher.To(Welcome)
+    elseif "shiftSpeed" == name then
+        ReplayGame.replaySpeed = ReplayGame.replaySpeed + 1
+        if ReplayGame.replaySpeed > 4 then
+            ReplayGame.replaySpeed = 1
+        end
     end
 end
 
@@ -73,8 +80,7 @@ function ReplayGame.draw()
         Picture.DrawReady(BGAnimation)
         return
     end
-    love.graphics.setColor(1, 1, 1, 1)
-    love.graphics.print("Step:" .. ReplayGame.step, 0, 0, 0, 2)
+    Picture.PrintStepAndSpeed(ReplayGame.step, ReplayGame.replaySpeed)
     BasicMap.DrawMap()
     BasicMap.DrawPath()
     if ReplayGame.gameState == "Menu" then
@@ -100,12 +106,13 @@ function ReplayGame.update(dt)
     Buttons.Update()
     for i = 1, ReplayGame.armyNum do
         if CGameMap.GetReplayStatus() == true then
+            Buttons.isPause = true
             return
         --游戏结束，停止地图更新
         end
     end
     if not Buttons.isPause then
-        ReplayGame.step = CSystem.Update(Buttons.replaySpeed * dt)
+        ReplayGame.step = CSystem.Update(ReplayGame.replaySpeed * dt)
     end
 end
 

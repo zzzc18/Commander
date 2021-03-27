@@ -45,6 +45,7 @@ function Switcher.Init()
     Switchable["GameOver"]["PlayGame"] = 1
     Switchable["GameOver"]["ReplayGame"] = 1
     --Switchable["x"]["y"]==1代表可以从场景x切换到场景y
+    Debug.Log("info", "init Switcher")
 end
 
 --用按键切换场景的功能不会在正常游戏中使用
@@ -57,7 +58,7 @@ end
 
 --取消初始化当前场景，然后将Running切换到newState(table)
 function Switcher.To(newState)
-    print("switch to " .. newState.name)
+    Debug.Log("info", "switch to " .. newState.name)
     now = newState.name
     Running.DeInit()
     Running = newState

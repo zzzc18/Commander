@@ -37,7 +37,7 @@ end
 function PlayGame.keypressed(key, scancode, isrepeat)
     if key == "s" then
         CGameMap.WriteMap()
-        print("Manually save map")
+        Debug.Log("info", "Manually save map")
     end
 end
 

@@ -3,10 +3,14 @@ local Operation = {}
 -- 这段代码 if 里面去掉 true 是否还能正常运转？？
 -- 将x,y格设为选中状态
 function Operation.Select(x, y)
+    if CGameMap.GetNodeType(x, y) == "NODE_TYPE_HILL" then
+        return
+    end
     if true or CGameMap.GetBelong(x, y) == PlayGame.armyID then
         Operation.SelectPos = {}
         Operation.SelectPos.x = x
         Operation.SelectPos.y = y
+        Debug.Log("info", string.format("Chosen point %d %d", x, y))
     end
 end
 
@@ -47,10 +51,12 @@ function Operation.MoveTo(x, y)
             num = 0
         }
         ClientSock.SendMove(NewRequest)
+        Debug.Log("info", "move revoke")
         return
     end
 
     if not Operation.IsConnected(Operation.SelectPos.x, Operation.SelectPos.y, x, y) then
+        Debug.Log("warning", "move illegal")
         return
     end
 
@@ -63,6 +69,7 @@ function Operation.MoveTo(x, y)
         num = 0
     }
     ClientSock.SendMove(NewRequest)
+    Debug.Log("info", string.format("move from %d,%d to %d,%d", Operation.SelectPos.x, Operation.SelectPos.y, x, y))
 end
 
 --依按下的键盘按键进行操作
@@ -97,6 +104,7 @@ function Operation.CatchKeyPressed(key)
     y = y + moveOp[key][2]
     Operation.MoveTo(x, y)
     Operation.Select(x, y)
+    Debug.Log("info", "move")
 end
 
 --依鼠标键按下的位置进行操作
@@ -111,14 +119,19 @@ function Operation.CatchMousePressed(pixelX, pixelY, button, istouch, presses)
     if x == -1 and y == -1 then
         return
     end
-    print("mouse_pressed")
-    print(string.format("Chosen point %d %d", x, y))
+
     if Operation.SelectPos == nil then -- 没有选择的情况下要选择
-        Operation.Select(x, y)
+        if CGameMap.GetBelong(x, y) == PlayGame.armyID then
+            Operation.Select(x, y)
+        end
     else -- 选择后的情况要移动
-        --print(string.format("Current select: %d,%d", Operation.SelectPos.x, Operation.SelectPos.y))
         Operation.MoveTo(x, y)
-        Operation.Select(x, y)
+        if
+            Operation.IsConnected(Operation.SelectPos.x, Operation.SelectPos.y, x, y) or
+                CGameMap.GetBelong(x, y) == PlayGame.armyID
+         then
+            Operation.Select(x, y)
+        end
     end
 end
 

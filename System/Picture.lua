@@ -10,12 +10,18 @@ function NodeImageSet:Load()
     self.center.x = 97
     self.center.y = 97
     self.divRatio = 135
-    self["NODE_TYPE_BLANK"] = love.graphics.newImage("data/Picture/NODE_TYPE_BLANK.png")
-    self["NODE_TYPE_HILL"] = love.graphics.newImage("data/Picture/NODE_TYPE_HILL.png")
-    self["NODE_TYPE_FORT"] = love.graphics.newImage("data/Picture/NODE_TYPE_FORT.png")
-    self["NODE_TYPE_KING"] = love.graphics.newImage("data/Picture/NODE_TYPE_KING.png")
-    self["NODE_TYPE_OBSTACLE"] = love.graphics.newImage("data/Picture/NODE_TYPE_OBSTACLE.png")
-    self["NODE_TYPE_MARSH"] = love.graphics.newImage("data/Picture/NODE_TYPE_MARSH.png")
+    self["NODE_TYPE_BLANK"] =
+        love.graphics.newImage("data/Picture/NODE_TYPE_BLANK.png")
+    self["NODE_TYPE_HILL"] =
+        love.graphics.newImage("data/Picture/NODE_TYPE_HILL.png")
+    self["NODE_TYPE_FORT"] =
+        love.graphics.newImage("data/Picture/NODE_TYPE_FORT.png")
+    self["NODE_TYPE_KING"] =
+        love.graphics.newImage("data/Picture/NODE_TYPE_KING.png")
+    self["NODE_TYPE_OBSTACLE"] =
+        love.graphics.newImage("data/Picture/NODE_TYPE_OBSTACLE.png")
+    self["NODE_TYPE_MARSH"] =
+        love.graphics.newImage("data/Picture/NODE_TYPE_MARSH.png")
 end
 
 function SelectImage:Load()
@@ -45,6 +51,7 @@ function Picture.Init()
         ArrowImage:Load()
         Menu:Load()
     end
+    Debug.Log("info", "init Picture")
 end
 
 function Picture.DrawNode(pixelX, pixelY, nodeType)
@@ -145,6 +152,15 @@ function Picture.DrawMenu()
         Menu.image:getWidth() / 2,
         Menu.image:getHeight() / 2
     )
+end
+
+function Picture.PrintStepAndSpeed(step, speed)
+    local windowWidth, windowHeight = love.graphics.getDimensions()
+    love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.print("Step:" .. step, windowWidth - 120, 0, 0, 2)
+    if speed ~= nil then
+        love.graphics.print("Speed:" .. speed, windowWidth - 120, 25, 0, 2)
+    end
 end
 
 return Picture
