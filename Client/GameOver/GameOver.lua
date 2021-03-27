@@ -5,9 +5,9 @@ GameOver.armyNum = 0
 
 function GameOver.draw()
     BasicMap.DrawMap()
-    if PlayGame.judgementState == "Lose" then
+    if PlayGame.judgementState == "Lose" or AI_SDK.judgementState == "Lose" then
         GameOver.DrawJudgeInfo("Lose", GameOver.vanquisherID)
-    elseif PlayGame.judgementState == "Win" then
+    elseif PlayGame.judgementState == "Win" or AI_SDK.judgementState == "Win" then
         GameOver.DrawJudgeInfo("Win", nil)
     end
 end

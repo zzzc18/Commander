@@ -13,6 +13,7 @@ ReplayGame = require("Replayer.ReplayGame")
 Welcome = require("Welcome.Welcome")
 BGAnimation = require("Welcome.BGAnimation")
 Switcher = require("Switcher")
+AI_SDK = require("AI.AI_SDK.AI_SDK")
 
 Font = {
     gillsans50 = love.graphics.newFont("Font/gillsans.ttf", 50)

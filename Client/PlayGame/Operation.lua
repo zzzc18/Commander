@@ -47,7 +47,8 @@ function Operation.MoveTo(x, y)
             srcX = -1,
             srcY = -1,
             dstX = -1,
-            dstY = -1
+            dstY = -1,
+            num = 0
         }
         ClientSock.SendMove(NewRequest)
         Debug.Log("info", "move revoke")
@@ -64,7 +65,8 @@ function Operation.MoveTo(x, y)
         srcX = Operation.SelectPos.x,
         srcY = Operation.SelectPos.y,
         dstX = x,
-        dstY = y
+        dstY = y,
+        num = 0
     }
     ClientSock.SendMove(NewRequest)
     Debug.Log("info", string.format("move from %d,%d to %d,%d", Operation.SelectPos.x, Operation.SelectPos.y, x, y))
@@ -136,9 +138,9 @@ end
 function Operation.CatchMouseReleased(pixelX, pixelY, button, istouch, presses)
     local name = Buttons.MouseState(pixelX, pixelY, 2)
     if "menu" == name then
-        PlayGame.gameState = "Menu"
+        Running.gameState = "Menu"
     elseif "continue" == name then
-        PlayGame.gameState = "Start"
+        Running.gameState = "Start"
     elseif "exit" == name then
         Switcher.To(Welcome)
     end
