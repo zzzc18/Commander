@@ -67,23 +67,35 @@ void MAP::BigUpdate() {
 }
 
 bool MAP::MoveUpdate() {
-    auto Move = [this](int armyID, VECTOR _src, VECTOR _dst, double num) -> bool {
+    // num是要移动的军队数，移动成功返回true
+    auto Move = [this](int armyID, VECTOR _src, VECTOR _dst,
+                       double num) -> bool {
         NODE &src = _mat[_src.x][_src.y], &dst = _mat[_dst.x][_dst.y];
-        if (src.belong != armyID || src.unitNum <= 1)
+        if (src.belong != armyID || src.unitNum <= 1) {
             return false;  // FIXME magic number 1
-        if (dst.type == NODE_TYPE::HILL) return false;
-        if (num == 0 || num >= src.unitNum) num = src.unitNum - 1;
-        else if (src.unitNum > num && num >= 1) num = int(num);
-        else if (1 > num && num > 0) {
-            num = int (num * src.unitNum);
-            if (num < 1) return false;
         }
-        else if(num < 0) {
-            printf("An error occurred when the army is trying to move: moveNum is %lf.\n", num);
+        if (dst.type == NODE_TYPE::HILL) {
             return false;
         }
-        if (dst.belong == armyID) dst.unitNum += num; // FIXME magic number 1
-        else {
+        if (num == 0 || num >= src.unitNum) {
+            num = src.unitNum - 1;
+        } else if (src.unitNum > num && num >= 1) {
+            num = int(num);
+        } else if (1 > num && num > 0) {
+            num = int(num * src.unitNum);
+            if (num < 1) {
+                return false;
+            }
+        } else if (num < 0) {
+            printf(
+                "An error occurred when the army is trying to move: moveNum is "
+                "%lf.\n",
+                num);
+            return false;
+        }
+        if (dst.belong == armyID) {
+            dst.unitNum += num;  // FIXME magic number 1
+        } else {
             dst.unitNum -= num;  // FIXME magic number 1
             if (dst.unitNum < 0) {
                 dst.unitNum = -dst.unitNum;
@@ -101,7 +113,9 @@ bool MAP::MoveUpdate() {
             // cerr << cmd.first << cmd.second << endl;
             moveCommands[i].pop_back();
             moveNumCmd[i].pop_back();
-            if (Move(i, cmd.first, cmd.second, cmdNum)) break;
+            if (Move(i, cmd.first, cmd.second, cmdNum)) {
+                break;  //每次更新每方只移动一次
+            }
         }
     }
     return ret;
@@ -132,12 +146,15 @@ bool MAP::PushMove(int armyID, VECTOR src, VECTOR dst, double num) {
     if (VERIFY::Singleton().GetPrivilege() == 3) {
         SaveStep(armyID, src, dst, num);
     }
-    VECTOR j = {-1, -1};
-    if (src == j && dst == j) {  //撤销移动命令
+    if (src == VECTOR{-1, -1} && dst == VECTOR{-1, -1}) {  //撤销移动命令
         if (!moveCommands[armyID].empty()) {
             moveCommands[armyID].erase(moveCommands[armyID].begin());
-            return true;
         }
+        return true;
+    }
+    if (dst.x < 0 || dst.y < 0 || dst.x >= this->_sizeX ||
+        dst.y >= this->_sizeY) {  //移动到边界外无效
+        return false;
     }
     moveCommands[armyID].insert(moveCommands[armyID].begin(), {src, dst});
     moveNumCmd[armyID].insert(moveNumCmd[armyID].begin(), num);
@@ -248,7 +265,8 @@ void MAP::RandomGen(int armyCnt, int level) {
         }
         return false;
     };  // lambda ValidateConnectivity
-    // king 不连通时把摆 king 的点的属性恢复成之前的属性以供下一次随机放置 king
+    // king 不连通时把摆 king 的点的属性恢复成之前的属性以供下一次随机放置
+    // king
     auto Recovery = [this, &kings]() -> bool {
         for (auto [pos, type] : kings) _mat[pos.x][pos.y].type = type;
         return true;  //利用逻辑运算的短路求值特性
@@ -333,7 +351,8 @@ void MAP::SaveEdit(std::string_view file) {  // file = "../Output/"
     return;
 }
 
-int MAP::LoadReplayFile(std::string_view file, int loadstep) {  // loadstep = 0
+int MAP::LoadReplayFile(std::string_view file,
+                        int loadstep) {  // loadstep = 0
     Debug::Singleton().Log("info", "LoadReplayFile");
     step = loadstep;
     ReplayFile = std::string(file.data());

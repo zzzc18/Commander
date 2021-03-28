@@ -59,6 +59,9 @@ function Operation.MoveTo(x, y)
         Debug.Log("warning", "move illegal")
         return
     end
+    if CGameMap.GetNodeType(x, y) == "NODE_TYPE_HILL" then
+        Debug.Log("warning", "move illegal")
+    end
 
     local NewRequest = {
         armyID = PlayGame.armyID,
@@ -69,7 +72,9 @@ function Operation.MoveTo(x, y)
         num = 0
     }
     ClientSock.SendMove(NewRequest)
-    Debug.Log("info", string.format("move from %d,%d to %d,%d", Operation.SelectPos.x, Operation.SelectPos.y, x, y))
+    if CGameMap.GetNodeType(x, y) ~= "NODE_TYPE_HILL" then
+        Debug.Log("info", string.format("move from %d,%d to %d,%d", Operation.SelectPos.x, Operation.SelectPos.y, x, y))
+    end
 end
 
 --依按下的键盘按键进行操作
@@ -102,13 +107,23 @@ function Operation.CatchKeyPressed(key)
     end
     x = x + moveOp[key][1]
     y = y + moveOp[key][2]
+    --防止越出地图边界
+    local mapSizeX, mapSizeY = CGameMap.GetSize()
+    if x < 0 or y < 0 or x >= mapSizeX or y >= mapSizeY then
+        Debug.Log("warning", "invalid move")
+        return
+    end
+
     Operation.MoveTo(x, y)
     Operation.Select(x, y)
-    Debug.Log("info", "move")
 end
 
 --依鼠标键按下的位置进行操作
 function Operation.CatchMousePressed(pixelX, pixelY, button, istouch, presses)
+    if 3 == button then
+        return
+    --按下滚轮不move
+    end
     -- 鼠标坐标转换为地图坐标
     local x, y = BasicMap.Pixel2Coordinate(pixelX, pixelY)
     local name = Buttons.MouseState(pixelX, pixelY, 0)
