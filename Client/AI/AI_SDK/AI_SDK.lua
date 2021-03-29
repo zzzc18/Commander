@@ -1,5 +1,10 @@
 local AI_SDK = {}
 
+
+AI_SDK.TypeImplementation = "Lua"
+-- supported lang: "Lua", "C++"
+
+
 local Core = require("AI.Core")
 local Operation = require("PlayGame.Operation")
 
@@ -267,7 +272,11 @@ function AI_SDK.update(dt)
         return
     end
     if timer < ReplayGame.step then
-        Core.Main()
+        if AI_SDK.typeImplementation == "Lua" then
+            Core.Main()
+        else
+
+        end
     end
     MapAdjust.Update()
     Buttons.Update()
