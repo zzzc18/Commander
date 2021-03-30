@@ -1,12 +1,13 @@
 local AI_SDK = {}
 
 
-AI_SDK.TypeImplementation = "Lua"
+AI_SDK.TypeImplementation = "C++"
 -- supported lang: "Lua", "C++"
 
 
 local Core = require("AI.Core")
 local Operation = require("PlayGame.Operation")
+local CCore = require("lib.UserImplementation")
 
 --READY:游戏未开始，不显示界面，无法操作
 --Start:游戏进行中
@@ -272,10 +273,12 @@ function AI_SDK.update(dt)
         return
     end
     if timer < ReplayGame.step then
-        if AI_SDK.typeImplementation == "Lua" then
+        if AI_SDK.TypeImplementation == "Lua" then
             Core.Main()
         else
-
+            if AI_SDK.TypeImplementation == "C++" then
+                CCore.userMain()
+             end
         end
     end
     MapAdjust.Update()

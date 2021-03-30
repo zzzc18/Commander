@@ -9,7 +9,7 @@ start lovec .
 @cscript ..\sleep.vbs >nul
 @cscript ..\sleep.vbs >nul
 cd ..\Client
-start lovec .
+start lovec . >log1.log
 @cscript ..\sleep.vbs >nul
 start lovec .
 @cscript ..\sleep.vbs >nul

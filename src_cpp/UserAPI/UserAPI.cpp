@@ -1,32 +1,15 @@
-#pragma once
-
-#ifndef UserAPI_hpp
-#define UserAPI_hpp
-
 #include "GameMap.hpp"
 #include "LuaAPI.hpp"
+#include "UserAPI.hpp"
 
-namespace AI_SDK {
-class UserAPI {
-   public:
-    void move_to(int x, int y, double moveNum, int direction);
-    // string get_game_state();
-    bool is_connected(int posX1, int posY1, int posX2, int posY2);
-    void add_commands(int direction, std::string key, std::string type, int x,
-                      int y);
-    void clear_commands();
+using namespace std;
 
-   private:
-    lua_State* luaState;
-    void Init();
-    void init_func_call(std::string class_name, std::string func_name);
-    int execute_func_call(int param_num = 0, int ret_num = 0);
-};
+void UserAPI::lua_pushstring(string str) { ::lua_pushstring(luaState, str.c_str()); }
 
-void UserAPI::init_func_call(std::string class_name, std::string func_name) {
-    lua_getglobal(luaState, class_name);
+void UserAPI::init_func_call(string class_name, string func_name) {
+    lua_getglobal(luaState, class_name.c_str());
     if (!lua_istable(luaState, -1)) throw "AI SDK -- not a table error";
-    lua_pushstring(luaState, func_name);
+    lua_pushstring(func_name);
     lua_gettable(luaState, -2);
 }
 
@@ -38,7 +21,7 @@ void UserAPI::execute_func_call(int param_num, int ret_num) {
 }
 
 void UserAPI::move_to(int x, int y, double moveNum, int direction) {
-    initK_func_call("AISDK", "MoveTo");
+    init_func_call("AISDK", "MoveTo");
     lua_pushnumber(luaState, x);
     lua_pushnumber(luaState, y);
     lua_pushnumber(luaState, moveNum);
@@ -60,15 +43,13 @@ void UserAPI::add_commands(int direction, string key, string type, int x,
                            int y) {
     init_func_call("AISDK", "addCommands");
     lua_pushnumber(luaState, direction);
-    lua_pushstring(luaState, key);
+    lua_pushstring(key);
+    lua_pushstring(type);
     lua_pushnumber(luaState, x);
     lua_pushnumber(luaState, y);
-    execute_func_call(luaState 4);
+    execute_func_call(5);
 }
 
-}  // namespace AI_SDK
-
-#endif  // UserAPI_hpp
 
 #ifndef UserCore_hpp
 #define UserCore_hpp
@@ -76,7 +57,6 @@ void UserAPI::add_commands(int direction, string key, string type, int x,
 class UserCore {
    public:
     int selectX, selectY;
-    void
 };
 
 #endif  // UserCore_hpp
