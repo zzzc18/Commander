@@ -275,6 +275,7 @@ function AI_SDK.update(dt)
     if timer < ReplayGame.step then
         if AI_SDK.TypeImplementation == "Lua" then
             Core.Main()
+            print("Lua Implementation Invoke")
         else
             if AI_SDK.TypeImplementation == "C++" then
                 CCore.userMain()

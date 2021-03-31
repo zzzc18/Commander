@@ -4,6 +4,13 @@
 
 using namespace std;
 
+UserAPI& UserAPI::Singleton(lua_State * L) {
+    if (!has_init && L == nullptr) throw "ERROR: argument lua_State not given for initialization";
+    static UserAPI singleton(L);
+    has_init = true;
+    return singleton;
+}
+
 void UserAPI::lua_pushstring(string str) { ::lua_pushstring(luaState, str.c_str()); }
 
 void UserAPI::init_func_call(string class_name, string func_name) {
@@ -50,13 +57,10 @@ void UserAPI::add_commands(int direction, string key, string type, int x,
     execute_func_call(5);
 }
 
+void UserAPI::get_lua_property(string class_name, string property) {
 
-#ifndef UserCore_hpp
-#define UserCore_hpp
+}
 
-class UserCore {
-   public:
-    int selectX, selectY;
-};
+string UserAPI::get_game_state() const { 
 
-#endif  // UserCore_hpp
+}
