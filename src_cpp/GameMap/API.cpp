@@ -202,7 +202,8 @@ static int GetKingPos(lua_State *luaState) {
  * @param srcY @c int 给定点所在列号
  * @param dstX @c int 目标点所在行号
  * @param dstY @c int 目标点所在列号
- * @param num @c int 移动数量，为0时移动全部军队，介于0与1之间时按百分比移动，大于1时移动相应数量
+ * @param num @c int
+ * 移动数量，为0时移动全部军队，介于0与1之间时按百分比移动，大于1时移动相应数量
  * @return @c bool 操作是否合法
  */
 static int PushMove(lua_State *luaState) {
@@ -270,6 +271,6 @@ LUA_REG_FUNC(GameMap, C_API(RandomGenMap), C_API(InitSavedata),
              C_API(LoadCheckPoint), C_API(GetReplayStatus), C_API(SaveEdit),
              C_API(WriteMap), C_API(GetSize), C_API(GetVision),
              C_API(GetNodeType), C_API(GetUnitNum), C_API(GetBelong),
-             C_API(GetArmyPath), C_API(GetKingPos), C_API(PushMove), C_API(Judge),
-             C_API(Surrender), C_API(IncreaseOrDecrease), C_API(ChangeType),
-             C_API(ChangeBelong))
+             C_API(GetArmyPath), C_API(GetKingPos), C_API(PushMove),
+             C_API(Judge), C_API(Surrender), C_API(IncreaseOrDecrease),
+             C_API(ChangeType), C_API(ChangeBelong))
