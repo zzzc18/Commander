@@ -7,4 +7,5 @@ function love.conf(this)
     this.modules.physics = false
     this.window.title = "Client"
     this.window.resizable = false
+    this.window.icon = "data/Picture/Logo.png"
 end
