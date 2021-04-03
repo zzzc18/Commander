@@ -11,6 +11,7 @@
 #include <string_view>
 
 #include "Tools.hpp"
+#include "Verify.hpp"
 
 NODE_TYPE StrToNodeType(std::string_view str) {
     switch (str[10]) {  // NODE_TYPE_*
@@ -71,4 +72,9 @@ NODE_TYPE RandomNodeType(int level) {  // FIXME magic numbers
             return NODE_TYPE::MARSH;
     } else  //为了避免 without return 的 warning
         [[unlikely]] throw std::invalid_argument(std::to_string(level));
+}
+
+const std::vector<std::pair<VECTOR, VECTOR>> & MAP::GetMoveCommands() {
+    int armyID = VERIFY::Singleton().GetArmyID();
+    return moveCommands[armyID];
 }
