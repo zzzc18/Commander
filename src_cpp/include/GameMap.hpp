@@ -18,6 +18,7 @@
 #include <vector>
 
 #include "Constant.hpp"
+#include "LuaAPI.hpp"
 
 using namespace GameMap;  //导入 Constant.hpp 中的常量
 
@@ -154,6 +155,9 @@ class MAP final {
 
     //当前军队的王的位置
     std::pair<int, int> GetKingPos(int armyID) const;
+
+    //获取当前军队从KING到当前位置的路径
+    std::vector<std::pair<VECTOR, VECTOR>> & GetMoveCommands(lua_State *L);
 
    private:
     MAP() = default;

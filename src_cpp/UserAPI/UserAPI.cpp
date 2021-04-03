@@ -58,7 +58,7 @@ void UserAPI::add_commands(int direction, string key, string type, int x,
 }
 
 void UserAPI::get_lua_property(string class_name, string property) {
-
+    
 }
 
 string UserAPI::get_game_state() const { 
