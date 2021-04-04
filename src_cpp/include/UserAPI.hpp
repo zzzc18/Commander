@@ -6,9 +6,13 @@
 #include "GameMap.hpp"
 #include "LuaAPI.hpp"
 
+int Map_directionp[2][6][2] = {
+    {{-1, 0}, {0, 1}, {1, 0}, {1, -1}, {0, -1}, {-1, -1}},
+    {{-1, 1}, {0, 1}, {1, 1}, {1, 0}, {0, -1}, {-1, 0}}};
+
 class UserAPI {
    public:
-    void move_to(int x, int y, double moveNum, int direction);
+    void move_to(VECTOR dest, double moveNum, int direction);
     // string get_game_state();
     bool is_connected(int posX1, int posY1, int posX2, int posY2);
     void add_commands(int direction, std::string key, std::string type, int x,
