@@ -33,9 +33,10 @@ function ClientSock.Init()
     )
     Client:on(
         "GameStart",
-        function()
+        function(data)
             Running.gameState = "Start"
             BGAnimation.deLoad()
+            ReplayGame.droppedDir = data
         end
     )
     Client:on(
@@ -68,7 +69,6 @@ function ClientSock.Init()
             end
         end
     )
-
     Client:connect()
 end
 

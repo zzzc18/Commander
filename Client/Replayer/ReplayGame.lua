@@ -17,7 +17,7 @@ function ReplayGame.Init(MapMode)
         BGAnimation.load()
         return
     else
-        ReplayGame.armyNum = CGameMap.LoadReplayFile(ReplayGame.droppedDir)
+        Debug.Log("info", "Folder:" .. ReplayGame.droppedDir)
         CVerify.Register(0, 2)
         ReplayGame.gameState = "Start"
         BasicMap.Init()

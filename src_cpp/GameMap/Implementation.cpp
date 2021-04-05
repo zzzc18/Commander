@@ -401,7 +401,6 @@ bool MAP::IsViewable(VECTOR pos) const {
     }
     if (_mat[pos.x][pos.y].belong == VERIFY::Singleton().GetArmyID())
         return true;
-    if (VERIFY::Singleton().GetArmyID() == SERVER) return true;
     for (auto dta : DIR[pos.x & 1]) {  //判断是奇数行还是偶数行
         if (VECTOR next = pos + dta; this->InMap(next)) {
             if (_mat[next.x][next.y].belong == VERIFY::Singleton().GetArmyID())
@@ -468,6 +467,9 @@ std::pair<VECTOR, VECTOR> MAP::GetArmyPath(int armyID, int step) const {
     } else {
         return {{-1, -1}, {-1, -1}};
     }
+}
+const char* MAP::GetFolder() {
+    return (std::string("../Savedata/") + StartTime).c_str();
 }
 std::pair<int, int> MAP::GetKingPos(int armyID) const {
     int x = MAP::Singleton().kingState.kingPos[armyID].x;

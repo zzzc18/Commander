@@ -18,7 +18,7 @@ function ServerSock.Init(armyNum)
                 Running.Init()
             end
             if ServerSock.clientNum == armyNum then
-                Server:sendToAll("GameStart")
+                Server:sendToAll("GameStart", CGameMap.GetFolder())
                 PlayGame.gameState = "Start"
             end
         end
