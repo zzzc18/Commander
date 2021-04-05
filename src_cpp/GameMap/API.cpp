@@ -180,6 +180,14 @@ static int GetArmyPath(lua_State *luaState) {
     return APIreturn(luaState, srcX, srcY, dstX, dstY);
 }
 /**
+ * @brief 当前对局保存的文件夹
+ *
+ * @return @c const char* 当前对局文件夹的相对路径
+ */
+static int GetFolder(lua_State *luaState) {
+    return APIreturn(luaState, MAP::Singleton().GetFolder());
+}
+/**
  * @brief 某位玩家的王的位置
  *
  * @param x @c int 王所在行号
@@ -271,6 +279,6 @@ LUA_REG_FUNC(GameMap, C_API(RandomGenMap), C_API(InitSavedata),
              C_API(LoadCheckPoint), C_API(GetReplayStatus), C_API(SaveEdit),
              C_API(WriteMap), C_API(GetSize), C_API(GetVision),
              C_API(GetNodeType), C_API(GetUnitNum), C_API(GetBelong),
-             C_API(GetArmyPath), C_API(GetKingPos), C_API(PushMove),
-             C_API(Judge), C_API(Surrender), C_API(IncreaseOrDecrease),
-             C_API(ChangeType), C_API(ChangeBelong))
+             C_API(GetArmyPath), C_API(GetFolder), C_API(GetKingPos),
+             C_API(PushMove), C_API(Judge), C_API(Surrender),
+             C_API(IncreaseOrDecrease), C_API(ChangeType), C_API(ChangeBelong))

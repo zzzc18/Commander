@@ -151,6 +151,8 @@ class MAP final {
     int GetBelong(VECTOR pos) const;
     //当前军队看到pos的计划路径
     std::pair<VECTOR, VECTOR> GetArmyPath(int armyID, int step) const;
+    //当前对局的文件夹
+    const char* GetFolder();
 
     //当前军队的王的位置
     std::pair<int, int> GetKingPos(int armyID) const;
