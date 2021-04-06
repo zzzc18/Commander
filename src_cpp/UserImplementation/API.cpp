@@ -4,6 +4,7 @@
 #include "GameMap.hpp"
 #include "LuaAPI.hpp"
 #include "UserAPI.hpp"
+#include "Verify.hpp"
 
 using namespace std;
 
@@ -12,6 +13,8 @@ enum attack_state_type { Done, Ready, Attacking } attack_state;
 
 void Back_init();
 void Back_to_king();
+int back_index = 1;
+
 void Attack_model();
 void AI_move_model(lua_State *luaState);
 
@@ -27,10 +30,10 @@ static int userMain(lua_State *luaState) {
     printf("C++ Implementation Invoke\n");
 
     // 初始化API单例
-    UserAPI &API = UserAPI.Singleton(luaState);
+    UserAPI &API = UserAPI::Singleton(luaState);
 
     if (API.get_current_step() % 45 == 0 &&
-        back_state != back_state_type::Backing attack_state ==
+        back_state != back_state_type::Backing && attack_state ==
             attack_state_type::Done) {
         Back_init();
         Back_to_king();
@@ -54,21 +57,21 @@ static int userMain(lua_State *luaState) {
 
 // 从王的位置随机移动，当军队数量下降到1时重新从王的位置开始移动
 void AI_move_model(lua_State *luaState) {
-    auto &API = UserAPI.Singleton();
-    if (API.selected_pos().x == -1 && API.king_pos != -1) {
-        AI.selected_pos(API.king_pos());
+    auto &API = UserAPI::Singleton();
+    if (API.selected_pos().x == -1 && API.king_pos() != -1) {
+        API.selected_pos(API.king_pos());
     }
 
     VECTOR cur_pos = API.selected_pos();
-    int unit_num = API.get_unit_num(cur_pos);
+    int unit_num = MAP::Singleton().GetUnitNum(cur_pos);
     double move_num =
         0;  //为0时移动全部，为0到1之间实数时按比例移动，大于1时移动moveNum整数部分
-    if (API.get_army_id() != API.get_belong(cur_pos) || unit_num <= 1) {
+    if (VERIFY::Singleton().GetArmyID() != MAP::Singleton().GetBelong(cur_pos) || unit_num <= 1) {
         API.selected_pos(API.king_pos());
         API.clear_commands();
         return;
     } else if (unit_num >= 50 &&
-               GameMap.Singleton().GetType(cur_pos) == NODE_TYPE::KING)
+               MAP::Singleton().GetType(cur_pos) == NODE_TYPE::KING)
         move_num = 0.5;
 
     int chance = 10;
@@ -79,26 +82,26 @@ void AI_move_model(lua_State *luaState) {
         mode = cur_pos.x % 2 + 1;
         cur_pos.x += Map_direction[mode][rdmDirection][0];
         cur_pos.y += Map_direction[mode][rdmDirection][1];
-        if (GameMap.Singleton().GetType(cur_pos) == NODE_TYPE::BLANK ||
-            GameMap.Singleton().GetType(cur_pos) == NODE_TYPE::KING) {
-            if (AI.get_army_id() != GameMap.GetBelong(cur_pos)) {
-                AI.move_to(cur_pos, move_num, rdmDirection);
-                AI.selected_pos(cur_pos);
+        if (MAP::Singleton().GetType(cur_pos) == NODE_TYPE::BLANK ||
+            MAP::Singleton().GetType(cur_pos) == NODE_TYPE::KING) {
+            if (VERIFY::Singleton().GetArmyID() != MAP::GetBelong(cur_pos)) {
+                API.move_to(cur_pos, move_num, rdmDirection);
+                API.selected_pos(cur_pos);
                 break;
             } else {
                 chance--;
                 if (chance < 3) {
-                    AI.move_to(cur_pos, move_num, rdmDirection);
-                    AI.selected_pos(cur_pos);
+                    API.move_to(cur_pos, move_num, rdmDirection);
+                    API.selected_pos(cur_pos);
                     break;
                 }
             }
-        } else if (GameMap.Singleton().GetType(cur_pos) == NODE_TYPE::FORT) {
-            int fort_num = GameMap.Singleton().GetUnitNum(cur_pos);
-            if (AI.get_army_id() != GameMap.Singleton().GetBelong(cur_pos) &&
+        } else if (MAP::Singleton().GetType(cur_pos) == NODE_TYPE::FORT) {
+            int fort_num = MAP::Singleton().GetUnitNum(cur_pos);
+            if (VERIFY::Singleton().GetArmyID() != MAP::Singleton().GetBelong(cur_pos) &&
                 fort_num - 10 < unit_num) {
-                AI.move_to(cur_pos, move_num, rdmDirection);
-                AI.selected_pos(cur_pos);
+                API.move_to(cur_pos, move_num, rdmDirection);
+                API.selected_pos(cur_pos);
                 break;
             } else {
                 chance--;
@@ -107,8 +110,8 @@ void AI_move_model(lua_State *luaState) {
             chance--;
     }
     if (chance <= 0) {
-        AI.selected_pos(AI.king_pos());
-        AI.clear_commands();
+        API.selected_pos(API.king_pos());
+        API.clear_commands();
     }
 }
 

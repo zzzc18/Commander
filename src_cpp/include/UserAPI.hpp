@@ -27,7 +27,6 @@ class UserAPI {
     int get_current_step() const;
     VECTOR selected_pos() const;
     void selected_pos(VECTOR new_pos);
-    int get_unit_num(VECTOR pos) const;
 
     UserAPI(const UserAPI &) = delete;
     bool operator=(const UserAPI &) = delete;

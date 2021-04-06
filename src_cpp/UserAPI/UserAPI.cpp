@@ -58,7 +58,12 @@ void UserAPI::add_commands(int direction, string key, string type, int x,
 }
 
 void UserAPI::get_lua_property(string class_name, string property) {
-    
+    lua_getglobal(luaState, class_name.c_str());
+    if (!lua_istable(luaState, -1)) {
+        throw "not a table" + class_name;
+    }
+    lua_pushstring(property);
+    lua_gettable(luaState, -2);
 }
 
 string UserAPI::get_game_state() const { 
