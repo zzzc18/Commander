@@ -286,4 +286,8 @@ function AI_SDK.update(dt)
     Buttons.Update()
 end
 
+function AI_SDK.setSelected(x, y)
+    Core.SelectPos.x, Core.SelectPos.y = x, y
+end
+
 return AI_SDK
