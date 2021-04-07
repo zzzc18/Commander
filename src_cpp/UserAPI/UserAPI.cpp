@@ -27,10 +27,10 @@ void UserAPI::execute_func_call(int param_num, int ret_num) {
     }
 }
 
-void UserAPI::move_to(int x, int y, double moveNum, int direction) {
+void UserAPI::move_to(VECTOR dest, double moveNum, int direction) {
     init_func_call("AISDK", "MoveTo");
-    lua_pushnumber(luaState, x);
-    lua_pushnumber(luaState, y);
+    lua_pushnumber(luaState, dest.x);
+    lua_pushnumber(luaState, dest.y);
     lua_pushnumber(luaState, moveNum);
     lua_pushnumber(luaState, direction);
     execute_func_call(4);
