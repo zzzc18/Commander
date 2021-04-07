@@ -23,7 +23,7 @@ class UserAPI {
     int get_armyID() const;
     int get_army_num() const;
     VECTOR king_pos() const;
-    static bool has_init;
+    // static bool has_init;
     int get_current_step() const;
     VECTOR selected_pos() const;
     void selected_pos(VECTOR new_pos);
@@ -41,6 +41,6 @@ class UserAPI {
     void get_lua_property(std::string class_name, std::string property_name);
 };
 
-bool UserAPI::has_init = false;
+// bool UserAPI::has_init = false;
 
 #endif  // UserAPI_hpp

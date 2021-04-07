@@ -5,6 +5,7 @@
 using namespace std;
 
 UserAPI& UserAPI::Singleton(lua_State * L) {
+    static bool has_init = false;
     if (!has_init && L == nullptr) throw "ERROR: argument lua_State not given for initialization";
     static UserAPI singleton(L);
     has_init = true;
