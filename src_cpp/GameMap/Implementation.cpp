@@ -67,30 +67,55 @@ void MAP::BigUpdate() {
 }
 
 bool MAP::MoveUpdate() {
-    auto Move = [this](int armyID, VECTOR _src, VECTOR _dst) -> bool {
+    // num是要移动的军队数，移动成功返回true
+    auto Move = [this](int armyID, VECTOR _src, VECTOR _dst,
+                       double num) -> bool {
         NODE &src = _mat[_src.x][_src.y], &dst = _mat[_dst.x][_dst.y];
-        if (src.belong != armyID || src.unitNum <= 1)
+        if (src.belong != armyID || src.unitNum <= 1) {
             return false;  // FIXME magic number 1
-        if (dst.type == NODE_TYPE::HILL) return false;
-        if (dst.belong == armyID)
-            dst.unitNum += src.unitNum - 1;  // FIXME magic number 1
-        else {
-            dst.unitNum -= src.unitNum - 1;  // FIXME magic number 1
+        }
+        if (dst.type == NODE_TYPE::HILL) {
+            return false;
+        }
+        if (num == 0 || num >= src.unitNum) {
+            num = src.unitNum - 1;
+        } else if (src.unitNum > num && num >= 1) {
+            num = int(num);
+        } else if (1 > num && num > 0) {
+            num = int(num * src.unitNum);
+            if (num < 1) {
+                return false;
+            }
+        } else if (num < 0) {
+            printf(
+                "An error occurred when the army is trying to move: moveNum is "
+                "%lf.\n",
+                num);
+            return false;
+        }
+        if (dst.belong == armyID) {
+            dst.unitNum += num;  // FIXME magic number 1
+        } else {
+            dst.unitNum -= num;  // FIXME magic number 1
             if (dst.unitNum < 0) {
                 dst.unitNum = -dst.unitNum;
                 dst.belong = armyID;
             }
         }
-        src.unitNum = 1;  // FIXME magic number 1
+        src.unitNum -= num;  // FIXME magic number 1
         return true;
     };
     bool ret = false;
     for (int i = 1; i <= _armyCnt; ++i) {
         while (!moveCommands[i].empty()) {
             auto& cmd = moveCommands[i].back();
+            double cmdNum = moveNumCmd[i].back();
             // cerr << cmd.first << cmd.second << endl;
             moveCommands[i].pop_back();
-            if (Move(i, cmd.first, cmd.second)) break;
+            moveNumCmd[i].pop_back();
+            if (Move(i, cmd.first, cmd.second, cmdNum)) {
+                break;  //每次更新每方只移动一次
+            }
         }
     }
     return ret;
@@ -117,18 +142,22 @@ void MAP::Update() {
     return;
 }
 
-bool MAP::PushMove(int armyID, VECTOR src, VECTOR dst) {
+bool MAP::PushMove(int armyID, VECTOR src, VECTOR dst, double num) {
     if (VERIFY::Singleton().GetPrivilege() == 3) {
-        SaveStep(armyID, src, dst);
+        SaveStep(armyID, src, dst, num);
     }
-    VECTOR j = {-1, -1};
-    if (src == j && dst == j) {  //撤销移动命令
+    if (src == VECTOR{-1, -1} && dst == VECTOR{-1, -1}) {  //撤销移动命令
         if (!moveCommands[armyID].empty()) {
             moveCommands[armyID].erase(moveCommands[armyID].begin());
-            return true;
         }
+        return true;
+    }
+    if (dst.x < 0 || dst.y < 0 || dst.x >= this->_sizeX ||
+        dst.y >= this->_sizeY) {  //移动到边界外无效
+        return false;
     }
     moveCommands[armyID].insert(moveCommands[armyID].begin(), {src, dst});
+    moveNumCmd[armyID].insert(moveNumCmd[armyID].begin(), num);
     return true;
 }
 
@@ -236,7 +265,8 @@ void MAP::RandomGen(int armyCnt, int level) {
         }
         return false;
     };  // lambda ValidateConnectivity
-    // king 不连通时把摆 king 的点的属性恢复成之前的属性以供下一次随机放置 king
+    // king 不连通时把摆 king 的点的属性恢复成之前的属性以供下一次随机放置
+    // king
     auto Recovery = [this, &kings]() -> bool {
         for (auto [pos, type] : kings) _mat[pos.x][pos.y].type = type;
         return true;  //利用逻辑运算的短路求值特性
@@ -305,7 +335,7 @@ void MAP::SaveMap(std::string_view file) {  // file="../Savedata/"
     return;
 }
 
-void MAP::SaveStep(int armyID, VECTOR src, VECTOR dst) {
+void MAP::SaveStep(int armyID, VECTOR src, VECTOR dst, double num) {
     std::ofstream outfile;
     outfile.open("../Savedata/" + StartTime + "/steps.txt", std::ios::app);
     // 似乎file.data()相连后从string_view变成了string，因此可以直接和const
@@ -318,7 +348,7 @@ void MAP::SaveStep(int armyID, VECTOR src, VECTOR dst) {
 }
 
 void MAP::SaveGameOver(int armyID) {
-    SaveStep(armyID, {-3, -3}, {0, 0});
+    SaveStep(armyID, {-3, -3}, {0, 0}, 0);
     return;
 }
 
@@ -333,7 +363,8 @@ void MAP::SaveEdit(std::string_view file) {  // file = "../Output/"
     return;
 }
 
-int MAP::LoadReplayFile(std::string_view file, int loadstep) {  // loadstep = 0
+int MAP::LoadReplayFile(std::string_view file,
+                        int loadstep) {  // loadstep = 0
     Debug::Singleton().Log("info", "LoadReplayFile");
     step = loadstep;
     timeFromLastStep = 0;
@@ -393,7 +424,6 @@ bool MAP::IsViewable(VECTOR pos) const {
     }
     if (_mat[pos.x][pos.y].belong == VERIFY::Singleton().GetArmyID())
         return true;
-    if (VERIFY::Singleton().GetArmyID() == SERVER) return true;
     for (auto dta : DIR[pos.x & 1]) {  //判断是奇数行还是偶数行
         if (VECTOR next = pos + dta; this->InMap(next)) {
             if (_mat[next.x][next.y].belong == VERIFY::Singleton().GetArmyID())
@@ -415,7 +445,7 @@ int MAP::Judge(int armyID) {
 
 int MAP::Surrender(int armyID, int vanquisherID) {
     if (VERIFY::Singleton().GetPrivilege() == 3) {
-        SaveStep(0, {-2, -2}, {armyID, vanquisherID});
+        SaveStep(0, {-2, -2}, {armyID, vanquisherID}, 0);
     }
     for (int i = 0; i < MAX_GRAPH_SIZE; i++) {
         for (int j = 0; j < MAX_GRAPH_SIZE; j++) {
@@ -460,6 +490,14 @@ std::pair<VECTOR, VECTOR> MAP::GetArmyPath(int armyID, int step) const {
     } else {
         return {{-1, -1}, {-1, -1}};
     }
+}
+const char* MAP::GetFolder() {
+    return (std::string("../Savedata/") + StartTime).c_str();
+}
+std::pair<int, int> MAP::GetKingPos(int armyID) const {
+    int x = MAP::Singleton().kingState.kingPos[armyID].x;
+    int y = MAP::Singleton().kingState.kingPos[armyID].y;
+    return {x, y};
 }
 
 void MAP::NODE::Update() {

@@ -11,9 +11,12 @@ function ClientSock.Init()
         "SetArmyID",
         function(data)
             Debug.Log("info", "Received armyID: " .. data.armyID)
-            PlayGame.armyID = data.armyID
+            Running.armyID = data.armyID
             CVerify.Register(data.armyID)
-            PlayGame.LoadMap()
+            Running.LoadMap()
+            if Running == AI_SDK then
+                AI_SDK.KingPos.x, AI_SDK.KingPos.y = CGameMap.GetKingPos(AI_SDK.armyID)
+            end
         end
     )
     Client:on(
@@ -30,9 +33,10 @@ function ClientSock.Init()
     )
     Client:on(
         "GameStart",
-        function()
-            PlayGame.gameState = "Start"
+        function(data)
+            Running.gameState = "Start"
             BGAnimation.deLoad()
+            ReplayGame.droppedDir = data
         end
     )
     Client:on(
@@ -46,9 +50,9 @@ function ClientSock.Init()
         function(data)
             -- 说明所在部队的王死了
             CGameMap.Surrender(data.armyID, data.vanquisherID)
-            if PlayGame.armyID == data.armyID then
-                PlayGame.judgementState = "Lose"
-                PlayGame.gameState = "Over"
+            if Running.armyID == data.armyID then
+                Running.judgementState = "Lose"
+                Running.gameState = "Over"
                 GameOver.vanquisherID = data.vanquisherID
                 Switcher.To(GameOver)
             end
@@ -58,14 +62,13 @@ function ClientSock.Init()
         "Win",
         function(data)
             -- 说明所在部队获胜了
-            if PlayGame.armyID == data.armyID then
-                PlayGame.judgementState = "Win"
-                PlayGame.gameState = "Over"
+            if Running.armyID == data.armyID then
+                Running.judgementState = "Win"
+                Running.gameState = "Over"
                 Switcher.To(GameOver)
             end
         end
     )
-
     Client:connect()
 end
 

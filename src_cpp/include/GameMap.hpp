@@ -96,7 +96,7 @@ class MAP final {
      * @return true
      */
     //添加军队 armyID 从 src 的兵移动到相邻点 dst的指令
-    bool PushMove(int armyID, VECTOR src, VECTOR dst);
+    bool PushMove(int armyID, VECTOR src, VECTOR dst, double num);
 
     /**
      * @brief 编辑器：令fort的兵数加一或减一
@@ -130,7 +130,7 @@ class MAP final {
     //将地图保存至 file，以步数命名
     void SaveMap(std::string_view file = "../Savedata/");
     //向steps.txt保存当前步数的操作
-    void SaveStep(int armyID, VECTOR src, VECTOR dst);
+    void SaveStep(int armyID, VECTOR src, VECTOR dst, double num);
     //向steps.txt保存游戏结束声明
     void SaveGameOver(int armyID);
     //保存生成的地图
@@ -153,6 +153,11 @@ class MAP final {
     int GetBelong(VECTOR pos) const;
     //当前军队看到pos的计划路径
     std::pair<VECTOR, VECTOR> GetArmyPath(int armyID, int step) const;
+    //当前对局的文件夹
+    const char* GetFolder();
+
+    //当前军队的王的位置
+    std::pair<int, int> GetKingPos(int armyID) const;
 
    private:
     MAP() = default;
@@ -163,6 +168,7 @@ class MAP final {
     int kingNum = 0;             //王的数量
     //暂存的移动操作，(src,dst)
     std::vector<std::pair<VECTOR, VECTOR>> moveCommands[MAX_ARMY_CNT + 1];
+    std::vector<double> moveNumCmd[MAX_ARMY_CNT + 1];
     struct KINGSTATE {
         VECTOR kingPos[MAX_ARMY_CNT + 1];  //每个王所在的位置
         int kingBelong[MAX_ARMY_CNT + 1];  //该位置的王的归属
