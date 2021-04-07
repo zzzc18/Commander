@@ -284,10 +284,24 @@ int MAP::LoadMap(std::string_view file) {  // file = "../Data/"
 
 void MAP::SaveMap(std::string_view file) {  // file="../Savedata/"
     Debug::Singleton().Log("info", "SaveMap");
-    std::ofstream fout(file.data() + StartTime + "/" + std::to_string(step) +
-                       ".map");
-    fout << *this;
-    fout.close();
+    std::ofstream mapout(file.data() + StartTime + "/" + std::to_string(step) +
+                         ".map");
+    mapout << *this;
+    mapout.close();
+    Debug::Singleton().Log("info", "Map Saved");
+    std::ofstream mcdout(file.data() + StartTime + "/" + std::to_string(step) +
+                         ".mcd");
+    // mcd是moveCommands的简称
+    for (int armyID = 0; armyID < GameMap::MAX_ARMY_CNT + 1; armyID++) {
+        for (int j = MAP::moveCommands[armyID].size() - 1; j >= 0; j--) {
+            mcdout << armyID << " " << moveCommands[armyID][j].first.x << " "
+                   << moveCommands[armyID][j].first.y << " "
+                   << moveCommands[armyID][j].second.x << " "
+                   << moveCommands[armyID][j].second.y << "\n";
+        }
+    }
+    mcdout.close();
+    Debug::Singleton().Log("info", "moveCommands Saved");
     return;
 }
 
@@ -296,12 +310,10 @@ void MAP::SaveStep(int armyID, VECTOR src, VECTOR dst) {
     outfile.open("../Savedata/" + StartTime + "/steps.txt", std::ios::app);
     // 似乎file.data()相连后从string_view变成了string，因此可以直接和const
     // char相连
-    if (outfile.is_open()) {
-        outfile << "\n" << step << "\n";
-        outfile << armyID << " " << src.x << " " << src.y << " " << dst.x << " "
-                << dst.y << "\n";
-        outfile.close();
-    }
+    outfile << "\n" << step << "\n";
+    outfile << armyID << " " << src.x << " " << src.y << " " << dst.x << " "
+            << dst.y << "\n";
+    outfile.close();
     return;
 }
 
@@ -324,11 +336,25 @@ void MAP::SaveEdit(std::string_view file) {  // file = "../Output/"
 int MAP::LoadReplayFile(std::string_view file, int loadstep) {  // loadstep = 0
     Debug::Singleton().Log("info", "LoadReplayFile");
     step = loadstep;
+    timeFromLastStep = 0;
     ReplayFile = std::string(file.data());
-    std::ifstream fin(ReplayFile + "/" + std::to_string(loadstep) + ".map");
-    if (!fin) return 0;
-    fin >> *this;
-    fin.close();
+    std::ifstream mapin(ReplayFile + "/" + std::to_string(loadstep) + ".map");
+    if (mapin.is_open()) {
+        mapin >> *this;
+        mapin.close();
+    }
+    for (int armyID = 0; armyID < GameMap::MAX_ARMY_CNT + 1; armyID++) {
+        moveCommands[armyID].clear();
+    }
+    std::string line;
+    std::ifstream mcdin(ReplayFile + "/" + std::to_string(loadstep) + ".mcd");
+    while (std::getline(mcdin, line)) {
+        char* move = (char*)line.c_str();
+        int army, sx, sy, dx, dy;
+        sscanf(move, "%d %d %d %d %d", &army, &sx, &sy, &dx, &dy);
+        PushMove(army, {sx, sy}, {dx, dy});
+    }
+    mcdin.close();
     return kingNum;
 }
 
@@ -336,22 +362,20 @@ void MAP::ReadMove(int ReplayStep) {
     std::string line;
     std::ifstream replayfile;
     replayfile.open(ReplayFile + "/steps.txt", std::ios::in);
-    if (replayfile.is_open()) {
-        while (std::getline(replayfile, line)) {  //搜索step.txt的每一行
-            if (line != std::to_string(ReplayStep)) continue;
-            std::getline(replayfile, line);
-            char* move = (char*)line.c_str();
-            int army, sx, sy, dx, dy;
-            sscanf(move, "%d %d %d %d %d", &army, &sx, &sy, &dx, &dy);
-            if (sx == sy && sy == -2) {  //某支军队归属改变
-                Surrender(dx, dy);
-            }
-            if (sx == sy && sy == -3) {  //游戏结束
-                ReplayOver = true;
-                return;
-            }
-            PushMove(army, {sx, sy}, {dx, dy});
+    while (std::getline(replayfile, line)) {  //搜索step.txt的每一行
+        if (line != std::to_string(ReplayStep)) continue;
+        std::getline(replayfile, line);
+        char* move = (char*)line.c_str();
+        int army, sx, sy, dx, dy;
+        sscanf(move, "%d %d %d %d %d", &army, &sx, &sy, &dx, &dy);
+        if (sx == sy && sy == -2) {  //某支军队归属改变
+            Surrender(dx, dy);
         }
+        if (sx == sy && sy == -3) {  //游戏结束
+            ReplayOver = true;
+            return;
+        }
+        PushMove(army, {sx, sy}, {dx, dy});
     }
     replayfile.close();
     return;

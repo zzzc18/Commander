@@ -17,12 +17,11 @@ using namespace System;
  * @return @c int 地图当前步数
  */
 static int Update(lua_State* luaState) {
-    static double totalTime;
     double dt;
     APIparam(luaState, dt);
-    totalTime += dt;
-    if (totalTime > StepTime) {
-        totalTime -= StepTime;
+    MAP::Singleton().timeFromLastStep += dt;
+    if (MAP::Singleton().timeFromLastStep > StepTime) {
+        MAP::Singleton().timeFromLastStep -= StepTime;
         MAP::Singleton().Update();
     }
     return APIreturn(luaState, MAP::Singleton().step);
