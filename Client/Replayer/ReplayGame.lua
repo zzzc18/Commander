@@ -62,9 +62,9 @@ function ReplayGame.mousereleased(pixelX, pixelY, button, istouch, presses)
     elseif "exit_Opt" == name then
         Switcher.To(Welcome)
     elseif "shiftSpeed" == name then
-        ReplayGame.replaySpeed = ReplayGame.replaySpeed + 1
+        ReplayGame.replaySpeed = ReplayGame.replaySpeed * 2
         if ReplayGame.replaySpeed > 4 then
-            ReplayGame.replaySpeed = 1
+            ReplayGame.replaySpeed = 0.25
         end
     end
 end

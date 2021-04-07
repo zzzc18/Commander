@@ -80,6 +80,8 @@ class MAP final {
     void Update();
     //地图步数
     int step = 0;
+    //从上一步到现在的秒数
+    double timeFromLastStep = 0;
     //判断胜负
     int Judge(int);
     //玩家被击败后改变军队归属
