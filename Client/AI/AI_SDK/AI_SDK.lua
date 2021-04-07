@@ -1,7 +1,7 @@
 local AI_SDK = {}
 
 
-AI_SDK.TypeImplementation = "C++"
+AI_SDK.TypeImplementation = "Lua"
 -- supported lang: "Lua", "C++"
 
 
@@ -278,12 +278,16 @@ function AI_SDK.update(dt)
             print("Lua Implementation Invoke")
         else
             if AI_SDK.TypeImplementation == "C++" then
-                CCore.userMain()
+                -- CCore.userMain()
              end
         end
     end
     MapAdjust.Update()
     Buttons.Update()
+end
+
+function AI_SDK.setSelected(x, y) 
+    Core.SelectPos.x, Core.SelectPos.y = x, y
 end
 
 return AI_SDK

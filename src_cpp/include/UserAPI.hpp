@@ -6,41 +6,42 @@
 #include "GameMap.hpp"
 #include "LuaAPI.hpp"
 
-int Map_directionp[2][6][2] = {
-    {{-1, 0}, {0, 1}, {1, 0}, {1, -1}, {0, -1}, {-1, -1}},
-    {{-1, 1}, {0, 1}, {1, 1}, {1, 0}, {0, -1}, {-1, 0}}};
-
 class UserAPI {
    public:
+    UserAPI( UserAPI &) = delete;
+    bool operator=(const UserAPI &) = delete;
+    // 获取类的单例，第一次调用需要传入lua_State
+    static UserAPI &Singleton(lua_State *L = nullptr);
+    
+    // 执行移动操作
     void move_to(VECTOR dest, double moveNum, int direction);
-    // string get_game_state();
+    // 判断两个点是否相连
     bool is_connected(int posX1, int posY1, int posX2, int posY2);
-    void add_commands(int direction, std::string key, std::string type, int x,
-                      int y);
-    void clear_commands();
-    std::string get_game_state() const;
-    std::string get_judgement_state() const;
-    int get_armyID() const;
-    int get_army_num() const;
-    VECTOR king_pos() const;
-    static bool has_init;
-    int get_current_step() const;
-    VECTOR selected_pos() const;
+
+    // 获取King的位置
+    VECTOR king_pos() ;
+    // 获取当前的step数
+    int get_current_step() ;
+
+    // 获取当前选中的位置
+    VECTOR selected_pos() ;
+    // 设置当前选中位置
     void selected_pos(VECTOR new_pos);
 
-    UserAPI(const UserAPI &) = delete;
-    bool operator=(const UserAPI &) = delete;
-    static UserAPI &Singleton(lua_State *L = nullptr);
+    // 初始化一个类成员函数的执行，参数为类名和函数名
+    void init_func_call(std::string class_name, std::string func_name);
+    // 执行lua_State栈顶的函数，参数分别为参数个数与返回值个数     
+    void execute_func_call(int param_num = 0, int ret_num = 0);     
+    // 向lua_State中压入一个字符串
+    void lua_pushstring(std::string str) ;       
+
+    // 获取lua表中的元素（可以是函数），两个参数分别为全局表名和数据项名
+    void get_lua_property(std::string class_name, std::string property_name) ;       
 
    private:
     mutable lua_State *luaState;
     UserAPI(lua_State *L) : luaState(L) {}
-    void init_func_call(std::string class_name, std::string func_name);
-    void execute_func_call(int param_num = 0, int ret_num = 0);
-    void lua_pushstring(std::string str);
-    void get_lua_property(std::string class_name, std::string property_name);
+    VECTOR selected = {-1, -1};
 };
-
-bool UserAPI::has_init = false;
 
 #endif  // UserAPI_hpp

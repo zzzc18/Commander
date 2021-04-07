@@ -5,6 +5,7 @@
 using namespace std;
 
 UserAPI& UserAPI::Singleton(lua_State * L) {
+    static bool has_init = false;
     if (!has_init && L == nullptr) throw "ERROR: argument lua_State not given for initialization";
     static UserAPI singleton(L);
     has_init = true;
@@ -27,10 +28,10 @@ void UserAPI::execute_func_call(int param_num, int ret_num) {
     }
 }
 
-void UserAPI::move_to(int x, int y, double moveNum, int direction) {
+void UserAPI::move_to(VECTOR dest, double moveNum, int direction) {
     init_func_call("AISDK", "MoveTo");
-    lua_pushnumber(luaState, x);
-    lua_pushnumber(luaState, y);
+    lua_pushnumber(luaState, dest.x);
+    lua_pushnumber(luaState, dest.y);
     lua_pushnumber(luaState, moveNum);
     lua_pushnumber(luaState, direction);
     execute_func_call(4);
@@ -46,26 +47,46 @@ bool UserAPI::is_connected(int posX1, int posY1, int posX2, int posY2) {
     return lua_toboolean(luaState, -1) == true;
 }
 
-void UserAPI::add_commands(int direction, string key, string type, int x,
-                           int y) {
-    init_func_call("AISDK", "addCommands");
-    lua_pushnumber(luaState, direction);
-    lua_pushstring(key);
-    lua_pushstring(type);
-    lua_pushnumber(luaState, x);
-    lua_pushnumber(luaState, y);
-    execute_func_call(5);
-}
-
 void UserAPI::get_lua_property(string class_name, string property) {
     lua_getglobal(luaState, class_name.c_str());
     if (!lua_istable(luaState, -1)) {
         throw "not a table" + class_name;
     }
-    lua_pushstring(property);
-    lua_gettable(luaState, -2);
+    lua_getfield(luaState, -1, property.c_str());
 }
 
-string UserAPI::get_game_state() const { 
+VECTOR UserAPI::king_pos() {
+    get_lua_property("AI_SDK", "KingPos");
+    if (!lua_istable(luaState, -1)) {
+        throw "not a table: KingPos";
+    }
+    lua_getfield(luaState, -1, "x");
+    int x = lua_tonumber(luaState, -1);
+    lua_getfield(luaState, -2, "y");
+    int y = lua_tonumber(luaState, -1);
+    return {x, y};
+}
 
+int UserAPI::get_current_step() {
+    get_lua_property("ReplayGame", "step");
+    return lua_tonumber(luaState, -1);
+}
+
+VECTOR UserAPI::selected_pos() {
+    get_lua_property("Core", "SelectPos");
+    if (!lua_istable(luaState, -1)) {
+        throw "not a table: SelectPos";
+    }
+    lua_getfield(luaState, -1, "x");
+    int x = lua_tonumber(luaState, -1);
+    lua_getfield(luaState, -2, "y");
+    int y = lua_tonumber(luaState, -1);
+    return {x, y};
+}
+
+void UserAPI::selected_pos(VECTOR pos) {
+    init_func_call("AI_SDK", "setSelected");
+    lua_pushnumber(luaState, pos.x);
+    lua_pushnumber(luaState, pos.y);
+    execute_func_call(2, 0);
 }

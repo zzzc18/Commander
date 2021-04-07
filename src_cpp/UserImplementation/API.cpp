@@ -8,116 +8,54 @@
 
 using namespace std;
 
-enum back_state_type { Backing, Done } back_state;
-enum attack_state_type { Done, Ready, Attacking } attack_state;
+void random_move() {
+    static bool init = false;
+    if (!init) {
+        srand(time(NULL));
+    }
+    int direction = rand() % 6 + 1;
 
-void Back_init();
-void Back_to_king();
-int back_index = 1;
+}
 
-void Attack_model();
-void AI_move_model(lua_State *luaState);
+inline VECTOR after_move_pos(VECTOR cur, int direction) {
+    return cur + DIR[cur.x % 2][direction];
+}
 
-int rdmDirection = 0;
-int attack_index = 0;
+void testInfo() {
+    UserAPI & API = UserAPI::Singleton();
+    cout << "Current selected pos: " << API.selected_pos().x << ", " << API.selected_pos().y << endl;
+}
+
 
 static int userMain(lua_State *luaState) {
-    static bool init_flag = false;
-    if (!init_flag) {
-        srand((unsigned)time(NULL));
-        init_flag = true;
-    }
-    printf("C++ Implementation Invoke\n");
+    // UserAPI & API = UserAPI::Singleton(luaState);
+    // MAP & mmap = MAP::Singleton();
+    // int id = VERIFY::Singleton().GetArmyID();
 
-    // 初始化API单例
-    UserAPI &API = UserAPI::Singleton(luaState);
+    // static bool init = false;
+    // if (!init) {
+    //     init = true;
+    //     API.selected_pos(API.king_pos());
+    // }
+    // testInfo();
 
-    if (API.get_current_step() % 45 == 0 &&
-        back_state != back_state_type::Backing && attack_state ==
-            attack_state_type::Done) {
-        Back_init();
-        Back_to_king();
-    } else if (back_state == back_state_type::Backing) {
-        Back_to_king();
-    } else if (attack_state == attack_state_type::Ready) {
-        printf("--Attacking--");
-        attack_state = attack_state_type::Attacking;
-        attack_index = 1;
-        API.selected_pos(API.king_pos());
-        Attack_model();
-    } else if (attack_state == attack_state_type::Attacking) {
-        Attack_model();
-    } else if (back_state == back_state_type::Done &&
-               attack_state == attack_state_type::Done) {
-        AI_move_model(luaState);
-    }
+    // double move_ratio = 0.5;
+    // if (API.selected_pos().x == -1 || API.selected_pos().y == -1 ||         // 选择位置非法
+    //         mmap.GetBelong(API.selected_pos()) != id ||                     // 不可移动
+    //         mmap.GetUnitNum(API.selected_pos()) < 2) {                      // 兵力过少
+    //     API.selected_pos(API.king_pos());
+    // }
 
+    // // 判断当前位置周围是否有敌人
+    // for (int i = 1; i <= 6; i++) {
+    //     VECTOR apos = after_move_pos(API.selected_pos(), i);
+    //     if (id == mmap.GetBelong(apos)) continue;       // 平凡情况
+    //     //发现敌人
+    //     move_ratio = 0.99;
+    //     API.move_to(apos, move_ratio, i);
+    //     break;
+    // }
     return 0;
-}
-
-// 从王的位置随机移动，当军队数量下降到1时重新从王的位置开始移动
-void AI_move_model(lua_State *luaState) {
-    auto &API = UserAPI::Singleton();
-    if (API.selected_pos().x == -1 && API.king_pos() != -1) {
-        API.selected_pos(API.king_pos());
-    }
-
-    VECTOR cur_pos = API.selected_pos();
-    int unit_num = MAP::Singleton().GetUnitNum(cur_pos);
-    double move_num =
-        0;  //为0时移动全部，为0到1之间实数时按比例移动，大于1时移动moveNum整数部分
-    if (VERIFY::Singleton().GetArmyID() != MAP::Singleton().GetBelong(cur_pos) || unit_num <= 1) {
-        API.selected_pos(API.king_pos());
-        API.clear_commands();
-        return;
-    } else if (unit_num >= 50 &&
-               MAP::Singleton().GetType(cur_pos) == NODE_TYPE::KING)
-        move_num = 0.5;
-
-    int chance = 10;
-    int mode = 0;
-    while (chance > 0) {
-        cur_pos = API.selected_pos();
-        rdmDirection = rand(6);
-        mode = cur_pos.x % 2 + 1;
-        cur_pos.x += Map_direction[mode][rdmDirection][0];
-        cur_pos.y += Map_direction[mode][rdmDirection][1];
-        if (MAP::Singleton().GetType(cur_pos) == NODE_TYPE::BLANK ||
-            MAP::Singleton().GetType(cur_pos) == NODE_TYPE::KING) {
-            if (VERIFY::Singleton().GetArmyID() != MAP::GetBelong(cur_pos)) {
-                API.move_to(cur_pos, move_num, rdmDirection);
-                API.selected_pos(cur_pos);
-                break;
-            } else {
-                chance--;
-                if (chance < 3) {
-                    API.move_to(cur_pos, move_num, rdmDirection);
-                    API.selected_pos(cur_pos);
-                    break;
-                }
-            }
-        } else if (MAP::Singleton().GetType(cur_pos) == NODE_TYPE::FORT) {
-            int fort_num = MAP::Singleton().GetUnitNum(cur_pos);
-            if (VERIFY::Singleton().GetArmyID() != MAP::Singleton().GetBelong(cur_pos) &&
-                fort_num - 10 < unit_num) {
-                API.move_to(cur_pos, move_num, rdmDirection);
-                API.selected_pos(cur_pos);
-                break;
-            } else {
-                chance--;
-            }
-        } else
-            chance--;
-    }
-    if (chance <= 0) {
-        API.selected_pos(API.king_pos());
-        API.clear_commands();
-    }
-}
-
-void back_init() {
-    back_index = 1;
-    back_state = back_state_type::Backing;
 }
 
 LUA_REG_FUNC(UserImplementation, C_API(userMain))
