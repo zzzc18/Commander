@@ -327,7 +327,8 @@ void MAP::SaveMap(std::string_view file) {  // file="../Savedata/"
             mcdout << armyID << " " << moveCommands[armyID][j].first.x << " "
                    << moveCommands[armyID][j].first.y << " "
                    << moveCommands[armyID][j].second.x << " "
-                   << moveCommands[armyID][j].second.y << "\n";
+                   << moveCommands[armyID][j].second.y << " "
+                   << moveNumCmd[armyID][j] << "\n";
         }
     }
     mcdout.close();
@@ -342,7 +343,7 @@ void MAP::SaveStep(int armyID, VECTOR src, VECTOR dst, double num) {
     // char相连
     outfile << "\n" << step << "\n";
     outfile << armyID << " " << src.x << " " << src.y << " " << dst.x << " "
-            << dst.y << "\n";
+            << dst.y << " " << num << "\n";
     outfile.close();
     return;
 }
@@ -376,16 +377,19 @@ int MAP::LoadReplayFile(std::string_view file,
     }
     for (int armyID = 0; armyID < GameMap::MAX_ARMY_CNT + 1; armyID++) {
         moveCommands[armyID].clear();
+        moveNumCmd[armyID].clear();
     }
     std::string line;
     std::ifstream mcdin(ReplayFile + "/" + std::to_string(loadstep) + ".mcd");
     while (std::getline(mcdin, line)) {
         char* move = (char*)line.c_str();
         int army, sx, sy, dx, dy;
-        sscanf(move, "%d %d %d %d %d", &army, &sx, &sy, &dx, &dy);
-        PushMove(army, {sx, sy}, {dx, dy});
+        double num;
+        sscanf(move, "%d %d %d %d %d %lf", &army, &sx, &sy, &dx, &dy, &num);
+        PushMove(army, {sx, sy}, {dx, dy}, num);
     }
     mcdin.close();
+    ReadMove(loadstep);
     return kingNum;
 }
 
@@ -398,7 +402,8 @@ void MAP::ReadMove(int ReplayStep) {
         std::getline(replayfile, line);
         char* move = (char*)line.c_str();
         int army, sx, sy, dx, dy;
-        sscanf(move, "%d %d %d %d %d", &army, &sx, &sy, &dx, &dy);
+        double num;
+        sscanf(move, "%d %d %d %d %d %lf", &army, &sx, &sy, &dx, &dy, &num);
         if (sx == sy && sy == -2) {  //某支军队归属改变
             Surrender(dx, dy);
         }
@@ -406,7 +411,7 @@ void MAP::ReadMove(int ReplayStep) {
             ReplayOver = true;
             return;
         }
-        PushMove(army, {sx, sy}, {dx, dy});
+        PushMove(army, {sx, sy}, {dx, dy}, num);
     }
     replayfile.close();
     return;
