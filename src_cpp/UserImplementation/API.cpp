@@ -1,6 +1,6 @@
 #include <ctime>
-#include <random>
 #include <iostream>
+#include <random>
 
 #include "GameMap.hpp"
 #include "LuaAPI.hpp"
@@ -15,14 +15,13 @@ void random_move() {
         srand(time(NULL));
     }
     int direction = rand() % 6 + 1;
-
 }
 
 VECTOR after_move_pos(VECTOR cur, int direction) {
     return cur + DIR[cur.x % 2][direction];
 }
 
-ostream & operator<<(ostream &os, const VECTOR &vec) {
+ostream &operator<<(ostream &os, const VECTOR &vec) {
     os << "(" << vec.x << "," << vec.y << ")";
     return os;
 }
@@ -30,41 +29,48 @@ ostream & operator<<(ostream &os, const VECTOR &vec) {
 int id;
 
 void testInfo() {
-    UserAPI & API = UserAPI::Singleton();
-    MAP & mmap = MAP::Singleton();
-    cout << "Current selected pos: " << API.selected_pos().x << ", " << API.selected_pos().y;
+    UserAPI &API = UserAPI::Singleton();
+    MAP &mmap = MAP::Singleton();
+    cout << "Current selected pos: " << API.selected_pos().x << ", "
+         << API.selected_pos().y;
     cout << " Belongs: " << mmap.GetBelong(API.selected_pos());
     cout << " UnitNum: " << mmap.GetUnitNum(API.selected_pos()) << endl;
 }
 
 double get_rand_percentage(double lower_bound = 0.0, double upper_bound = 1.0) {
-    if (lower_bound < -0.00001 || lower_bound > 1.00001) throw "Invalid lower_bound";
-    if (upper_bound < -0.00001 || upper_bound > 1.00001) throw "Invalid upper_bound";
+    if (lower_bound < -0.00001 || lower_bound > 1.00001)
+        throw "Invalid lower_bound";
+    if (upper_bound < -0.00001 || upper_bound > 1.00001)
+        throw "Invalid upper_bound";
     double ret = lower_bound + (rand() % 10000) * (upper_bound - lower_bound);
-    cout << "RNG (" << lower_bound << ", " << upper_bound << ") = " << ret << endl;
+    cout << "RNG (" << lower_bound << ", " << upper_bound << ") = " << ret
+         << endl;
     return ret;
 }
 
 bool move_from_select() {
     cout << "try to move" << endl;
-    UserAPI & API = UserAPI::Singleton();
-    MAP & mmap = MAP::Singleton();
+    UserAPI &API = UserAPI::Singleton();
+    MAP &mmap = MAP::Singleton();
     double move_ratio = 0.5;
     // 判断当前位置周围是否有敌人
     for (int i = 0; i < 6; i++) {
         VECTOR apos = after_move_pos(API.selected_pos(), i);
-        if (id == mmap.GetBelong(apos)) continue;       // 平凡情况
-        if (mmap.GetType(apos) == NODE_TYPE::HILL) continue;    // 山丘 不可通过
-        if (mmap.GetType(apos) == NODE_TYPE::FORT 
-            && mmap.GetUnitNum(API.selected_pos()) < 1.5 * mmap.GetUnitNum(apos)) 
-            continue;                   // 无法占有或占有后容易被夺去
+        if (id == mmap.GetBelong(apos)) continue;             // 平凡情况
+        if (mmap.GetType(apos) == NODE_TYPE::HILL) continue;  // 山丘 不可通过
+        if (mmap.GetType(apos) == NODE_TYPE::FORT &&
+            mmap.GetUnitNum(API.selected_pos()) < 1.5 * mmap.GetUnitNum(apos))
+            continue;  // 无法占有或占有后容易被夺去
         cout << "Can move" << endl;
         double tmp;
-        if (tmp = get_rand_percentage() > 0.8) {cout << "Skip, tmp = " << tmp << endl; continue;}      // 随机跳过
+        if (tmp = get_rand_percentage() > 0.8) {
+            cout << "Skip, tmp = " << tmp << endl;
+            continue;
+        }  // 随机跳过
         cout << "Prepare to move " << API.selected_pos() << "->";
         cout << apos << endl;
-        
-        move_ratio = get_rand_percentage(0.4, 0.8);     // 随机移动
+
+        move_ratio = get_rand_percentage(0.4, 0.8);  // 随机移动
         API.move_to(apos, move_ratio, i + 1);
         return true;
     }
@@ -72,11 +78,12 @@ bool move_from_select() {
 }
 
 // (递归地)随机从已有的领地中选择一个点作为出发点
-// 每次从当前选定点开始，从 六个方向的邻接点 或 当前位置 总共7个选项的所有可选位置中
+// 每次从当前选定点开始，从 六个方向的邻接点 或 当前位置
+// 总共7个选项的所有可选位置中
 // 随机的选择一项，如果选择位置不是当前点，则递归调用自己
 void random_select() {
-    UserAPI & API = UserAPI::Singleton();
-    MAP & mmap = MAP::Singleton();
+    UserAPI &API = UserAPI::Singleton();
+    MAP &mmap = MAP::Singleton();
 
     cout << "DEBUG1" << endl;
     // 从当前位置出发的所有可选位置
@@ -94,7 +101,7 @@ void random_select() {
     }
     cout << "options :" << options.size() << endl;
     // 没有可选项
-    if (options.size() == 1) return; 
+    if (options.size() == 1) return;
 
     // 随机选择的选项
     int choice = rand() % options.size() - 1;
@@ -109,10 +116,11 @@ void random_select() {
 }
 
 static int userMain(lua_State *luaState) {
-    UserAPI & API = UserAPI::Singleton(luaState);;
-    MAP & mmap = MAP::Singleton();
+    UserAPI &API = UserAPI::Singleton(luaState);
+    ;
+    MAP &mmap = MAP::Singleton();
     // UserAPI & API = UserAPI::Singleton(luaState);
-    
+
     id = VERIFY::Singleton().GetArmyID();
 
     static bool init = false;
@@ -122,15 +130,15 @@ static int userMain(lua_State *luaState) {
     }
     testInfo();
     double move_ratio = 0.5;
-    if (API.selected_pos().x == -1 || API.selected_pos().y == -1 ||         // 选择位置非法
-            mmap.GetBelong(API.selected_pos()) != id ||                     // 不可移动
-            mmap.GetUnitNum(API.selected_pos()) < 2) {                      // 兵力过少
+    if (API.selected_pos().x == -1 ||
+        API.selected_pos().y == -1 ||                // 选择位置非法
+        mmap.GetBelong(API.selected_pos()) != id ||  // 不可移动
+        mmap.GetUnitNum(API.selected_pos()) < 2) {   // 兵力过少
         API.selected_pos(API.king_pos());
     }
 
     // cout << "DEBUG" << endl;
     // testInfo();
-    
 
     random_select();
     while (!move_from_select()) {

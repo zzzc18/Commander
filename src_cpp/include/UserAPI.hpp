@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+
 #include "GameMap.hpp"
 #include "LuaAPI.hpp"
 
@@ -8,16 +9,17 @@
 #define UserAPI_hpp
 
 class UserAPI {
-public:
-    static UserAPI& Singleton(lua_State *L = nullptr) {
+   public:
+    static UserAPI &Singleton(lua_State *L = nullptr) {
         static bool has_init = false;
-        if (!has_init && L == nullptr)   "ERROR: argument lua_State not given for initialization";
+        if (!has_init && L == nullptr)
+            "ERROR: argument lua_State not given for initialization";
         static UserAPI singleton(L);
         has_init = true;
         return singleton;
     }
-    
-    UserAPI( UserAPI &) = delete;
+
+    UserAPI(UserAPI &) = delete;
     bool operator=(const UserAPI &) = delete;
 
     // 初始化一个类成员函数的执行，参数为类名和函数名
@@ -27,7 +29,7 @@ public:
         lua_pushstring(func_name);
         lua_gettable(luaState, -2);
     }
-    // 执行lua_State栈顶的函数，参数分别为参数个数与返回值个数     
+    // 执行lua_State栈顶的函数，参数分别为参数个数与返回值个数
     void execute_func_call(int param_num = 0, int ret_num = 0) {
         int iRet = lua_pcall(luaState, param_num, ret_num, 0);
         if (iRet) {
@@ -35,12 +37,13 @@ public:
         }
     }
     // 向lua_State中压入一个字符串
-    void lua_pushstring(std::string str)  {
+    void lua_pushstring(std::string str) {
         ::lua_pushstring(luaState, str.c_str());
     }
     // 获取lua表中的元素（可以是函数），两个参数分别为全局表名和数据项名
-    void get_lua_property(std::string class_name, std::string property_name)  {
-        // std::cout << "Called get_lua_property " << class_name << " : " << property_name << std::endl;
+    void get_lua_property(std::string class_name, std::string property_name) {
+        // std::cout << "Called get_lua_property " << class_name << " : " <<
+        // property_name << std::endl;
         lua_getglobal(luaState, class_name.c_str());
         if (!lua_istable(luaState, -1)) {
             std::cout << "Error: not a table" << std::endl;
@@ -49,7 +52,6 @@ public:
         // std::cout << "table " << class_name << " got" << std::endl;
         lua_getfield(luaState, -1, property_name.c_str());
     }
-
 
     // 执行移动操作
     void move_to(VECTOR dest, double moveNum, int direction) {
@@ -70,7 +72,7 @@ public:
         execute_func_call(4, 1);
         return lua_toboolean(luaState, -1) == true;
     }
-    
+
     // 获取King的位置
     VECTOR king_pos() {
         get_lua_property("AI_SDK", "KingPos");
@@ -86,11 +88,11 @@ public:
     // 获取当前的step数
     int get_current_step() {
         get_lua_property("ReplayGame", "step");
-        return lua_tonumber(luaState, -1); 
+        return lua_tonumber(luaState, -1);
     }
 
     // 获取当前选中的位置
-    VECTOR selected_pos()  {
+    VECTOR selected_pos() {
         get_lua_property("Core", "SelectPos");
         if (!lua_istable(luaState, -1)) {
             throw "not a table: SelectPos";
@@ -109,7 +111,7 @@ public:
         execute_func_call(2, 0);
     }
 
-private:  
+   private:
     mutable lua_State *luaState;
     UserAPI(lua_State *L) : luaState(L) {}
 };

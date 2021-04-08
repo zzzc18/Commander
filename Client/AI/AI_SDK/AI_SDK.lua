@@ -1,9 +1,7 @@
 local AI_SDK = {}
 
-
-AI_SDK.TypeImplementation = "C++"
+AI_SDK.TypeImplementation = "Lua"
 -- supported lang: "Lua", "C++"
-
 
 local Core = require("AI.Core")
 local Operation = require("PlayGame.Operation")
@@ -129,11 +127,17 @@ function AI_SDK.MoveTo(x, y, moveNum, dir)
     ClientSock.SendMove(NewRequest)
     --  记录路径
     if "NODE_TYPE_KING" == CGameMap.GetNodeType(x, y) then
-        AI_SDK.addCommands({key = "isKing", dir = dir, x = x, y = y, type = "KING"})
+        AI_SDK.addCommands(
+            {key = "isKing", dir = dir, x = x, y = y, type = "KING"}
+        )
     elseif "NODE_TYPE_BLANK" == CGameMap.GetNodeType(x, y) then
-        AI_SDK.addCommands({key = "Done", dir = dir, x = x, y = y, type = "BLANK"})
+        AI_SDK.addCommands(
+            {key = "Done", dir = dir, x = x, y = y, type = "BLANK"}
+        )
     elseif "NODE_TYPE_FORT" == CGameMap.GetNodeType(x, y) then
-        AI_SDK.addCommands({key = "Done", dir = dir, x = x, y = y, type = "FORT"})
+        AI_SDK.addCommands(
+            {key = "Done", dir = dir, x = x, y = y, type = "FORT"}
+        )
     end
 end
 
@@ -147,11 +151,17 @@ function AI_SDK.IsConnected(posX1, posY1, posX2, posY2)
     end
 
     if posX1 % 2 == 1 then
-        if (posX1 == posX2 + 1 or posX1 == posX2 - 1) and (posY1 == posY2 or posY1 == posY2 - 1) then
+        if
+            (posX1 == posX2 + 1 or posX1 == posX2 - 1) and
+                (posY1 == posY2 or posY1 == posY2 - 1)
+         then
             return true
         end
     else
-        if (posX1 == posX2 + 1 or posX1 == posX2 - 1) and (posY1 == posY2 or posY1 == posY2 + 1) then
+        if
+            (posX1 == posX2 + 1 or posX1 == posX2 - 1) and
+                (posY1 == posY2 or posY1 == posY2 + 1)
+         then
             return true
         end
     end
@@ -170,7 +180,10 @@ function AI_SDK.addCommands(data)
         TempCommandLength = TempCommandLength + 1
         TempCommand[TempCommandLength] = data.dir
         for i, unit in pairs(AI_SDK.Unit) do
-            if AI_SDK.armyID ~= CGameMap.GetBelong(unit.pos.x, unit.pos.y) and unit.type ~= "KING" then
+            if
+                AI_SDK.armyID ~= CGameMap.GetBelong(unit.pos.x, unit.pos.y) and
+                    unit.type ~= "KING"
+             then
                 -- 移除无效路径
                 table.remove(AI_SDK.Unit, i)
             elseif unit.pos.x == data.x and unit.pos.y == data.y then
@@ -192,7 +205,11 @@ function AI_SDK.addCommands(data)
             table.insert(
                 AI_SDK.Unit,
                 1,
-                {pos = {x = data.x, y = data.y}, commands = AI_SDK.reverseTable(TempCommand), type = data.type}
+                {
+                    pos = {x = data.x, y = data.y},
+                    commands = AI_SDK.reverseTable(TempCommand),
+                    type = data.type
+                }
             )
         end
     elseif data.key == "isKing" then
@@ -205,7 +222,10 @@ function AI_SDK.addCommands(data)
             TempCommandLength = TempCommandLength + 1
             TempCommand[TempCommandLength] = data.dir
             for i, unit in pairs(AI_SDK.Unit) do
-                if AI_SDK.armyID == CGameMap.GetBelong(unit.pos.x, unit.pos.y) and unit.type == "KING" then
+                if
+                    AI_SDK.armyID == CGameMap.GetBelong(unit.pos.x, unit.pos.y) and
+                        unit.type == "KING"
+                 then
                     -- 移除无效路径
                     table.remove(AI_SDK.Unit, i)
                 elseif unit.pos.x == data.x and unit.pos.y == data.y then
@@ -227,7 +247,11 @@ function AI_SDK.addCommands(data)
                 table.insert(
                     AI_SDK.Unit,
                     1,
-                    {pos = {x = data.x, y = data.y}, commands = AI_SDK.reverseTable(TempCommand), type = data.type}
+                    {
+                        pos = {x = data.x, y = data.y},
+                        commands = AI_SDK.reverseTable(TempCommand),
+                        type = data.type
+                    }
                 )
             end
         end
@@ -278,8 +302,8 @@ function AI_SDK.update(dt)
             print("Lua Implementation Invoke")
         else
             if AI_SDK.TypeImplementation == "C++" then
-                CCore.userMain()
-             end
+            -- CCore.userMain()
+            end
         end
     end
     MapAdjust.Update()
@@ -288,6 +312,6 @@ end
 
 function AI_SDK.setSelected(x, y)
     Core.SelectPos.x, Core.SelectPos.y = x, y
-end 
+end
 
 return AI_SDK
