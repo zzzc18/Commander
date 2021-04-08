@@ -1,6 +1,6 @@
 local AI_SDK = {}
 
-AI_SDK.TypeImplementation = "Lua"
+AI_SDK.TypeImplementation = "C++"
 -- supported lang: "Lua", "C++"
 
 local Core = require("AI.Core")
@@ -302,7 +302,7 @@ function AI_SDK.update(dt)
             print("Lua Implementation Invoke")
         else
             if AI_SDK.TypeImplementation == "C++" then
-            -- CCore.userMain()
+                CCore.userMain()
             end
         end
     end

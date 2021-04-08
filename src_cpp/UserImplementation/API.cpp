@@ -39,10 +39,11 @@ void testInfo() {
 
 double get_rand_percentage(double lower_bound = 0.0, double upper_bound = 1.0) {
     if (lower_bound < -0.00001 || lower_bound > 1.00001)
-        throw "Invalid lower_bound";
+        cout << "Invalid lower_bound" << endl;
     if (upper_bound < -0.00001 || upper_bound > 1.00001)
-        throw "Invalid upper_bound";
-    double ret = lower_bound + (rand() % 10000) * (upper_bound - lower_bound);
+        cout << "Invalid upper_bound" << endl;
+    double ret =
+        lower_bound + (rand() % 10000) * (upper_bound - lower_bound) / 10000.0;
     cout << "RNG (" << lower_bound << ", " << upper_bound << ") = " << ret
          << endl;
     return ret;
@@ -61,9 +62,8 @@ bool move_from_select() {
         if (mmap.GetType(apos) == NODE_TYPE::FORT &&
             mmap.GetUnitNum(API.selected_pos()) < 1.5 * mmap.GetUnitNum(apos))
             continue;  // 无法占有或占有后容易被夺去
-        cout << "Can move" << endl;
         double tmp;
-        if (tmp = get_rand_percentage() > 0.8) {
+        if (tmp = get_rand_percentage() > 0.5) {
             cout << "Skip, tmp = " << tmp << endl;
             continue;
         }  // 随机跳过
@@ -85,7 +85,6 @@ void random_select() {
     UserAPI &API = UserAPI::Singleton();
     MAP &mmap = MAP::Singleton();
 
-    cout << "DEBUG1" << endl;
     // 从当前位置出发的所有可选位置
     vector<VECTOR> options = {API.selected_pos()};
 
@@ -93,10 +92,9 @@ void random_select() {
         VECTOR apos = after_move_pos(API.selected_pos(), i);
         if (mmap.GetType(apos) == NODE_TYPE::HILL) continue;
         if (mmap.GetBelong(apos) != id) continue;
-        cout << "DEBUG 2.1" << endl;
         if (mmap.GetUnitNum(apos) < 2) continue;
-        cout << "DEBUG 2   " << apos << endl;
         // 该位置是一个可选位置
+        cout << "find a optional position: " << apos << endl;
         options.push_back(apos);
     }
     cout << "options :" << options.size() << endl;
@@ -104,9 +102,8 @@ void random_select() {
     if (options.size() == 1) return;
 
     // 随机选择的选项
-    int choice = rand() % options.size() - 1;
+    int choice = rand() % options.size();
 
-    cout << "DEBUG3" << endl;
     // 不改变位置，直接返回
     if (options[choice] == API.selected_pos()) return;
 
@@ -141,10 +138,13 @@ static int userMain(lua_State *luaState) {
     // testInfo();
 
     random_select();
-    while (!move_from_select()) {
+    // while (!move_from_select()) {
+    //     random_select();
+    // }
+
+    for (int i = 1; i <= 3 && !move_from_select(); i++) {
         random_select();
     }
-
     return 0;
 }
 
