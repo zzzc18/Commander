@@ -1,4 +1,4 @@
-local Core = {}
+Core = {}
 
 Core.SelectPos = {x = -1, y = -1}
 Core.rdmDirection = 0

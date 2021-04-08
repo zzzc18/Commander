@@ -288,6 +288,6 @@ end
 
 function AI_SDK.setSelected(x, y)
     Core.SelectPos.x, Core.SelectPos.y = x, y
-end
+end 
 
 return AI_SDK
