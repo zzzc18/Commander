@@ -1,120 +1,143 @@
 #include <ctime>
 #include <random>
+#include <iostream>
 
 #include "GameMap.hpp"
 #include "LuaAPI.hpp"
 #include "UserAPI.hpp"
+#include "Verify.hpp"
 
 using namespace std;
 
-enum back_state_type { Backing, Done } back_state;
-enum attack_state_type { Done, Ready, Attacking } attack_state;
+void random_move() {
+    static bool init = false;
+    if (!init) {
+        srand(time(NULL));
+    }
+    int direction = rand() % 6 + 1;
 
-void Back_init();
-void Back_to_king();
-void Attack_model();
-void AI_move_model(lua_State *luaState);
+}
 
-int rdmDirection = 0;
-int attack_index = 0;
+VECTOR after_move_pos(VECTOR cur, int direction) {
+    return cur + DIR[cur.x % 2][direction];
+}
+
+ostream & operator<<(ostream &os, const VECTOR &vec) {
+    os << "(" << vec.x << "," << vec.y << ")";
+    return os;
+}
+
+int id;
+
+void testInfo() {
+    UserAPI & API = UserAPI::Singleton();
+    MAP & mmap = MAP::Singleton();
+    cout << "Current selected pos: " << API.selected_pos().x << ", " << API.selected_pos().y;
+    cout << " Belongs: " << mmap.GetBelong(API.selected_pos());
+    cout << " UnitNum: " << mmap.GetUnitNum(API.selected_pos()) << endl;
+}
+
+double get_rand_percentage(double lower_bound = 0.0, double upper_bound = 1.0) {
+    if (lower_bound < -0.00001 || lower_bound > 1.00001) throw "Invalid lower_bound";
+    if (upper_bound < -0.00001 || upper_bound > 1.00001) throw "Invalid upper_bound";
+    double ret = lower_bound + (rand() % 10000) * (upper_bound - lower_bound);
+    cout << "RNG (" << lower_bound << ", " << upper_bound << ") = " << ret << endl;
+    return ret;
+}
+
+bool move_from_select() {
+    cout << "try to move" << endl;
+    UserAPI & API = UserAPI::Singleton();
+    MAP & mmap = MAP::Singleton();
+    double move_ratio = 0.5;
+    // 判断当前位置周围是否有敌人
+    for (int i = 0; i < 6; i++) {
+        VECTOR apos = after_move_pos(API.selected_pos(), i);
+        if (id == mmap.GetBelong(apos)) continue;       // 平凡情况
+        if (mmap.GetType(apos) == NODE_TYPE::HILL) continue;    // 山丘 不可通过
+        if (mmap.GetType(apos) == NODE_TYPE::FORT 
+            && mmap.GetUnitNum(API.selected_pos()) < 1.5 * mmap.GetUnitNum(apos)) 
+            continue;                   // 无法占有或占有后容易被夺去
+        cout << "Can move" << endl;
+        double tmp;
+        if (tmp = get_rand_percentage() > 0.8) {cout << "Skip, tmp = " << tmp << endl; continue;}      // 随机跳过
+        cout << "Prepare to move " << API.selected_pos() << "->";
+        cout << apos << endl;
+        
+        move_ratio = get_rand_percentage(0.4, 0.8);     // 随机移动
+        API.move_to(apos, move_ratio, i + 1);
+        return true;
+    }
+    return false;
+}
+
+// (递归地)随机从已有的领地中选择一个点作为出发点
+// 每次从当前选定点开始，从 六个方向的邻接点 或 当前位置 总共7个选项的所有可选位置中
+// 随机的选择一项，如果选择位置不是当前点，则递归调用自己
+void random_select() {
+    UserAPI & API = UserAPI::Singleton();
+    MAP & mmap = MAP::Singleton();
+
+    cout << "DEBUG1" << endl;
+    // 从当前位置出发的所有可选位置
+    vector<VECTOR> options = {API.selected_pos()};
+
+    for (int i = 0; i < 6; i++) {
+        VECTOR apos = after_move_pos(API.selected_pos(), i);
+        if (mmap.GetType(apos) == NODE_TYPE::HILL) continue;
+        if (mmap.GetBelong(apos) != id) continue;
+        cout << "DEBUG 2.1" << endl;
+        if (mmap.GetUnitNum(apos) < 2) continue;
+        cout << "DEBUG 2   " << apos << endl;
+        // 该位置是一个可选位置
+        options.push_back(apos);
+    }
+    cout << "options :" << options.size() << endl;
+    // 没有可选项
+    if (options.size() == 1) return; 
+
+    // 随机选择的选项
+    int choice = rand() % options.size() - 1;
+
+    cout << "DEBUG3" << endl;
+    // 不改变位置，直接返回
+    if (options[choice] == API.selected_pos()) return;
+
+    API.selected_pos(options[choice]);
+    cout << "Selection: " << options[choice] << endl;
+    random_select();
+}
 
 static int userMain(lua_State *luaState) {
-    static bool init_flag = false;
-    if (!init_flag) {
-        srand((unsigned)time(NULL));
-        init_flag = true;
-    }
-    printf("C++ Implementation Invoke\n");
+    UserAPI & API = UserAPI::Singleton(luaState);;
+    MAP & mmap = MAP::Singleton();
+    // UserAPI & API = UserAPI::Singleton(luaState);
+    
+    id = VERIFY::Singleton().GetArmyID();
 
-    // 初始化API单例
-    UserAPI &API = UserAPI.Singleton(luaState);
-
-    if (API.get_current_step() % 45 == 0 &&
-        back_state != back_state_type::Backing attack_state ==
-            attack_state_type::Done) {
-        Back_init();
-        Back_to_king();
-    } else if (back_state == back_state_type::Backing) {
-        Back_to_king();
-    } else if (attack_state == attack_state_type::Ready) {
-        printf("--Attacking--");
-        attack_state = attack_state_type::Attacking;
-        attack_index = 1;
+    static bool init = false;
+    if (!init) {
+        init = true;
         API.selected_pos(API.king_pos());
-        Attack_model();
-    } else if (attack_state == attack_state_type::Attacking) {
-        Attack_model();
-    } else if (back_state == back_state_type::Done &&
-               attack_state == attack_state_type::Done) {
-        AI_move_model(luaState);
+    }
+    testInfo();
+    double move_ratio = 0.5;
+    if (API.selected_pos().x == -1 || API.selected_pos().y == -1 ||         // 选择位置非法
+            mmap.GetBelong(API.selected_pos()) != id ||                     // 不可移动
+            mmap.GetUnitNum(API.selected_pos()) < 2) {                      // 兵力过少
+        API.selected_pos(API.king_pos());
+    }
+
+    // cout << "DEBUG" << endl;
+    // testInfo();
+    
+
+    random_select();
+    while (!move_from_select()) {
+        random_select();
     }
 
     return 0;
-}
-
-// 从王的位置随机移动，当军队数量下降到1时重新从王的位置开始移动
-void AI_move_model(lua_State *luaState) {
-    auto &API = UserAPI.Singleton();
-    if (API.selected_pos().x == -1 && API.king_pos != -1) {
-        AI.selected_pos(API.king_pos());
-    }
-
-    VECTOR cur_pos = API.selected_pos();
-    int unit_num = API.get_unit_num(cur_pos);
-    double move_num =
-        0;  //为0时移动全部，为0到1之间实数时按比例移动，大于1时移动moveNum整数部分
-    if (API.get_army_id() != API.get_belong(cur_pos) || unit_num <= 1) {
-        API.selected_pos(API.king_pos());
-        API.clear_commands();
-        return;
-    } else if (unit_num >= 50 &&
-               GameMap.Singleton().GetType(cur_pos) == NODE_TYPE::KING)
-        move_num = 0.5;
-
-    int chance = 10;
-    int mode = 0;
-    while (chance > 0) {
-        cur_pos = API.selected_pos();
-        rdmDirection = rand(6);
-        mode = cur_pos.x % 2 + 1;
-        cur_pos.x += Map_direction[mode][rdmDirection][0];
-        cur_pos.y += Map_direction[mode][rdmDirection][1];
-        if (GameMap.Singleton().GetType(cur_pos) == NODE_TYPE::BLANK ||
-            GameMap.Singleton().GetType(cur_pos) == NODE_TYPE::KING) {
-            if (AI.get_army_id() != GameMap.GetBelong(cur_pos)) {
-                AI.move_to(cur_pos, move_num, rdmDirection);
-                AI.selected_pos(cur_pos);
-                break;
-            } else {
-                chance--;
-                if (chance < 3) {
-                    AI.move_to(cur_pos, move_num, rdmDirection);
-                    AI.selected_pos(cur_pos);
-                    break;
-                }
-            }
-        } else if (GameMap.Singleton().GetType(cur_pos) == NODE_TYPE::FORT) {
-            int fort_num = GameMap.Singleton().GetUnitNum(cur_pos);
-            if (AI.get_army_id() != GameMap.Singleton().GetBelong(cur_pos) &&
-                fort_num - 10 < unit_num) {
-                AI.move_to(cur_pos, move_num, rdmDirection);
-                AI.selected_pos(cur_pos);
-                break;
-            } else {
-                chance--;
-            }
-        } else
-            chance--;
-    }
-    if (chance <= 0) {
-        AI.selected_pos(AI.king_pos());
-        AI.clear_commands();
-    }
-}
-
-void back_init() {
-    back_index = 1;
-    back_state = back_state_type::Backing;
 }
 
 LUA_REG_FUNC(UserImplementation, C_API(userMain))
