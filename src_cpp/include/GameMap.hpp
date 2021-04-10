@@ -18,6 +18,7 @@
 #include <vector>
 
 #include "Constant.hpp"
+#include "LuaAPI.hpp"
 
 using namespace GameMap;  //导入 Constant.hpp 中的常量
 
@@ -99,16 +100,16 @@ class MAP final {
     bool PushMove(int armyID, VECTOR src, VECTOR dst, double num);
 
     /**
-     * @brief 编辑器：令fort的兵数加一或减一
+     * @brief 编辑器：令fort的兵数加一或减一，禁止用户调用！！！
      *
      * @param aim 目标fort
      * @param mode 1为加，2为减
      * @return true
      */
     bool IncreaseOrDecrease(VECTOR aim, int mode);
-    //编辑器：改变格点类型
+    //编辑器：改变格点类型， 禁止用户调用！！！
     bool ChangeType(VECTOR aim, int type);
-    //编辑器：改变格点归属
+    //编辑器：改变格点归属，禁止用户调用！！！
     bool ChangeBelong(VECTOR aim);
 
     //回放器：从回放文件读取当前步添加到命令队列的命令
@@ -158,6 +159,9 @@ class MAP final {
 
     //当前军队的王的位置
     std::pair<int, int> GetKingPos(int armyID) const;
+
+    //获取当前军队从KING到当前位置的路径
+    const std::vector<std::pair<VECTOR, VECTOR>> & GetMoveCommands();
 
    private:
     MAP() = default;
