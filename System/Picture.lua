@@ -3,7 +3,14 @@ Picture = {}
 local NodeImageSet = {}
 local SelectImage = {}
 local ArrowImage = {}
+local ReadyImage = {}
 local Menu = {}
+
+function ReadyImage:Load() 
+    self.title = love.graphics.newImage("data/Picture/Title.png")
+    self.ready = love.graphics.newImage("data/Picture/Waiting.png")
+end
+
 
 function NodeImageSet:Load()
     self.center = {}
@@ -23,6 +30,8 @@ function NodeImageSet:Load()
     self["NODE_TYPE_MARSH"] =
         love.graphics.newImage("data/Picture/NODE_TYPE_MARSH.png")
 end
+
+
 
 function SelectImage:Load()
     self.center = {}
@@ -50,6 +59,7 @@ function Picture.Init()
     if ClientSock ~= nil then
         ArrowImage:Load()
         Menu:Load()
+        ReadyImage:Load()
     end
     Debug.Log("info", "init Picture")
 end
@@ -108,12 +118,12 @@ function Picture.DrawReady(BGAnimation)
 
     BGAnimation.draw()
     local title = {
-        img = love.graphics.newImage("data/Picture/Title.png"),
+        img = ReadyImage.title,
         ratioX = 0.6,
         ratioY = 0.6
     }
     local waiting = {
-        img = love.graphics.newImage("data/Picture/Waiting.png"),
+        img = ReadyImage.ready,
         ratioX = 0.4,
         ratioY = 0.4
     }
