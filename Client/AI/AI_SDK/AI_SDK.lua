@@ -19,10 +19,9 @@ AI_SDK.KingPos = {x = -1, y = -1}
 -- 记录每个从王到每个点的路径，每个元素包含两个table和一个字符串
 -- pos记录坐标，commands记录路径，type记录类型
 AI_SDK.Unit = {}
+AI_SDK.SelectPos = {x = -1, y = -1}
 
 local timer = 0
-local TempCommand = {}
-local TempCommandLength = 0
 
 function AI_SDK.Init()
     AI_SDK.gameState = "READY"
@@ -112,33 +111,20 @@ function AI_SDK.MoveTo(x, y, moveNum, dir)
         return
     end
 
-    if not AI_SDK.IsConnected(Core.SelectPos.x, Core.SelectPos.y, x, y) then
+    if not AI_SDK.IsConnected(AI_SDK.SelectPos.x, AI_SDK.SelectPos.y, x, y) then
         return
     end
 
     local NewRequest = {
         armyID = AI_SDK.armyID,
-        srcX = Core.SelectPos.x,
-        srcY = Core.SelectPos.y,
+        srcX = AI_SDK.SelectPos.x,
+        srcY = AI_SDK.SelectPos.y,
         dstX = x,
         dstY = y,
         num = moveNum
     }
     ClientSock.SendMove(NewRequest)
     --  记录路径
-    if "NODE_TYPE_KING" == CGameMap.GetNodeType(x, y) then
-        AI_SDK.addCommands(
-            {key = "isKing", dir = dir, x = x, y = y, type = "KING"}
-        )
-    elseif "NODE_TYPE_BLANK" == CGameMap.GetNodeType(x, y) then
-        AI_SDK.addCommands(
-            {key = "Done", dir = dir, x = x, y = y, type = "BLANK"}
-        )
-    elseif "NODE_TYPE_FORT" == CGameMap.GetNodeType(x, y) then
-        AI_SDK.addCommands(
-            {key = "Done", dir = dir, x = x, y = y, type = "FORT"}
-        )
-    end
 end
 
 --检查pos之间是否相邻
@@ -151,17 +137,11 @@ function AI_SDK.IsConnected(posX1, posY1, posX2, posY2)
     end
 
     if posX1 % 2 == 1 then
-        if
-            (posX1 == posX2 + 1 or posX1 == posX2 - 1) and
-                (posY1 == posY2 or posY1 == posY2 - 1)
-         then
+        if (posX1 == posX2 + 1 or posX1 == posX2 - 1) and (posY1 == posY2 or posY1 == posY2 - 1) then
             return true
         end
     else
-        if
-            (posX1 == posX2 + 1 or posX1 == posX2 - 1) and
-                (posY1 == posY2 or posY1 == posY2 + 1)
-         then
+        if (posX1 == posX2 + 1 or posX1 == posX2 - 1) and (posY1 == posY2 or posY1 == posY2 + 1) then
             return true
         end
     end
@@ -171,99 +151,7 @@ end
 function AI_SDK.UpdateTimerSecond(dt)
 end
 
--- 向Unit中添加路径
-function AI_SDK.addCommands(data)
-    if data.key == nil then
-        AI_SDK.clearCommands()
-    elseif data.key == "Done" then
-        local isRepeated = false
-        TempCommandLength = TempCommandLength + 1
-        TempCommand[TempCommandLength] = data.dir
-        for i, unit in pairs(AI_SDK.Unit) do
-            if
-                AI_SDK.armyID ~= CGameMap.GetBelong(unit.pos.x, unit.pos.y) and
-                    unit.type ~= "KING"
-             then
-                -- 移除无效路径
-                table.remove(AI_SDK.Unit, i)
-            elseif unit.pos.x == data.x and unit.pos.y == data.y then
-                if #unit.commands > TempCommandLength then
-                    -- 当前记录的路径更短,覆盖原有路径
-                    unit.commands = AI_SDK.reverseTable(TempCommand)
-                else
-                    if #unit.commands < TempCommandLength then
-                        -- 原有路径更短，覆盖暂存路径
-                        TempCommand = AI_SDK.deepCopy(unit.commands)
-                        TempCommandLength = #unit.commands
-                    end
-                end
-                isRepeated = true
-                break
-            end
-        end
-        if not isRepeated then
-            table.insert(
-                AI_SDK.Unit,
-                1,
-                {
-                    pos = {x = data.x, y = data.y},
-                    commands = AI_SDK.reverseTable(TempCommand),
-                    type = data.type
-                }
-            )
-        end
-    elseif data.key == "isKing" then
-        if AI_SDK.armyID == CGameMap.GetBelong(data.x, data.y) then
-            AI_SDK.clearCommands()
-        else
-            -- 记录下敌方王的位置，保留正向序列，用于进攻时调用
-            print("Find a king!")
-            local isRepeated = false
-            TempCommandLength = TempCommandLength + 1
-            TempCommand[TempCommandLength] = data.dir
-            for i, unit in pairs(AI_SDK.Unit) do
-                if
-                    AI_SDK.armyID == CGameMap.GetBelong(unit.pos.x, unit.pos.y) and
-                        unit.type == "KING"
-                 then
-                    -- 移除无效路径
-                    table.remove(AI_SDK.Unit, i)
-                elseif unit.pos.x == data.x and unit.pos.y == data.y then
-                    if #unit.commands > TempCommandLength then
-                        -- 当前记录的路径更短,覆盖原有路径
-                        unit.commands = AI_SDK.reverseTable(TempCommand)
-                    else
-                        if #unit.commands < TempCommandLength then
-                            -- 原有路径更短，覆盖暂存路径
-                            TempCommand = AI_SDK.deepCopy(unit.commands)
-                            TempCommandLength = #unit.commands
-                        end
-                    end
-                    isRepeated = true
-                    break
-                end
-            end
-            if not isRepeated then
-                table.insert(
-                    AI_SDK.Unit,
-                    1,
-                    {
-                        pos = {x = data.x, y = data.y},
-                        commands = AI_SDK.reverseTable(TempCommand),
-                        type = data.type
-                    }
-                )
-            end
-        end
-    end
-end
-
--- 清空暂存路径
-function AI_SDK.clearCommands()
-    TempCommand = {}
-    TempCommandLength = 0
-end
-
+-- 返回一个反向Table
 function AI_SDK.reverseTable(table)
     if nil == table then
         return nil
@@ -275,7 +163,7 @@ function AI_SDK.reverseTable(table)
     return reverseTable
 end
 
--- 进行深拷贝
+-- 进行深拷贝，返回一个独立的Table
 function AI_SDK.deepCopy(table)
     if nil == table then
         return nil
@@ -311,7 +199,7 @@ function AI_SDK.update(dt)
 end
 
 function AI_SDK.setSelected(x, y)
-    Core.SelectPos.x, Core.SelectPos.y = x, y
+    AI_SDK.SelectPos.x, AI_SDK.SelectPos.y = x, y
 end
 
 return AI_SDK
