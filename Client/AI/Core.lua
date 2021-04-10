@@ -1,6 +1,9 @@
 Core = {}
 
 Core.rdmDirection = 0
+-- 记录每个从王到每个点的路径，每个元素包含两个table和一个字符串
+-- pos记录坐标，commands记录路径，type记录类型
+Core.Unit = {}
 
 local BackCommands = {}
 -- Backing:正在撤退
@@ -116,7 +119,7 @@ function Core.BackInit()
     backIndex = 1
     backState = "Backing"
     -- 导入Unit中记录的路径
-    for i, unit in pairs(AI_SDK.Unit) do
+    for i, unit in pairs(Core.Unit) do
         if AI_SDK.armyID ~= CGameMap.GetBelong(unit.pos.x, unit.pos.y) then
             if unit.type == "KING" then
                 print("Find a king, ready to attack!")
@@ -134,7 +137,7 @@ function Core.BackInit()
                 end
             else
                 -- 移除无效路径
-                table.remove(AI_SDK.Unit, i)
+                table.remove(Core.Unit, i)
             end
         else
             if #unit.commands > 12 then
@@ -273,10 +276,10 @@ function Core.addCommands(data)
         local isRepeated = false
         TempCommandLength = TempCommandLength + 1
         TempCommand[TempCommandLength] = data.dir
-        for i, unit in pairs(AI_SDK.Unit) do
+        for i, unit in pairs(Core.Unit) do
             if AI_SDK.armyID ~= CGameMap.GetBelong(unit.pos.x, unit.pos.y) and unit.type ~= "KING" then
                 -- 移除无效路径
-                table.remove(AI_SDK.Unit, i)
+                table.remove(Core.Unit, i)
             elseif unit.pos.x == data.x and unit.pos.y == data.y then
                 if #unit.commands > TempCommandLength then
                     -- 当前记录的路径更短,覆盖原有路径
@@ -294,7 +297,7 @@ function Core.addCommands(data)
         end
         if not isRepeated then
             table.insert(
-                AI_SDK.Unit,
+                Core.Unit,
                 1,
                 {
                     pos = {x = data.x, y = data.y},
@@ -312,10 +315,10 @@ function Core.addCommands(data)
             local isRepeated = false
             TempCommandLength = TempCommandLength + 1
             TempCommand[TempCommandLength] = data.dir
-            for i, unit in pairs(AI_SDK.Unit) do
+            for i, unit in pairs(Core.Unit) do
                 if AI_SDK.armyID == CGameMap.GetBelong(unit.pos.x, unit.pos.y) and unit.type == "KING" then
                     -- 移除无效路径
-                    table.remove(AI_SDK.Unit, i)
+                    table.remove(Core.Unit, i)
                 elseif unit.pos.x == data.x and unit.pos.y == data.y then
                     if #unit.commands > TempCommandLength then
                         -- 当前记录的路径更短,覆盖原有路径
@@ -333,7 +336,7 @@ function Core.addCommands(data)
             end
             if not isRepeated then
                 table.insert(
-                    AI_SDK.Unit,
+                    Core.Unit,
                     1,
                     {
                         pos = {x = data.x, y = data.y},
