@@ -25,6 +25,7 @@ require("System.BasicMap")
 require("System.MapAdjust")
 require("System.Buttons")
 require("System.Debug")
+require("System.Coordinate")
 require("ClientSock")
 
 Running = {}
@@ -32,7 +33,8 @@ Running = {}
 function love.load()
     Debug.Init()
     Debug.Log("info", "game start as client")
-    Running = Welcome
+    Coordinate.valid()
+    Running = PlayGame
     Running.Init()
     Switcher.Init()
     Picture.Init()
