@@ -13,7 +13,7 @@ class UserAPI {
     static UserAPI &Singleton(lua_State *L = nullptr) {
         static bool has_init = false;
         if (!has_init && L == nullptr)
-            "ERROR: argument lua_State not given for initialization";
+            printf("ERROR: argument lua_State not given for initialization");
         static UserAPI singleton(L);
         has_init = true;
         return singleton;
@@ -112,7 +112,7 @@ class UserAPI {
     }
 
    private:
-    mutable lua_State *luaState;
+    lua_State *luaState;
     UserAPI(lua_State *L) : luaState(L) {}
 };
 
