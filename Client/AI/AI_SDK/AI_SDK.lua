@@ -16,9 +16,6 @@ AI_SDK.judgementState = "Running"
 AI_SDK.armyID = nil
 AI_SDK.armyNum = 0
 AI_SDK.KingPos = {x = -1, y = -1}
--- 记录每个从王到每个点的路径，每个元素包含两个table和一个字符串
--- pos记录坐标，commands记录路径，type记录类型
-AI_SDK.Unit = {}
 AI_SDK.SelectPos = {x = -1, y = -1}
 
 local timer = 0
