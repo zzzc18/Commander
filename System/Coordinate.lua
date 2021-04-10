@@ -33,6 +33,7 @@ function Coordinate.draw()
         if x < 0 or y < 0 or x >= mapSizeX or y >= mapSizeY then
             return
         end
+        love.graphics.setColor(1, 1, 1, 1)
         love.graphics.print(x .. " " .. y, love.mouse.getX() + 10, love.mouse.getY() + 10, 0, 1.5, 1.5)
     end
 end

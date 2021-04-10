@@ -21,11 +21,11 @@ function love.load()
     Debug.Init()
     Debug.Log("info", "game start as server")
     CVerify.Register(0, 3)
+    Coordinate.valid()
     Running = PlayGame
     Running.Init()
     Picture.Init()
     ServerSock.Init(PlayGame.armyNum)
-    Coordinate.valid()
 end
 function love.wheelmoved(x, y)
     Running.wheelmoved(x, y)
