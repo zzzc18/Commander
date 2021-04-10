@@ -93,7 +93,7 @@ class UserAPI {
 
     // 获取当前选中的位置
     VECTOR selected_pos() {
-        get_lua_property("Core", "SelectPos");
+        get_lua_property("AI_SDK", "SelectPos");
         if (!lua_istable(luaState, -1)) {
             throw "not a table: SelectPos";
         }
