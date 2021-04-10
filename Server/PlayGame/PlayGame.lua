@@ -16,6 +16,7 @@ function PlayGame.Init(MapMode)
     CGameMap.InitSavedata()
     BasicMap.Init()
     Judgement.Init()
+    Coordinate.Init()
 end
 
 function PlayGame.wheelmoved(x, y)
@@ -49,6 +50,7 @@ function PlayGame.draw()
         return
     end
     BasicMap.DrawMap()
+    Coordinate.draw()
 end
 
 function PlayGame.UpdateTimerSecond(dt)
@@ -59,6 +61,7 @@ function PlayGame.update(dt)
     if PlayGame.gameState == "Start" then
         Judgement.Judge()
         ServerSock.SendUpdate(dt)
+        Coordinate.update(dt)
     end
 end
 

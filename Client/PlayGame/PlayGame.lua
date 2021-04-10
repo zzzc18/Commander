@@ -17,11 +17,13 @@ function PlayGame.Init()
     ClientSock.Init()
     Buttons.Init()
     BGAnimation.load()
+    Coordinate.Init()
 end
 
 function PlayGame.DeInit()
     Buttons.DeInit()
     Client:disconnect()
+    Coordinate.DeInit()
 end
 
 function PlayGame.Destroy()
@@ -79,6 +81,7 @@ function PlayGame.draw()
         Operation.DrawMenu()
     end
     Operation.DrawButtons()
+    Coordinate.draw()
 end
 
 function PlayGame.UpdateTimerSecond(dt)
@@ -94,6 +97,7 @@ function PlayGame.update(dt)
     end
     MapAdjust.Update()
     Operation.Update()
+    Coordinate.update(dt)
 end
 
 return PlayGame

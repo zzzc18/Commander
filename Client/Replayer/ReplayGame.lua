@@ -23,11 +23,13 @@ function ReplayGame.Init(MapMode)
         ReplayGame.gameState = "Start"
         BasicMap.Init()
         Buttons.Init()
+        Coordinate.Init()
     end
 end
 
 function ReplayGame.DeInit()
     Buttons.DeInit()
+    Coordinate.DeInit()
     ReplayGame.droppedDir = ""
     ReplayGame.gameState = "READY"
     ReplayGame.replaySpeed = 1
@@ -88,6 +90,7 @@ function ReplayGame.draw()
         Picture.DrawMenu()
     end
     Buttons.DrawButtons()
+    Coordinate.draw()
 end
 
 function ReplayGame.UpdateTimerSecond(dt)
@@ -115,6 +118,7 @@ function ReplayGame.update(dt)
     if not Buttons.isPause then
         ReplayGame.step = CSystem.Update(ReplayGame.replaySpeed * dt)
     end
+    Coordinate.update(dt)
 end
 
 return ReplayGame
