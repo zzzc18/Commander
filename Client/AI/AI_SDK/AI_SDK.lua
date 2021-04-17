@@ -152,7 +152,6 @@ function AI_SDK.MoveByDirection(srcX, srcY, moveNum, direction)
     AI_SDK.MoveTo(dstX, dstY, moveNum)
 end
 
-
 function AI_SDK.MoveByCoordinates(srcX, srcY, dstX, dstY, moveNum)
     if not AI_SDK.IsConnected(srcX, srcY, dstX, dstY) then
         return 
