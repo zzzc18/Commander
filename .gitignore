@@ -1,3 +1,9 @@
 lib
 src_cpp/Build
 .vscode
+tmp
+*.code-workspace
+*.log
+Output
+Savedata
+GameLog
