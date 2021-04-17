@@ -34,7 +34,8 @@ function love.load()
     Debug.Init()
     Debug.Log("info", "game start as client")
     Coordinate.valid()
-    Running = PlayGame
+    -- Running = PlayGame
+    Running = Welcome
     Running.Init()
     Switcher.Init()
     Picture.Init()
