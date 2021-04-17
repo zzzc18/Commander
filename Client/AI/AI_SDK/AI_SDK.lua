@@ -27,6 +27,20 @@ function AI_SDK.Init()
     Buttons.Init()
     BGAnimation.load()
     math.randomseed(tonumber(tostring(os.time()):reverse():sub(1, 9)))
+
+    local Implementation_file = io.open("AI/UserImplementationType.txt")
+    io.input(Implementation_file)
+    print(io.read())
+    local lang = io.read()
+    print(lang)
+    if lang == "C++" then
+        AI_SDK.TypeImplementation = "C++"
+    else 
+        if lang == "Lua" then
+            AI_SDK.TypeImplementation = "Lua"
+        end
+    end
+    print(AI_SDK.TypeImplementation)
 end
 
 function AI_SDK.DeInit()

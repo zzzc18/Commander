@@ -13,10 +13,12 @@ require("System.Picture")
 require("System.BasicMap")
 require("System.MapAdjust")
 require("System.Buttons")
+require("System.Debug")
 
 Running = {}
 
 function love.load()
+    Picture.Init()
     Running = PlayGame
     Running.Init()
 end
