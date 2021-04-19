@@ -9,7 +9,7 @@ local CCore = require("lib.UserImplementation")
 
 --READY:游戏未开始，不显示界面，无法操作
 --Start:游戏进行中
---Over:游戏介绍，显示界面，无法发送移动命令
+--Over:游戏结束，显示界面，无法发送移动命令
 --Menu:菜单界面
 AI_SDK.gameState = "READY"
 AI_SDK.judgementState = "Running"
@@ -36,7 +36,19 @@ function AI_SDK.DeInit()
 end
 
 function AI_SDK.LoadMap()
-    AI_SDK.armyNum = CGameMap.LoadMap()
+    local dict = {"default", "default", "C++"}
+    local task = io.open("../ClientTask.txt", "r")
+    if task ~= nil then
+        PlayGame.task = true
+        local i = 1
+        for line in task:lines() do
+            dict[i] = line
+            i = i + 1
+        end
+        task:close()
+    end
+    AI_SDK.armyNum = CGameMap.LoadMap(dict[2], dict[3])
+    AI_SDK.TypeImplementation = dict[4]
     BasicMap.Init()
 end
 

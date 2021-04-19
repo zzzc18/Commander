@@ -8,6 +8,9 @@ CSystem = require("lib.System")
 Sock = require("sock")
 Bitser = require("spec.bitser")
 
+TimeOut = 1e10
+CurrentTime = 0
+
 require("System.Color")
 require("System.Picture")
 require("System.BasicMap")
@@ -26,6 +29,11 @@ function love.load()
     Running.Init()
     Picture.Init()
     ServerSock.Init(PlayGame.armyNum)
+    local fp = io.open("../ServerTask.txt")
+    if fp ~= nil then
+        TimeOut = tonumber(fp:read())
+        fp:close()
+    end
 end
 function love.wheelmoved(x, y)
     Running.wheelmoved(x, y)
@@ -52,6 +60,11 @@ function love.draw()
 end
 
 function love.update(dt)
+    CurrentTime = CurrentTime + dt
+    if CurrentTime > TimeOut then
+        Debug.Log("info", "game quit because timeout")
+        love.event.quit(0)
+    end
     -- 倍速开关，用于快速测试，可以通过注释和取消注释调整
     -- dt = dt * 10
     Server:update()

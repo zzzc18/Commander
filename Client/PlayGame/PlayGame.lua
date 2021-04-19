@@ -4,7 +4,7 @@ local Operation = require("PlayGame.Operation")
 
 --READY:游戏未开始，不显示界面，无法操作
 --Start:游戏进行中
---Over:游戏介绍，显示界面，无法发送移动命令
+--Over:游戏结束，显示界面，无法发送移动命令
 --Menu:菜单界面
 PlayGame.gameState = "READY"
 PlayGame.judgementState = "Running"
@@ -33,7 +33,7 @@ end
 function PlayGame.LoadMap()
     -- CGameMap.RandomGenMap()
     -- CGameMap.WriteMap()
-    PlayGame.armyNum = CGameMap.LoadMap()
+    PlayGame.armyNum = CGameMap.LoadMap("default", "default")
     BasicMap.Init()
 end
 

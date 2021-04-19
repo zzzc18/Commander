@@ -10,7 +10,7 @@ function PlayGame.Init()
 end
 
 function PlayGame.LoadMap()
-    PlayGame.armyNum = CGameMap.LoadMap()
+    PlayGame.armyNum = CGameMap.LoadMap("default", "default")
     BasicMap.Init()
 end
 

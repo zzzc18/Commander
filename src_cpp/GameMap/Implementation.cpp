@@ -290,37 +290,39 @@ void MAP::RandomGen(int armyCnt, int level) {
     }
 }
 
-void MAP::InitSavedata() {
-    std::time_t t = std::time(&t) + 28800;  //转换到东八区
-    struct tm* gmt = gmtime(&t);
-    char cst[80];
-    strftime(cst, 80, "%Y-%m-%d_%H.%M.%S", gmt);
-    StartTime = cst;
-    system("cd ..&mkdir Savedata");
-    system(("cd ../Savedata&mkdir " + StartTime).c_str());
+void MAP::InitSavedata(std::string name,
+                       std::string dict) {  // dict = "Savedata"
+    if (name == "") {
+        std::time_t t = std::time(&t) + 28800;  //转换到东八区
+        struct tm* gmt = gmtime(&t);
+        char cst[80];
+        strftime(cst, 80, "%Y-%m-%d_%H.%M.%S", gmt);
+        name = cst;
+    }
+    system(("cd ..&mkdir " + dict).c_str());
+    system(("cd ../" + dict + "&mkdir " + name).c_str());
+    SaveDict = "../" + dict + "/" + name;
     SaveMap();
     return;
 }
 
-int MAP::LoadMap(std::string_view file) {  // file = "../Data/"
-    Debug::Singleton().Log("info", "LoadMap");
+int MAP::LoadMap(std::string dict,    // dict = "Data"
+                 std::string name) {  // name = "3Player.map"
+    Debug::Singleton().Log("info", "LoadMap: ../" + dict + "/" + name);
     step = 0;
     kingNum = 0;
-    std::ifstream fin(std::string(file.data()) + "3Player.map");
+    std::ifstream fin("../" + dict + "/" + name);
     fin >> *this;
     fin.close();
     return this->_armyCnt;
 }
 
-void MAP::SaveMap(std::string_view file) {  // file="../Savedata/"
-    Debug::Singleton().Log("info", "SaveMap");
-    std::ofstream mapout(file.data() + StartTime + "/" + std::to_string(step) +
-                         ".map");
+void MAP::SaveMap() {
+    std::ofstream mapout(SaveDict + "/" + std::to_string(step) + ".map");
     mapout << *this;
     mapout.close();
     Debug::Singleton().Log("info", "Map Saved");
-    std::ofstream mcdout(file.data() + StartTime + "/" + std::to_string(step) +
-                         ".mcd");
+    std::ofstream mcdout(SaveDict + "/" + std::to_string(step) + ".mcd");
     // mcd是moveCommands的简称
     for (int armyID = 0; armyID < GameMap::MAX_ARMY_CNT + 1; armyID++) {
         for (int j = MAP::moveCommands[armyID].size() - 1; j >= 0; j--) {
@@ -337,10 +339,7 @@ void MAP::SaveMap(std::string_view file) {  // file="../Savedata/"
 }
 
 void MAP::SaveStep(int armyID, VECTOR src, VECTOR dst, double num) {
-    std::ofstream outfile;
-    outfile.open("../Savedata/" + StartTime + "/steps.txt", std::ios::app);
-    // 似乎file.data()相连后从string_view变成了string，因此可以直接和const
-    // char相连
+    std::ofstream outfile(SaveDict + "/steps.txt", std::ios::app);
     outfile << "\n" << step << "\n";
     outfile << armyID << " " << src.x << " " << src.y << " " << dst.x << " "
             << dst.y << " " << num << "\n";
@@ -353,12 +352,12 @@ void MAP::SaveGameOver(int armyID) {
     return;
 }
 
-void MAP::SaveEdit(std::string_view file) {  // file = "../Output/"
+void MAP::SaveEdit(std::string_view dict) {  // dict = "../Output/"
     std::time_t t = std::time(&t) + 28800;
     char cst[80];
     strftime(cst, 80, "%Y-%m-%d_%H.%M.%S", gmtime(&t));
-    StartTime = cst;
-    std::ofstream fout(file.data() + StartTime + ".map");
+    std::string name = cst;
+    std::ofstream fout(dict.data() + name + ".map");
     fout << *this;
     fout.close();
     return;
@@ -496,9 +495,8 @@ std::pair<VECTOR, VECTOR> MAP::GetArmyPath(int armyID, int step) const {
         return {{-1, -1}, {-1, -1}};
     }
 }
-const char* MAP::GetFolder() {
-    return (std::string("../Savedata/") + StartTime).c_str();
-}
+const char* MAP::GetFolder() { return (SaveDict).c_str(); }
+
 std::pair<int, int> MAP::GetKingPos(int armyID) const {
     int x = MAP::Singleton().kingState.kingPos[armyID].x;
     int y = MAP::Singleton().kingState.kingPos[armyID].y;

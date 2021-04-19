@@ -12,7 +12,6 @@ function ServerSock.Init(armyNum)
         function(data, client)
             client:send("SetArmyID", {armyID = client:getIndex()})
             ServerSock.clientNum = ServerSock.clientNum + 1
-            -- TODO为了前期调试方便用的2个而不是自动加载的个数
             if PlayGame.gameState == "Over" then
                 PlayGame.gameState = "READY"
                 Running.Init()
@@ -32,7 +31,7 @@ function ServerSock.Init(armyNum)
     Server:on(
         "PushMove",
         function(data)
-            Debug.Log("info", "Received PushMove")
+            Debug.Log("info", "Received PushMove from " .. data.armyID)
             Server:sendToAll("PushMove", data)
             PlayGameCore.PushMove(data)
         end
