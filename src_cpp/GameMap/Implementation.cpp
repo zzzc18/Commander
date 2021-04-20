@@ -358,6 +358,8 @@ void MAP::SaveEdit(std::string_view file) {  // file = "../Output/"
     char cst[80];
     strftime(cst, 80, "%Y-%m-%d_%H.%M.%S", gmtime(&t));
     StartTime = cst;
+    system("cd ..&mkdir Output");
+    std::cout << "save to " << StartTime << ".map" << std::endl;
     std::ofstream fout(file.data() + StartTime + ".map");
     fout << *this;
     fout.close();
