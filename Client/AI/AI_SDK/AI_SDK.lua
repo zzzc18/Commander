@@ -35,7 +35,7 @@ function AI_SDK.Init()
     print(lang)
     if lang == "C++" then
         AI_SDK.TypeImplementation = "C++"
-    else 
+    else
         if lang == "Lua" then
             AI_SDK.TypeImplementation = "Lua"
         end
@@ -93,7 +93,7 @@ function AI_SDK.draw()
         return
     end
     love.graphics.setColor(1, 1, 1, 1)
-    love.graphics.print("Step:" .. ReplayGame.step, 0, 0, 0, 2)
+    Picture.PrintStepAndSpeed(ReplayGame.step)
     BasicMap.DrawMap()
     BasicMap.DrawPath()
     Operation.DrawSelect()
@@ -103,12 +103,11 @@ function AI_SDK.draw()
     Operation.DrawButtons()
 end
 
-
 -- 移动的函数
 function AI_SDK.MoveTo(x, y, moveNum)
     if AI_SDK.gameState ~= "Start" then
         return
-        --只有游戏进行时才能发送
+    --只有游戏进行时才能发送
     end
     if x == -1 and y == -1 then --撤销移动
         local NewRequest = {
@@ -122,11 +121,11 @@ function AI_SDK.MoveTo(x, y, moveNum)
         ClientSock.SendMove(NewRequest)
         return
     end
-    
+
     if not AI_SDK.IsConnected(AI_SDK.SelectPos.x, AI_SDK.SelectPos.y, x, y) then
         return
     end
-    
+
     local NewRequest = {
         armyID = AI_SDK.armyID,
         srcX = AI_SDK.SelectPos.x,
@@ -154,7 +153,7 @@ end
 
 function AI_SDK.MoveByCoordinates(srcX, srcY, dstX, dstY, moveNum)
     if not AI_SDK.IsConnected(srcX, srcY, dstX, dstY) then
-        return 
+        return
     end
     AI_SDK.SelectPos = {srcX, srcY}
     AI_SDK.MoveTo(dstX, dstY, moveNum)
@@ -168,7 +167,7 @@ function AI_SDK.IsConnected(posX1, posY1, posX2, posY2)
             return true
         end
     end
-    
+
     if posX1 % 2 == 1 then
         if (posX1 == posX2 + 1 or posX1 == posX2 - 1) and (posY1 == posY2 or posY1 == posY2 - 1) then
             return true
@@ -180,7 +179,6 @@ function AI_SDK.IsConnected(posX1, posY1, posX2, posY2)
     end
     return false
 end
-
 
 -- 返回一个反向Table
 function AI_SDK.reverseTable(table)
