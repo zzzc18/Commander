@@ -99,8 +99,8 @@ function ButtonsBasic:Load()
             0,
             ButtonsData.startRatio,
             ButtonsData.startRatio,
-            273 / 2,
-            107 / 2
+            307 / 2,
+            141 / 2
         )
         Buttons.NewButton(
             "data/Picture/replay.PNG",
@@ -311,8 +311,8 @@ function Buttons.DrawButtons()
                 button.x,
                 button.y,
                 button.orientation,
-                button.ratioX * windowHeight / 720,
-                button.ratioY * windowHeight / 720,
+                button.ratioX,
+                button.ratioY,
                 button.offsetX,
                 button.offsetY
             )
@@ -602,7 +602,7 @@ function ButtonsBasic:ButtonsRelease(button)
     return button.name
 end
 
---可随窗口大小调整按钮大小，暂时禁止调整窗口大小
+--可随窗口大小调整按钮大小
 function Buttons.Update()
     local windowWidth, windowHeight = love.graphics.getDimensions()
     local mouseX, mouseY = love.mouse.getPosition()
@@ -613,11 +613,15 @@ function Buttons.Update()
                 button.y = windowHeight / 2
                 button.ratioX = 0.8 * windowHeight / 990
                 button.ratioY = 0.8 * windowHeight / 990
+            -- button.offsetX = 307 / 2 * button.ratioX
+            -- button.offsetY = 141 / 2 * button.ratioY
             end
             if button.name == "replay" then
                 button.y = windowHeight * 7 / 10
                 button.ratioX = 0.7 * windowHeight / 990
                 button.ratioY = 0.7 * windowHeight / 990
+            -- button.offsetX = button.imag:getWidth() / 2
+            -- button.offsetY = button.imag:getHeight() / 2
             end
         end
         Buttons.MouseState(mouseX, mouseY, 1)
