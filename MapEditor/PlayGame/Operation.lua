@@ -57,7 +57,9 @@ function Operation.CatchKeyPressed(key)
     end
     if key == "space" then
         CGameMap.ChangeBelong(x, y)
-        Debug.Log("info", string.format("Change the belong of %d,%d", x, y))
+        if CGameMap.GetNodeType(x, y) ~= "NODE_TYPE_HILL" then
+            Debug.Log("info", string.format("Change the belong of %d,%d", x, y))
+        end
     end
 
     Operation.Select(x, y)
@@ -76,8 +78,10 @@ function Operation.CatchMousePressed(pixelX, pixelY, button, istouch, presses)
             --print(string.format("Current select: %d,%d", Operation.SelectPos.x, Operation.SelectPos.y))
             if button == 1 then
                 Operation.Increase(x, y)
+                Debug.Log("info", string.format("Increase 1 at %d,%d", x, y))
             elseif button == 2 then
                 Operation.Decrease(x, y)
+                Debug.Log("info", string.format("Decrease 1 at %d,%d", x, y))
             end
         else
             Operation.Select(x, y)
