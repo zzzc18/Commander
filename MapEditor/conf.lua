@@ -6,4 +6,5 @@ function love.conf(this)
     this.modules.joystick = false
     this.modules.physics = false
     this.window.title = "MapEditor"
+    this.window.icon = "data/Picture/Logo.png"
 end

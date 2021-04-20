@@ -15,6 +15,7 @@ function Operation.CatchKeyPressed(key)
 
     if key == "return" then
         CGameMap.SaveEdit()
+        Debug.Log("info", "Saved")
         return
     end
 
@@ -26,30 +27,37 @@ function Operation.CatchKeyPressed(key)
     local y = Operation.SelectPos.y
     if key == "h" then
         CGameMap.ChangeType(x, y, 1)
+        Debug.Log("info", string.format("Change %d,%d to HILL type", x, y))
         return
     end
     if key == "b" then
         CGameMap.ChangeType(x, y, 2)
+        Debug.Log("info", string.format("Change %d,%d to BLANK type", x, y))
         return
     end
     if key == "k" then
         CGameMap.ChangeType(x, y, 3)
+        Debug.Log("info", string.format("Change %d,%d to KING type", x, y))
         return
     end
     if key == "f" then
         CGameMap.ChangeType(x, y, 4)
+        Debug.Log("info", string.format("Change %d,%d to FORT type", x, y))
         return
     end
     if key == "o" then
         CGameMap.ChangeType(x, y, 5)
+        Debug.Log("info", string.format("Change %d,%d to OBSTACLE type", x, y))
         return
     end
     if key == "m" then
         CGameMap.ChangeType(x, y, 6)
+        Debug.Log("info", string.format("Change %d,%d to MARSH type", x, y))
         return
     end
     if key == "space" then
         CGameMap.ChangeBelong(x, y)
+        Debug.Log("info", string.format("Change the belong of %d,%d", x, y))
     end
 
     Operation.Select(x, y)
