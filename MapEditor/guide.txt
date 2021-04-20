@@ -1,5 +1,5 @@
 对已选择的格点：
 --鼠标左键加一，右键减一，对hill无效
---按h为hill，f为fort，b为blank，k为king，o为obstacle，m为marsh，由其它类型变为hill会将兵数置0
+--按h为hill，f为fort，b为blank，k为king，o为obstacle，m为marsh，由其它类型变为hill会将兵数置0，变为fort会将兵数置1
 --按空格改变belong，若将king所在格点变为属于SERVER，则会将king变成blank并置0
 按enter保存
