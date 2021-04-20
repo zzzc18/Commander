@@ -351,10 +351,7 @@ function Buttons.DrawButtons()
     end
     if ReplayGame == Running then
         for i, button in pairs(EachButton) do
-            if
-                "Start" == ReplayGame.gameState and "continue_Opt" ~= button.name and
-                    "exit_Opt" ~= button.name
-             then
+            if "Start" == ReplayGame.gameState and "continue_Opt" ~= button.name and "exit_Opt" ~= button.name then
                 if
                     (true == Buttons.isPause and "pause" == button.name) or
                         (false == Buttons.isPause and "continue" == button.name)
@@ -374,10 +371,7 @@ function Buttons.DrawButtons()
                         button.scalingcenterY
                     )
                 end
-            elseif
-                "Menu" == ReplayGame.gameState and
-                    ("continue_Opt" == button.name or "exit_Opt" == button.name)
-             then
+            elseif "Menu" == ReplayGame.gameState and ("continue_Opt" == button.name or "exit_Opt" == button.name) then
                 love.graphics.setColor(button.Color)
                 love.graphics.draw(
                     button.imag,
@@ -448,22 +442,13 @@ function Buttons.MouseState(mouseX, mouseY, mode)
         local inButton = false
         for i, button in pairs(EachButton) do
             if "menu" == button.name and "Start" == PlayGame.gameState then
-                if
-                    mouseX > button.x and mouseX < button.x + 63 and mouseY > button.y and
-                        mouseY < button.y + 63
-                 then
+                if mouseX > button.x and mouseX < button.x + 63 and mouseY > button.y and mouseY < button.y + 63 then
                     inButton = true
                     if 0 == mode then
                         name = "Clicked"
-                        ButtonsBasic:ChangeColor(
-                            button,
-                            ButtonsData.ClickedColor
-                        )
+                        ButtonsBasic:ChangeColor(button, ButtonsData.ClickedColor)
                     elseif 1 == mode and not love.mouse.isDown(1) then
-                        ButtonsBasic:ChangeColor(
-                            button,
-                            ButtonsData.SelectedColor
-                        )
+                        ButtonsBasic:ChangeColor(button, ButtonsData.SelectedColor)
                     elseif 2 == mode then
                         name = ButtonsBasic:ButtonsRelease(button)
                     end
@@ -478,15 +463,9 @@ function Buttons.MouseState(mouseX, mouseY, mode)
                     inButton = true
                     if 0 == mode then
                         name = "Clicked"
-                        ButtonsBasic:ChangeColor(
-                            button,
-                            ButtonsData.ClickedColor
-                        )
+                        ButtonsBasic:ChangeColor(button, ButtonsData.ClickedColor)
                     elseif 1 == mode and not love.mouse.isDown(1) then
-                        ButtonsBasic:ChangeColor(
-                            button,
-                            ButtonsData.SelectedColor
-                        )
+                        ButtonsBasic:ChangeColor(button, ButtonsData.SelectedColor)
                     elseif 2 == mode then
                         name = ButtonsBasic:ButtonsRelease(button)
                     end
@@ -503,39 +482,24 @@ function Buttons.MouseState(mouseX, mouseY, mode)
         local name
         local inButton = false
         for i, button in pairs(EachButton) do
-            if
-                "Start" == ReplayGame.gameState and "continue_Opt" ~= button.name and
-                    "exit_Opt" ~= button.name
-             then
+            if "Start" == ReplayGame.gameState and "continue_Opt" ~= button.name and "exit_Opt" ~= button.name then
                 if
                     (true == Buttons.isPause and "pause" == button.name) or
                         (false == Buttons.isPause and "continue" == button.name)
                  then
                 else
-                    if
-                        mouseX > button.x and mouseX < button.x + 63 and mouseY > button.y and
-                            mouseY < button.y + 63
-                     then
+                    if mouseX > button.x and mouseX < button.x + 63 and mouseY > button.y and mouseY < button.y + 63 then
                         inButton = true
                         if 0 == mode then
                             if "menu" == button.name then
-                                ButtonsBasic:ChangeColor(
-                                    button,
-                                    ButtonsData.ClickedColor
-                                )
+                                ButtonsBasic:ChangeColor(button, ButtonsData.ClickedColor)
                             else
                                 table.remove(button.Color, 4)
-                                table.insert(
-                                    button.Color,
-                                    ButtonsData.laterDiaphaneity
-                                )
+                                table.insert(button.Color, ButtonsData.laterDiaphaneity)
                             end
                         elseif 1 == mode and not love.mouse.isDown(1) then
                             if "menu" == button.name then
-                                ButtonsBasic:ChangeColor(
-                                    button,
-                                    ButtonsData.SelectedColor
-                                )
+                                ButtonsBasic:ChangeColor(button, ButtonsData.SelectedColor)
                             else
                                 button.ratioX = ButtonsData.laterRatio
                                 button.ratioY = ButtonsData.laterRatio
@@ -544,20 +508,14 @@ function Buttons.MouseState(mouseX, mouseY, mode)
                             if "menu" == button.name then
                             else
                                 table.remove(button.Color, 4)
-                                table.insert(
-                                    button.Color,
-                                    ButtonsData.initialDiaphaneity
-                                )
+                                table.insert(button.Color, ButtonsData.initialDiaphaneity)
                             end
                             name = ButtonsBasic:ButtonsRelease(button)
                         end
                         break
                     end
                 end
-            elseif
-                "Menu" == ReplayGame.gameState and
-                    ("continue_Opt" == button.name or "exit_Opt" == button.name)
-             then
+            elseif "Menu" == ReplayGame.gameState and ("continue_Opt" == button.name or "exit_Opt" == button.name) then
                 if
                     mouseX > button.x and mouseX < button.x + 190 * love.graphics.getWidth() / 1080 and
                         mouseY > button.y and
@@ -566,15 +524,9 @@ function Buttons.MouseState(mouseX, mouseY, mode)
                     inButton = true
                     if 0 == mode then
                         name = "Clicked"
-                        ButtonsBasic:ChangeColor(
-                            button,
-                            ButtonsData.ClickedColor
-                        )
+                        ButtonsBasic:ChangeColor(button, ButtonsData.ClickedColor)
                     elseif 1 == mode and not love.mouse.isDown(1) then
-                        ButtonsBasic:ChangeColor(
-                            button,
-                            ButtonsData.SelectedColor
-                        )
+                        ButtonsBasic:ChangeColor(button, ButtonsData.SelectedColor)
                     elseif 2 == mode then
                         name = ButtonsBasic:ButtonsRelease(button)
                     end
@@ -592,8 +544,7 @@ function Buttons.MouseState(mouseX, mouseY, mode)
         local inButton = false
         for i, button in pairs(EachButton) do
             if
-                mouseX > button.x and mouseX < button.x + 190 * love.graphics.getHeight() / 720 and
-                    mouseY > button.y and
+                mouseX > button.x and mouseX < button.x + 190 * love.graphics.getHeight() / 720 and mouseY > button.y and
                     mouseY < button.y + 70 * love.graphics.getHeight() / 720
              then
                 inButton = true
@@ -620,10 +571,7 @@ function ButtonsBasic:ChangeColor(v, Color)
     if ReplayGame == Running then
         if v == nil then
             for i, button in pairs(EachButton) do
-                if
-                    "menu" ~= button.name and "continue_Opt" ~= button.name and
-                        "exit_Opt" ~= button.name
-                 then
+                if "menu" ~= button.name and "continue_Opt" ~= button.name and "exit_Opt" ~= button.name then
                     table.remove(button.Color, 4)
                     table.insert(button.Color, ButtonsData.initialDiaphaneity)
                     button.ratioX = ButtonsData.initialRatio
@@ -656,77 +604,77 @@ end
 
 --可随窗口大小调整按钮大小，暂时禁止调整窗口大小
 function Buttons.Update()
-    -- local windowWidth, windowHeight = love.graphics.getDimensions()
+    local windowWidth, windowHeight = love.graphics.getDimensions()
     local mouseX, mouseY = love.mouse.getPosition()
-    -- if Welcome == Running then
-    --     for i, button in pairs(EachButton) do
-    --         button.x = windowWidth / 2
-    --         if button.name == "start" then
-    --             button.y = windowHeight / 2
-    --             button.ratioX = 0.8 * windowHeight / 990
-    --             button.ratioY = 0.8 * windowHeight / 990
-    --         end
-    --         if button.name == "replay" then
-    --             button.y = windowHeight * 7 / 10
-    --             button.ratioX = 0.7 * windowHeight / 990
-    --             button.ratioY = 0.7 * windowHeight / 990
-    --         end
-    --     end
-    --     Buttons.MouseState(mouseX, mouseY, 1)
-    --     return
-    -- end
-    -- if PlayGame == Running or AI_SDK == Running then
-    --     for i, button in pairs(EachButton) do
-    --         if "menu" ~= button.name and "Menu" == PlayGame.gameState then
-    --             button.x = windowWidth / 2 - 95 * windowWidth / 1080
-    --             if button.name == "continue" then
-    --                 button.y = windowHeight / 2 - 70 * windowHeight / 720
-    --             elseif button.name == "exit" then
-    --                 button.y = windowHeight / 2 + 50 * windowHeight / 720
-    --             end
-    --         end
-    --     end
-    --     Buttons.MouseState(mouseX, mouseY, 1)
-    --     return
-    -- end
-    -- if ReplayGame == Running then
-    --     -- for i, button in pairs(EachButton) do
-    --     -- if 1 == i or 2 == i then
-    --     --     button.x = windowWidth * (i * 0.1 + 0.25)
-    --     -- else
-    --     --     button.x = windowWidth * (i * 0.1 + 0.15)
-    --     -- end
-    --     -- button.ratioX = ButtonsData.initialRatio * windowWidth / 1080
-    --     -- button.ratioY = ButtonsData.initialRatio * windowWidth / 1080
-    --     -- end
-    --     for i, button in pairs(EachButton) do
-    --         if "Menu" == ReplayGame.gameState and ("continue_Opt" == button.name or "exit_Opt" == button.name) then
-    --             button.x = windowWidth / 2 - 95 * windowWidth / 1080
-    --             if button.name == "continue_Opt" then
-    --                 button.y = windowHeight / 2 - 70 * windowHeight / 720
-    --             elseif button.name == "exit_Opt" then
-    --                 button.y = windowHeight / 2 + 50 * windowHeight / 720
-    --             end
-    --         end
-    --     end
-    --     Buttons.MouseState(mouseX, mouseY, 1)
-    --     return
-    -- end
-    -- if GameOver == Running then
-    --     local ratio = windowHeight / 720
-    --     for i, button in pairs(EachButton) do
-    --         button.x = windowWidth / 2 - 95 * ratio
-    --         if button.name == "play again" then
-    --             button.y = windowHeight / 2 - 70 * ratio
-    --         elseif button.name == "watch replay" then
-    --             button.y = windowHeight / 2 + 10 * ratio
-    --         elseif button.name == "exit" then
-    --             button.y = windowHeight / 2 + 90 * ratio
-    --         end
-    --     end
-    --     Buttons.MouseState(mouseX, mouseY, 1)
-    --     return
-    -- end
+    if Welcome == Running then
+        for i, button in pairs(EachButton) do
+            button.x = windowWidth / 2
+            if button.name == "start" then
+                button.y = windowHeight / 2
+                button.ratioX = 0.8 * windowHeight / 990
+                button.ratioY = 0.8 * windowHeight / 990
+            end
+            if button.name == "replay" then
+                button.y = windowHeight * 7 / 10
+                button.ratioX = 0.7 * windowHeight / 990
+                button.ratioY = 0.7 * windowHeight / 990
+            end
+        end
+        Buttons.MouseState(mouseX, mouseY, 1)
+        return
+    end
+    if PlayGame == Running or AI_SDK == Running then
+        for i, button in pairs(EachButton) do
+            if "menu" ~= button.name and "Menu" == PlayGame.gameState then
+                button.x = windowWidth / 2 - 95 * windowWidth / 1080
+                if button.name == "continue" then
+                    button.y = windowHeight / 2 - 70 * windowHeight / 720
+                elseif button.name == "exit" then
+                    button.y = windowHeight / 2 + 50 * windowHeight / 720
+                end
+            end
+        end
+        Buttons.MouseState(mouseX, mouseY, 1)
+        return
+    end
+    if ReplayGame == Running then
+        for i, button in pairs(EachButton) do
+            if 1 == i or 2 == i then
+                button.x = windowWidth * (i * 0.1 + 0.25)
+            else
+                button.x = windowWidth * (i * 0.1 + 0.15)
+            end
+            button.ratioX = ButtonsData.initialRatio * windowWidth / 1080
+            button.ratioY = ButtonsData.initialRatio * windowWidth / 1080
+        end
+        for i, button in pairs(EachButton) do
+            if "Menu" == ReplayGame.gameState and ("continue_Opt" == button.name or "exit_Opt" == button.name) then
+                button.x = windowWidth / 2 - 95 * windowWidth / 1080
+                if button.name == "continue_Opt" then
+                    button.y = windowHeight / 2 - 70 * windowHeight / 720
+                elseif button.name == "exit_Opt" then
+                    button.y = windowHeight / 2 + 50 * windowHeight / 720
+                end
+            end
+        end
+        Buttons.MouseState(mouseX, mouseY, 1)
+        return
+    end
+    if GameOver == Running then
+        local ratio = windowHeight / 720
+        for i, button in pairs(EachButton) do
+            button.x = windowWidth / 2 - 95 * ratio
+            if button.name == "play again" then
+                button.y = windowHeight / 2 - 70 * ratio
+            elseif button.name == "watch replay" then
+                button.y = windowHeight / 2 + 10 * ratio
+            elseif button.name == "exit" then
+                button.y = windowHeight / 2 + 90 * ratio
+            end
+        end
+        Buttons.MouseState(mouseX, mouseY, 1)
+        return
+    end
     Buttons.MouseState(mouseX, mouseY, 1)
 end
 

@@ -29,11 +29,30 @@ function BGAnimation.deLoad()
 end
 
 function BGAnimation.draw()
-    love.graphics.draw(BGAnimation.BGimg1.path, BGAnimation.BGimg1.x, BGAnimation.BGimg1.y, 0, BGAnimation.BGimg1.widthRatio, BGAnimation.BGimg1.heightRatio)
-    love.graphics.draw(BGAnimation.BGimg2.path, BGAnimation.BGimg2.x, BGAnimation.BGimg2.y, 0, BGAnimation.BGimg2.widthRatio, BGAnimation.BGimg2.heightRatio)
+    love.graphics.draw(
+        BGAnimation.BGimg1.path,
+        BGAnimation.BGimg1.x,
+        BGAnimation.BGimg1.y,
+        0,
+        BGAnimation.BGimg1.widthRatio,
+        BGAnimation.BGimg1.heightRatio
+    )
+    love.graphics.draw(
+        BGAnimation.BGimg2.path,
+        BGAnimation.BGimg2.x,
+        BGAnimation.BGimg2.y,
+        0,
+        BGAnimation.BGimg2.widthRatio,
+        BGAnimation.BGimg2.heightRatio
+    )
 end
 
 function BGAnimation.update(dt)
+    BGAnimation.PixelWidth, BGAnimation.PixelHeight = love.graphics.getPixelDimensions()
+    -- BGAnimation.BGimg1.widthRatio = BGAnimation.PixelWidth / 1080
+    BGAnimation.BGimg1.heightRatio = BGAnimation.PixelHeight / 720
+    -- BGAnimation.BGimg2.widthRatio = BGAnimation.PixelWidth / 1080
+    BGAnimation.BGimg2.heightRatio = BGAnimation.PixelHeight / 720
     if BGAnimation.moveDistance < BGAnimation.PixelWidth then
         BGAnimation.BGimg1.x = BGAnimation.BGimg1.x - dt * BGAnimation.moveRate
         BGAnimation.BGimg2.x = BGAnimation.BGimg2.x - dt * BGAnimation.moveRate
