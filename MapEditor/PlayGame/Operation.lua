@@ -70,8 +70,6 @@ function Operation.CatchMousePressed(pixelX, pixelY, button, istouch, presses)
     if x == -1 and y == -1 then
         return
     end
-    print("mouse pressed")
-    print(string.format("Chosen point %d %d", x, y))
     if Operation.SelectPos ~= nil then
         if Operation.SelectPos.x == x and Operation.SelectPos.y == y then -- 再次选择了已选位置
             -- Operation.Select(x, y)
