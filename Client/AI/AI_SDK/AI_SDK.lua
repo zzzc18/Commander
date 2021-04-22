@@ -139,7 +139,7 @@ function AI_SDK.DirectionToDestination(x, y, direction)
     local mode = x % 2 + 1
     x = x + BasicMap.direction[mode][direction][1]
     y = y + BasicMap.direction[mode][direction][2]
-    return {x, y}
+    return x, y
 end
 
 function AI_SDK.MoveByDirection(srcX, srcY, moveNum, direction)
@@ -166,11 +166,17 @@ function AI_SDK.IsConnected(posX1, posY1, posX2, posY2)
     end
 
     if posX1 % 2 == 1 then
-        if (posX1 == posX2 + 1 or posX1 == posX2 - 1) and (posY1 == posY2 or posY1 == posY2 - 1) then
+        if
+            (posX1 == posX2 + 1 or posX1 == posX2 - 1) and
+                (posY1 == posY2 or posY1 == posY2 - 1)
+         then
             return true
         end
     else
-        if (posX1 == posX2 + 1 or posX1 == posX2 - 1) and (posY1 == posY2 or posY1 == posY2 + 1) then
+        if
+            (posX1 == posX2 + 1 or posX1 == posX2 - 1) and
+                (posY1 == posY2 or posY1 == posY2 + 1)
+         then
             return true
         end
     end
