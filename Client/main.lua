@@ -15,6 +15,11 @@ BGAnimation = require("Welcome.BGAnimation")
 Switcher = require("Switcher")
 AI_SDK = require("AI.AI_SDK.AI_SDK")
 
+TimeOut = 1e10
+CurrentTime = 0
+--客户端是否正运行自动对战任务，如果为true，客户端会在游戏结束或超时后关闭
+Task = false
+
 Font = {
     gillsans50 = love.graphics.newFont("Font/gillsans.ttf", 50)
 }
@@ -34,8 +39,19 @@ function love.load()
     Debug.Init()
     Debug.Log("info", "game start as client")
     Coordinate.valid()
-    -- Running = PlayGame
-    Running = Welcome
+    local task = io.open("../ClientTask.txt")
+    if task ~= nil then
+        if task:read() == "true" then
+            Task = true
+            Debug.Log("info", "start as AI")
+            TimeOut = tonumber(task:read())
+            Running = AI_SDK
+        else
+            Debug.Log("info", "start without task")
+            Running = Welcome
+        end
+        task:close()
+    end
     Running.Init()
     Switcher.Init()
     Picture.Init()
@@ -72,6 +88,11 @@ function love.draw()
 end
 
 function love.update(dt)
+    CurrentTime = CurrentTime + dt
+    if CurrentTime > TimeOut and Task == true then
+        Debug.Log("info", "game quit because timeout")
+        love.event.quit(0)
+    end
     -- 倍速开关，用于快速测试，可以通过注释和取消注释调整
     -- dt = dt * 10
     Running.update(dt)

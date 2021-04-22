@@ -51,6 +51,10 @@ end
 
 -- 初始化
 function GameOver.Init()
+    if Task == true then
+        Debug.Log("info", "auto quit game")
+        love.event.quit(0)
+    end
     GameOver.armyNum = PlayGame.armyNum
     GameOver.menuV = love.graphics.newImage("data/Picture/OPTION_TYPE_VICTORY.PNG")
     GameOver.menuD = love.graphics.newImage("data/Picture/OPTION_TYPE_DEFEATED.PNG")

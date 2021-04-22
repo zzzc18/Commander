@@ -9,7 +9,7 @@ local CCore = require("lib.UserImplementation")
 
 --READY:游戏未开始，不显示界面，无法操作
 --Start:游戏进行中
---Over:游戏介绍，显示界面，无法发送移动命令
+--Over:游戏结束，显示界面，无法发送移动命令
 --Menu:菜单界面
 AI_SDK.gameState = "READY"
 AI_SDK.judgementState = "Running"
@@ -27,20 +27,6 @@ function AI_SDK.Init()
     Buttons.Init()
     BGAnimation.load()
     math.randomseed(tonumber(tostring(os.time()):reverse():sub(1, 9)))
-
-    local Implementation_file = io.open("AI/UserImplementationType.txt")
-    io.input(Implementation_file)
-    print(io.read())
-    local lang = io.read()
-    print(lang)
-    if lang == "C++" then
-        AI_SDK.TypeImplementation = "C++"
-    else
-        if lang == "Lua" then
-            AI_SDK.TypeImplementation = "Lua"
-        end
-    end
-    print(AI_SDK.TypeImplementation)
 end
 
 function AI_SDK.DeInit()
@@ -50,7 +36,18 @@ function AI_SDK.DeInit()
 end
 
 function AI_SDK.LoadMap()
-    AI_SDK.armyNum = CGameMap.LoadMap()
+    local command = {"false", "1e10", "default", "default", "C++"}
+    local task = io.open("../ClientTask.txt", "r")
+    if task ~= nil then
+        local i = 1
+        for line in task:lines() do
+            command[i] = line
+            i = i + 1
+        end
+        task:close()
+    end
+    AI_SDK.armyNum = CGameMap.LoadMap(command[3], command[4])
+    AI_SDK.TypeImplementation = command[5]
     BasicMap.Init()
 end
 

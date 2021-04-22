@@ -4,7 +4,7 @@ local Judgement = require("PlayGame.Judgement")
 
 --READY:游戏未开始，不显示界面
 --Start:游戏进行中
---Over:游戏介绍，显示界面，不发送地图更新
+--Over:游戏结束，显示界面，不发送地图更新
 PlayGame.gameState = "READY"
 PlayGame.armyID = nil
 PlayGame.armyNum = 0
@@ -12,8 +12,18 @@ PlayGame.armyNum = 0
 function PlayGame.Init(MapMode)
     -- CGameMap.RandomGenMap()
     -- CGameMap.WriteMap()
-    PlayGame.armyNum = CGameMap.LoadMap()
-    CGameMap.InitSavedata()
+    local command = {"false", "1e10", "default", "default", "default", "default"}
+    local task = io.open("../ServerTask.txt", "r")
+    if task ~= nil then
+        local i = 1
+        for line in task:lines() do
+            command[i] = line
+            i = i + 1
+        end
+        task:close()
+    end
+    PlayGame.armyNum = CGameMap.LoadMap(command[3], command[4])
+    CGameMap.InitSavedata(command[5], command[6])
     BasicMap.Init()
     Judgement.Init()
     Coordinate.Init()
@@ -62,6 +72,9 @@ function PlayGame.update(dt)
         Judgement.Judge()
         ServerSock.SendUpdate(dt)
         Coordinate.update(dt)
+    end
+    if Task == true and PlayGame.gameState == "Over" then
+        love.event.quit(0)
     end
 end
 
