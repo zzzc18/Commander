@@ -10,6 +10,8 @@ Bitser = require("spec.bitser")
 
 TimeOut = 1e10
 CurrentTime = 0
+--服务端是否正运行自动对战任务，如果为true，服务端会在超时后结束游戏并关闭、在关闭时删除ServerTask.txt
+Task = false
 
 require("System.Color")
 require("System.Picture")
@@ -31,7 +33,10 @@ function love.load()
     ServerSock.Init(PlayGame.armyNum)
     local fp = io.open("../ServerTask.txt")
     if fp ~= nil then
-        TimeOut = tonumber(fp:read())
+        if fp:read() == "true" then
+            Task = true
+            TimeOut = tonumber(fp:read())
+        end
         fp:close()
     end
 end
@@ -61,7 +66,7 @@ end
 
 function love.update(dt)
     CurrentTime = CurrentTime + dt
-    if CurrentTime > TimeOut then
+    if CurrentTime > TimeOut and Task == true then
         Debug.Log("info", "game quit because timeout")
         love.event.quit(0)
     end
@@ -72,6 +77,11 @@ function love.update(dt)
 end
 
 function love.quit()
+    if Task == true then
+        Debug.Log("info", "delete ServerTask.txt")
+        --通过删除来告知autoMatch.py这场对局已经结束
+        os.execute("del ..\\ServerTask.txt")
+    end
     Debug.Log("info", "game quit")
     return false
 end

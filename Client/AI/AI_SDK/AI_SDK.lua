@@ -36,19 +36,18 @@ function AI_SDK.DeInit()
 end
 
 function AI_SDK.LoadMap()
-    local dict = {"default", "default", "C++"}
+    local command = {"false", "1e10", "default", "default", "C++"}
     local task = io.open("../ClientTask.txt", "r")
     if task ~= nil then
-        PlayGame.task = true
         local i = 1
         for line in task:lines() do
-            dict[i] = line
+            command[i] = line
             i = i + 1
         end
         task:close()
     end
-    AI_SDK.armyNum = CGameMap.LoadMap(dict[2], dict[3])
-    AI_SDK.TypeImplementation = dict[4]
+    AI_SDK.armyNum = CGameMap.LoadMap(command[3], command[4])
+    AI_SDK.TypeImplementation = command[5]
     BasicMap.Init()
 end
 

@@ -8,24 +8,22 @@ local Judgement = require("PlayGame.Judgement")
 PlayGame.gameState = "READY"
 PlayGame.armyID = nil
 PlayGame.armyNum = 0
-PlayGame.task = false
 
 function PlayGame.Init(MapMode)
     -- CGameMap.RandomGenMap()
     -- CGameMap.WriteMap()
-    local dict = {"default", "default", "default", "default"}
+    local command = {"false", "1e10", "default", "default", "default", "default"}
     local task = io.open("../ServerTask.txt", "r")
     if task ~= nil then
-        PlayGame.task = true
         local i = 1
         for line in task:lines() do
-            dict[i] = line
+            command[i] = line
             i = i + 1
         end
         task:close()
     end
-    PlayGame.armyNum = CGameMap.LoadMap(dict[2], dict[3])
-    CGameMap.InitSavedata(dict[4], dict[5])
+    PlayGame.armyNum = CGameMap.LoadMap(command[3], command[4])
+    CGameMap.InitSavedata(command[5], command[6])
     BasicMap.Init()
     Judgement.Init()
     Coordinate.Init()
@@ -75,10 +73,7 @@ function PlayGame.update(dt)
         ServerSock.SendUpdate(dt)
         Coordinate.update(dt)
     end
-    if PlayGame.task == true and PlayGame.gameState == "Over" then
-        --os.remove("../ServerTask.txt")
-        os.execute("del ..\\ServerTask.txt")
-        --通过删除来告知python这场对局已经结束
+    if Task == true and PlayGame.gameState == "Over" then
         love.event.quit(0)
     end
 end

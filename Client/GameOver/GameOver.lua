@@ -51,9 +51,7 @@ end
 
 -- 初始化
 function GameOver.Init()
-    local fp = io.open("../ClientTask.txt")
-    if fp ~= nil then
-        fp.close()
+    if Task == true then
         Debug.Log("info", "auto quit game")
         love.event.quit(0)
     end

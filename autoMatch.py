@@ -11,13 +11,13 @@ class autoMatch(object):
     AIwinnings = [[], [], [], []]
     # 游戏使用的地图目录，地图中玩家数应与上方的智能体数匹配
     #mapDict = "maps_3player"
-    mapDict = "Data"
+    mapDict = "default"
     mapName = ""
     # 存档文件夹名
     saveDict = "Lua_C++_C++"
     saveName = ""
     timeDelay = 2
-    # 超时时间，超过后强制结束游戏并进入下一局，不产生获胜者
+    # 自动对战超时时间，超过后强制结束游戏并进入下一局，不产生获胜者
     timeOut = 20
     # 启动游戏时是否打开控制台
     runWithConsol = True
@@ -28,6 +28,7 @@ class autoMatch(object):
 
     def creatClientTask(self, index):
         fp = open("ClientTask.txt", 'w')
+        fp.write("true\n")  # 是否为自动对战任务
         fp.write(str(self.timeOut)+"\n")
         fp.write(self.mapDict+"\n")
         fp.write(self.mapName+"\n")
@@ -37,6 +38,7 @@ class autoMatch(object):
 
     def creatServerTask(self):
         fp = open("ServerTask.txt", 'w')
+        fp.write("true\n")  # 是否为自动对战任务
         fp.write(str(self.timeOut)+"\n")
         fp.write(self.mapDict+"\n")
         fp.write(self.mapName+"\n")
@@ -47,7 +49,7 @@ class autoMatch(object):
 
     def startMatch(self, index):
         #self.mapName = str(index)+".map"
-        self.mapName = "3Player.map"
+        self.mapName = "default"
         self.saveName = "round"+str(index)
         self.creatServerTask()
         if self.runWithConsol == True:

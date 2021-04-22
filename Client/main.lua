@@ -17,6 +17,8 @@ AI_SDK = require("AI.AI_SDK.AI_SDK")
 
 TimeOut = 1e10
 CurrentTime = 0
+--客户端是否正运行自动对战任务，如果为true，客户端会在游戏结束或超时后关闭
+Task = false
 
 Font = {
     gillsans50 = love.graphics.newFont("Font/gillsans.ttf", 50)
@@ -37,14 +39,18 @@ function love.load()
     Debug.Init()
     Debug.Log("info", "game start as client")
     Coordinate.valid()
-    local fp = io.open("../ClientTask.txt")
-    if fp ~= nil then
-        Debug.Log("info", "start as AI")
-        TimeOut = tonumber(fp:read())
-        Running = AI_SDK
-        fp:close()
-    else
-        Running = PlayGame
+    local task = io.open("../ClientTask.txt")
+    if task ~= nil then
+        if task:read() == "true" then
+            Task = true
+            Debug.Log("info", "start as AI")
+            TimeOut = tonumber(task:read())
+            Running = AI_SDK
+        else
+            Debug.Log("info", "start without task")
+            Running = PlayGame
+        end
+        task:close()
     end
     Running.Init()
     Switcher.Init()
@@ -83,7 +89,7 @@ end
 
 function love.update(dt)
     CurrentTime = CurrentTime + dt
-    if CurrentTime > TimeOut then
+    if CurrentTime > TimeOut and Task == true then
         Debug.Log("info", "game quit because timeout")
         love.event.quit(0)
     end
