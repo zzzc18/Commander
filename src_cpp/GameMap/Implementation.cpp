@@ -357,6 +357,8 @@ void MAP::SaveEdit(std::string_view dict) {  // dict = "../Output/"
     char cst[80];
     strftime(cst, 80, "%Y-%m-%d_%H.%M.%S", gmtime(&t));
     std::string name = cst;
+    system("cd ..&mkdir Output");
+    Debug::Singleton().Log("info", "save to " + name + ".map");
     std::ofstream fout(dict.data() + name + ".map");
     fout << *this;
     fout.close();

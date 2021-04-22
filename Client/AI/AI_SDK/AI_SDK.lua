@@ -90,7 +90,7 @@ function AI_SDK.draw()
         return
     end
     love.graphics.setColor(1, 1, 1, 1)
-    love.graphics.print("Step:" .. ReplayGame.step, 0, 0, 0, 2)
+    Picture.PrintStepAndSpeed(ReplayGame.step)
     BasicMap.DrawMap()
     BasicMap.DrawPath()
     Operation.DrawSelect()
@@ -101,7 +101,7 @@ function AI_SDK.draw()
 end
 
 -- 移动的函数
-function AI_SDK.MoveTo(x, y, moveNum, dir)
+function AI_SDK.MoveTo(x, y, moveNum)
     if AI_SDK.gameState ~= "Start" then
         return
     --只有游戏进行时才能发送
@@ -135,7 +135,28 @@ function AI_SDK.MoveTo(x, y, moveNum, dir)
     --  记录路径
 end
 
---检查pos之间是否相邻
+function AI_SDK.DirectionToDestination(x, y, direction)
+    local mode = x % 2 + 1
+    x = x + BasicMap.direction[mode][direction][1]
+    y = y + BasicMap.direction[mode][direction][2]
+    return {x, y}
+end
+
+function AI_SDK.MoveByDirection(srcX, srcY, moveNum, direction)
+    local dstX, dstY = AI_SDK.DirectionToDestination(srcX, srcY, direction)
+    AI_SDK.SelectPos = {srcX, srcY}
+    AI_SDK.MoveTo(dstX, dstY, moveNum)
+end
+
+function AI_SDK.MoveByCoordinates(srcX, srcY, dstX, dstY, moveNum)
+    if not AI_SDK.IsConnected(srcX, srcY, dstX, dstY) then
+        return
+    end
+    AI_SDK.SelectPos = {srcX, srcY}
+    AI_SDK.MoveTo(dstX, dstY, moveNum)
+end
+
+-- 检查pos之间是否相邻
 -- 参数分别为点1和点2的坐标
 function AI_SDK.IsConnected(posX1, posY1, posX2, posY2)
     if posX1 == posX2 then
@@ -154,9 +175,6 @@ function AI_SDK.IsConnected(posX1, posY1, posX2, posY2)
         end
     end
     return false
-end
-
-function AI_SDK.UpdateTimerSecond(dt)
 end
 
 -- 返回一个反向Table

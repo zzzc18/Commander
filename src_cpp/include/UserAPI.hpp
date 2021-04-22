@@ -54,14 +54,33 @@ class UserAPI {
     }
 
     // 执行移动操作
-    void move_to(VECTOR dest, double moveNum, int direction) {
+    void move_to(VECTOR dest, double moveNum) {
         init_func_call("AI_SDK", "MoveTo");
         lua_pushnumber(luaState, dest.x);
         lua_pushnumber(luaState, dest.y);
         lua_pushnumber(luaState, moveNum);
+        execute_func_call(3);
+    }
+
+    void move_by_direction(VECTOR src, double moveNum, int direction) {
+        init_func_call("AI_SDK", "MoveByDirection");
+        lua_pushnumber(luaState, src.x);
+        lua_pushnumber(luaState, src.y);
+        lua_pushnumber(luaState, moveNum);
         lua_pushnumber(luaState, direction);
         execute_func_call(4);
     }
+
+    void move_by_coordinates(VECTOR src, VECTOR dest, double moveNum) {
+        init_func_call("AI_SDK", "MoveByCoordinates");
+        lua_pushnumber(luaState, src.x);
+        lua_pushnumber(luaState, src.y);
+        lua_pushnumber(luaState, dest.x);
+        lua_pushnumber(luaState, dest.y);
+        lua_pushnumber(luaState, moveNum);
+        execute_func_call(5);
+    }
+
     // 判断两个点是否相连
     bool is_connected(int posX1, int posY1, int posX2, int posY2) {
         init_func_call("AI_SDK", "IsConnected");

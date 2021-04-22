@@ -5,13 +5,13 @@
 @echo off
 echo wscript.sleep 100>sleep.vbs
 cd Server
-start love .
+start lovec .
 @cscript ..\sleep.vbs >nul
 @cscript ..\sleep.vbs >nul
 cd ..\Client
-start love . >log1.log
+start lovec . >log1.log
 @cscript ..\sleep.vbs >nul
-start love .
+start lovec .
 @cscript ..\sleep.vbs >nul
-start love .
+start lovec .
 del /f /s /q ..\sleep.vbs

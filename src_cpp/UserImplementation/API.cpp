@@ -9,14 +9,6 @@
 
 using namespace std;
 
-void random_move() {
-    static bool init = false;
-    if (!init) {
-        srand(time(NULL));
-    }
-    int direction = rand() % 6 + 1;
-}
-
 VECTOR after_move_pos(VECTOR cur, int direction) {
     return cur + DIR[cur.x % 2][direction];
 }
@@ -71,7 +63,7 @@ bool move_from_select() {
         cout << apos << endl;
 
         move_ratio = get_rand_percentage(0.4, 0.8);  // 随机移动
-        API.move_to(apos, move_ratio, i + 1);
+        API.move_to(apos, move_ratio);
         return true;
     }
     return false;
@@ -114,10 +106,7 @@ void random_select() {
 
 static int userMain(lua_State *luaState) {
     UserAPI &API = UserAPI::Singleton(luaState);
-    ;
     MAP &mmap = MAP::Singleton();
-    // UserAPI & API = UserAPI::Singleton(luaState);
-
     id = VERIFY::Singleton().GetArmyID();
 
     static bool init = false;
@@ -134,13 +123,7 @@ static int userMain(lua_State *luaState) {
         API.selected_pos(API.king_pos());
     }
 
-    // cout << "DEBUG" << endl;
-    // testInfo();
-
     random_select();
-    // while (!move_from_select()) {
-    //     random_select();
-    // }
 
     for (int i = 1; i <= 3 && !move_from_select(); i++) {
         random_select();

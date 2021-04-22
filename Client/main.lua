@@ -48,7 +48,7 @@ function love.load()
             Running = AI_SDK
         else
             Debug.Log("info", "start without task")
-            Running = PlayGame
+            Running = Welcome
         end
         task:close()
     end
