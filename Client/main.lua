@@ -15,10 +15,14 @@ BGAnimation = require("Welcome.BGAnimation")
 Switcher = require("Switcher")
 AI_SDK = require("AI.AI_SDK.AI_SDK")
 
-TimeOut = 1e10
-CurrentTime = 0
+Command = {}
 --客户端是否正运行自动对战任务，如果为true，客户端会在游戏结束或超时后关闭
-Task = false
+Command["[autoMatch]"] = "false"
+Command["[timeOut]"] = 1e10
+Command["[mapDict]"] = "default"
+Command["[mapName]"] = "default"
+Command["[AIlang]"] = "Lua"
+CurrentTime = 0
 
 Font = {}
 
@@ -37,22 +41,28 @@ function love.load()
     Debug.Init()
     Debug.Log("info", "game start as client")
     Coordinate.valid()
-    local task = io.open("../ClientTask.txt")
+    local task = io.open("../ClientTask.txt", "r")
     if task ~= nil then
-        if task:read() == "true" then
-            Task = true
-            Debug.Log("info", "start as AI")
-            TimeOut = tonumber(task:read())
-            Running = AI_SDK
-        else
-            Debug.Log("info", "start without task")
-            if Visable then
-                Running = Welcome
-            else
-                Running = PlayGame
+        local line = task:read()
+        while line ~= nil do
+            Command[line] = task:read()
+            if line == "[timeOut]" then
+                Command[line] = tonumber(Command[line])
             end
+            line = task:read()
         end
         task:close()
+    end
+    if Command["[autoMatch]"] == "true" then
+        Debug.Log("info", "start as AI")
+        Running = AI_SDK
+    else
+        Debug.Log("info", "start without task")
+        if Visable then
+            Running = Welcome
+        else
+            Running = PlayGame
+        end
     end
     Running.Init()
     Switcher.Init()
@@ -95,7 +105,7 @@ end
 
 function love.update(dt)
     CurrentTime = CurrentTime + dt
-    if CurrentTime > TimeOut and Task == true then
+    if CurrentTime > Command["[timeOut]"] and Command["[autoMatch]"] == "true" then
         Debug.Log("info", "game quit because timeout")
         love.event.quit(0)
     end
