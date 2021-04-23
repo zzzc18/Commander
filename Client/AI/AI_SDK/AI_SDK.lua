@@ -27,6 +27,20 @@ function AI_SDK.Init()
     Buttons.Init()
     BGAnimation.load()
     math.randomseed(tonumber(tostring(os.time()):reverse():sub(1, 9)))
+
+    local Implementation_file = io.open("AI/UserImplementationType.txt")
+    io.input(Implementation_file)
+    print(io.read())
+    local lang = io.read()
+    print(lang)
+    if lang == "C++" then
+        AI_SDK.TypeImplementation = "C++"
+    else
+        if lang == "Lua" then
+            AI_SDK.TypeImplementation = "Lua"
+        end
+    end
+    print(AI_SDK.TypeImplementation)
 end
 
 function AI_SDK.DeInit()
@@ -137,14 +151,12 @@ end
 
 function AI_SDK.DirectionToDestination(x, y, direction)
     local mode = x % 2 + 1
-    x = x + BasicMap.direction[mode][direction][1]
-    y = y + BasicMap.direction[mode][direction][2]
-    return x, y
+    return x + BasicMap.direction[mode][direction][1], y + BasicMap.direction[mode][direction][2]
 end
 
 function AI_SDK.MoveByDirection(srcX, srcY, moveNum, direction)
     local dstX, dstY = AI_SDK.DirectionToDestination(srcX, srcY, direction)
-    AI_SDK.SelectPos = {srcX, srcY}
+    AI_SDK.SelectPos.x, AI_SDK.SelectPos.y = srcX, srcY
     AI_SDK.MoveTo(dstX, dstY, moveNum)
 end
 
@@ -152,7 +164,7 @@ function AI_SDK.MoveByCoordinates(srcX, srcY, dstX, dstY, moveNum)
     if not AI_SDK.IsConnected(srcX, srcY, dstX, dstY) then
         return
     end
-    AI_SDK.SelectPos = {srcX, srcY}
+    AI_SDK.SelectPos.x, AI_SDK.SelectPos.y = srcX, srcY
     AI_SDK.MoveTo(dstX, dstY, moveNum)
 end
 
@@ -219,7 +231,6 @@ function AI_SDK.update(dt)
     if timer < ReplayGame.step then
         if AI_SDK.TypeImplementation == "Lua" then
             Core.Main()
-            print("Lua Implementation Invoke")
         else
             if AI_SDK.TypeImplementation == "C++" then
                 CCore.userMain()

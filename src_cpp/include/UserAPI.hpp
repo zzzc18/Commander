@@ -67,7 +67,7 @@ class UserAPI {
         lua_pushnumber(luaState, src.x);
         lua_pushnumber(luaState, src.y);
         lua_pushnumber(luaState, moveNum);
-        lua_pushnumber(luaState, direction);
+        lua_pushnumber(luaState, direction + 1);
         execute_func_call(4);
     }
 

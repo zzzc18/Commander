@@ -63,7 +63,9 @@ bool move_from_select() {
         cout << apos << endl;
 
         move_ratio = get_rand_percentage(0.4, 0.8);  // 随机移动
-        API.move_to(apos, move_ratio);
+        //API.move_by_direction(API.selected_pos(), move_ratio, i);
+        //API.move_to(apos, move_ratio);
+        API.move_by_coordinates(API.selected_pos(), apos, move_ratio);
         return true;
     }
     return false;
