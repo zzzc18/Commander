@@ -15,9 +15,16 @@ BGAnimation = require("Welcome.BGAnimation")
 Switcher = require("Switcher")
 AI_SDK = require("AI.AI_SDK.AI_SDK")
 
-Font = {
-    gillsans50 = love.graphics.newFont("Font/gillsans.ttf", 50)
-}
+Command = {}
+--客户端是否正运行自动对战任务，如果为true，客户端会在游戏结束或超时后关闭
+Command["[autoMatch]"] = "false"
+Command["[timeOut]"] = 1e10
+Command["[mapDict]"] = "default"
+Command["[mapName]"] = "default"
+Command["[AIlang]"] = "Lua"
+CurrentTime = 0
+
+Font = {}
 
 require("System.Color")
 require("System.Picture")
@@ -34,11 +41,36 @@ function love.load()
     Debug.Init()
     Debug.Log("info", "game start as client")
     Coordinate.valid()
-    -- Running = PlayGame
-    Running = Welcome
+    local task = io.open("../ClientTask.txt", "r")
+    if task ~= nil then
+        local line = task:read()
+        while line ~= nil do
+            Command[line] = task:read()
+            if line == "[timeOut]" then
+                Command[line] = tonumber(Command[line])
+            end
+            line = task:read()
+        end
+        task:close()
+    end
+    if Command["[autoMatch]"] == "true" then
+        Debug.Log("info", "start as AI")
+        Running = AI_SDK
+    else
+        Debug.Log("info", "start without task")
+        if Visable then
+            Running = Welcome
+        else
+            Running = PlayGame
+        end
+    end
     Running.Init()
     Switcher.Init()
-    Picture.Init()
+    if Visable then
+        local gillsans50 = love.graphics.newFont("Font/gillsans.ttf", 50)
+        Font.gillsans50 = gillsans50
+        Picture.Init()
+    end
 end
 
 function love.wheelmoved(x, y)
@@ -72,6 +104,11 @@ function love.draw()
 end
 
 function love.update(dt)
+    CurrentTime = CurrentTime + dt
+    if CurrentTime > Command["[timeOut]"] and Command["[autoMatch]"] == "true" then
+        Debug.Log("info", "game quit because timeout")
+        love.event.quit(0)
+    end
     -- 倍速开关，用于快速测试，可以通过注释和取消注释调整
     -- dt = dt * 10
     Running.update(dt)

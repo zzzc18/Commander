@@ -8,6 +8,16 @@ CSystem = require("lib.System")
 Sock = require("sock")
 Bitser = require("spec.bitser")
 
+Command = {}
+--服务端是否正运行自动对战任务，如果为true，服务端会在超时后结束游戏并关闭、在关闭时删除ServerTask.txt
+Command["[autoMatch]"] = "false"
+Command["[timeOut]"] = 1e10
+Command["[mapDict]"] = "default"
+Command["[mapName]"] = "default"
+Command["[saveName]"] = "default"
+Command["[saveDict]"] = "default"
+CurrentTime = 0
+
 require("System.Color")
 require("System.Picture")
 require("System.BasicMap")
@@ -18,6 +28,18 @@ require("ServerSock")
 require("PlayGame.PlayGame")
 
 function love.load()
+    local task = io.open("../ServerTask.txt", "r")
+    if task ~= nil then
+        local line = task:read()
+        while line ~= nil do
+            Command[line] = task:read()
+            if line == "[timeOut]" then
+                Command[line] = tonumber(Command[line])
+            end
+            line = task:read()
+        end
+        task:close()
+    end
     Debug.Init()
     Debug.Log("info", "game start as server")
     CVerify.Register(0, 3)
@@ -27,6 +49,7 @@ function love.load()
     Picture.Init()
     ServerSock.Init(PlayGame.armyNum)
 end
+
 function love.wheelmoved(x, y)
     Running.wheelmoved(x, y)
 end
@@ -52,6 +75,11 @@ function love.draw()
 end
 
 function love.update(dt)
+    CurrentTime = CurrentTime + dt
+    if CurrentTime > Command["[timeOut]"] and Command["[autoMatch]"] == "true" then
+        Debug.Log("info", "game quit because timeout")
+        love.event.quit(0)
+    end
     -- 倍速开关，用于快速测试，可以通过注释和取消注释调整
     -- dt = dt * 10
     Server:update()
@@ -59,6 +87,11 @@ function love.update(dt)
 end
 
 function love.quit()
+    if Command["[autoMatch]"] == "true" then
+        Debug.Log("info", "delete ServerTask.txt")
+        --通过删除来告知autoMatch.py这场对局已经结束
+        os.execute("del ..\\ServerTask.txt")
+    end
     Debug.Log("info", "game quit")
     return false
 end

@@ -15,6 +15,7 @@ function Operation.CatchKeyPressed(key)
 
     if key == "return" then
         CGameMap.SaveEdit()
+        Debug.Log("info", "Saved")
         return
     end
 
@@ -26,30 +27,39 @@ function Operation.CatchKeyPressed(key)
     local y = Operation.SelectPos.y
     if key == "h" then
         CGameMap.ChangeType(x, y, 1)
+        Debug.Log("info", string.format("Change %d,%d to HILL type", x, y))
         return
     end
     if key == "b" then
         CGameMap.ChangeType(x, y, 2)
+        Debug.Log("info", string.format("Change %d,%d to BLANK type", x, y))
         return
     end
     if key == "k" then
         CGameMap.ChangeType(x, y, 3)
+        Debug.Log("info", string.format("Change %d,%d to KING type", x, y))
         return
     end
     if key == "f" then
         CGameMap.ChangeType(x, y, 4)
+        Debug.Log("info", string.format("Change %d,%d to FORT type", x, y))
         return
     end
     if key == "o" then
         CGameMap.ChangeType(x, y, 5)
+        Debug.Log("info", string.format("Change %d,%d to OBSTACLE type", x, y))
         return
     end
     if key == "m" then
         CGameMap.ChangeType(x, y, 6)
+        Debug.Log("info", string.format("Change %d,%d to MARSH type", x, y))
         return
     end
     if key == "space" then
         CGameMap.ChangeBelong(x, y)
+        if CGameMap.GetNodeType(x, y) ~= "NODE_TYPE_HILL" then
+            Debug.Log("info", string.format("Change the belong of %d,%d", x, y))
+        end
     end
 
     Operation.Select(x, y)
@@ -62,16 +72,16 @@ function Operation.CatchMousePressed(pixelX, pixelY, button, istouch, presses)
     if x == -1 and y == -1 then
         return
     end
-    print("mouse pressed")
-    print(string.format("Chosen point %d %d", x, y))
     if Operation.SelectPos ~= nil then
         if Operation.SelectPos.x == x and Operation.SelectPos.y == y then -- 再次选择了已选位置
             -- Operation.Select(x, y)
             --print(string.format("Current select: %d,%d", Operation.SelectPos.x, Operation.SelectPos.y))
             if button == 1 then
                 Operation.Increase(x, y)
+                Debug.Log("info", string.format("Increase 1 at %d,%d", x, y))
             elseif button == 2 then
                 Operation.Decrease(x, y)
+                Debug.Log("info", string.format("Decrease 1 at %d,%d", x, y))
             end
         else
             Operation.Select(x, y)

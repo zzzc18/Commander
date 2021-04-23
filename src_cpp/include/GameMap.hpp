@@ -121,23 +121,23 @@ class MAP final {
     //回放器：回放文件目录
     std::string ReplayFile;
 
-    //以 level 为参数随机生成有 armyCnt 个军队的地图
+    //以 level 为参数随机生成有armyCnt个军队的地图
     void RandomGen(int armyCnt, int level);
 
-    //初始化存档文件夹，以游戏开始时间命名
-    void InitSavedata();
-    //从 file 读取地图
-    int LoadMap(std::string_view file = "../Data/");
-    //将地图保存至 file，以步数命名
-    void SaveMap(std::string_view file = "../Savedata/");
-    //向steps.txt保存当前步数的操作
+    //初始化存档文件夹，默认以游戏开始时间命名
+    void InitSavedata(std::string name = "", std::string dict = "Savedata");
+    //游戏存档保存路径
+    std::string SaveDict;
+    //从dict目录下读取地图name
+    int LoadMap(std::string dict = "Data", std::string name = "3Player.map");
+    //将地图保存至SaveDict文件夹(未设置则为开始时间)，以步数命名
+    void SaveMap();
+    //向SaveDict文件夹中的steps.txt保存当前步数的操作
     void SaveStep(int armyID, VECTOR src, VECTOR dst, double num);
     //向steps.txt保存游戏结束声明
     void SaveGameOver(int armyID);
     //保存生成的地图
-    void SaveEdit(std::string_view file = "../Output/");
-
-    std::string StartTime;  //游戏开始时间
+    void SaveEdit(std::string_view dict = "../Output/");
 
     //获取地图大小 (行数，列数)
     std::pair<int, int> GetSize() const;
@@ -161,7 +161,7 @@ class MAP final {
     std::pair<int, int> GetKingPos(int armyID) const;
 
     //获取当前军队从KING到当前位置的路径
-    const std::vector<std::pair<VECTOR, VECTOR>> & GetMoveCommands();
+    const std::vector<std::pair<VECTOR, VECTOR>>& GetMoveCommands();
 
    private:
     MAP() = default;

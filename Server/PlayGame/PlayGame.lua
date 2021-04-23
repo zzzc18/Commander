@@ -4,7 +4,7 @@ local Judgement = require("PlayGame.Judgement")
 
 --READY:游戏未开始，不显示界面
 --Start:游戏进行中
---Over:游戏介绍，显示界面，不发送地图更新
+--Over:游戏结束，显示界面，不发送地图更新
 PlayGame.gameState = "READY"
 PlayGame.armyID = nil
 PlayGame.armyNum = 0
@@ -12,8 +12,8 @@ PlayGame.armyNum = 0
 function PlayGame.Init(MapMode)
     -- CGameMap.RandomGenMap()
     -- CGameMap.WriteMap()
-    PlayGame.armyNum = CGameMap.LoadMap()
-    CGameMap.InitSavedata()
+    PlayGame.armyNum = CGameMap.LoadMap(Command["[mapDict]"], Command["[mapName]"])
+    CGameMap.InitSavedata(Command["[saveName]"], Command["[saveDict]"])
     BasicMap.Init()
     Judgement.Init()
     Coordinate.Init()
@@ -62,6 +62,9 @@ function PlayGame.update(dt)
         Judgement.Judge()
         ServerSock.SendUpdate(dt)
         Coordinate.update(dt)
+    end
+    if Command["[autoMatch]"] == "true" and PlayGame.gameState == "Over" then
+        love.event.quit(0)
     end
 end
 

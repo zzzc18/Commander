@@ -24,7 +24,16 @@ static int RandomGenMap(lua_State *luaState) {
  * @return @c void
  */
 static int LoadMap(lua_State *luaState) {
-    return APIreturn(luaState, MAP::Singleton().LoadMap());
+    std::string dict, name;
+    int armyNum = 0;
+    APIparam(luaState, dict, name);
+    if (dict == "default")
+        armyNum = MAP::Singleton().LoadMap();
+    else if (name == "default")
+        armyNum = MAP::Singleton().LoadMap(dict);
+    else
+        armyNum = MAP::Singleton().LoadMap(dict, name);
+    return APIreturn(luaState, armyNum);
 }
 /**
  * @brief 加载回放文件
@@ -65,7 +74,14 @@ static int GetReplayStatus(lua_State *luaState) {
  * @brief 初始化存档文件
  */
 static int InitSavedata(lua_State *luaState) {
-    MAP::Singleton().InitSavedata();
+    std::string name, dict;
+    APIparam(luaState, name, dict);
+    if (name == "default")
+        MAP::Singleton().InitSavedata();
+    else if (dict == "default")
+        MAP::Singleton().InitSavedata(name);
+    else
+        MAP::Singleton().InitSavedata(name, dict);
     return APIreturn(luaState);
 }
 /**

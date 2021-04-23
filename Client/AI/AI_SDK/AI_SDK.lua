@@ -1,15 +1,12 @@
 local AI_SDK = {}
 
-AI_SDK.TypeImplementation = "C++"
--- supported lang: "Lua", "C++"
-
 local Core = require("AI.Core")
 local Operation = require("PlayGame.Operation")
 local CCore = require("lib.UserImplementation")
 
 --READY:游戏未开始，不显示界面，无法操作
 --Start:游戏进行中
---Over:游戏介绍，显示界面，无法发送移动命令
+--Over:游戏结束，显示界面，无法发送移动命令
 --Menu:菜单界面
 AI_SDK.gameState = "READY"
 AI_SDK.judgementState = "Running"
@@ -27,20 +24,6 @@ function AI_SDK.Init()
     Buttons.Init()
     BGAnimation.load()
     math.randomseed(tonumber(tostring(os.time()):reverse():sub(1, 9)))
-
-    local Implementation_file = io.open("AI/UserImplementationType.txt")
-    io.input(Implementation_file)
-    print(io.read())
-    local lang = io.read()
-    print(lang)
-    if lang == "C++" then
-        AI_SDK.TypeImplementation = "C++"
-    else 
-        if lang == "Lua" then
-            AI_SDK.TypeImplementation = "Lua"
-        end
-    end
-    print(AI_SDK.TypeImplementation)
 end
 
 function AI_SDK.DeInit()
@@ -50,7 +33,7 @@ function AI_SDK.DeInit()
 end
 
 function AI_SDK.LoadMap()
-    AI_SDK.armyNum = CGameMap.LoadMap()
+    AI_SDK.armyNum = CGameMap.LoadMap(Command["[mapDict]"], Command["[mapName]"])
     BasicMap.Init()
 end
 
@@ -93,7 +76,7 @@ function AI_SDK.draw()
         return
     end
     love.graphics.setColor(1, 1, 1, 1)
-    love.graphics.print("Step:" .. ReplayGame.step, 0, 0, 0, 2)
+    Picture.PrintStepAndSpeed(ReplayGame.step)
     BasicMap.DrawMap()
     BasicMap.DrawPath()
     Operation.DrawSelect()
@@ -104,7 +87,7 @@ function AI_SDK.draw()
 end
 
 -- 移动的函数
-function AI_SDK.MoveTo(x, y, moveNum, dir)
+function AI_SDK.MoveTo(x, y, moveNum)
     if AI_SDK.gameState ~= "Start" then
         return
     --只有游戏进行时才能发送
@@ -138,7 +121,26 @@ function AI_SDK.MoveTo(x, y, moveNum, dir)
     --  记录路径
 end
 
---检查pos之间是否相邻
+function AI_SDK.DirectionToDestination(x, y, direction)
+    local mode = x % 2 + 1
+    return x + BasicMap.direction[mode][direction][1], y + BasicMap.direction[mode][direction][2]
+end
+
+function AI_SDK.MoveByDirection(srcX, srcY, moveNum, direction)
+    local dstX, dstY = AI_SDK.DirectionToDestination(srcX, srcY, direction)
+    AI_SDK.SelectPos.x, AI_SDK.SelectPos.y = srcX, srcY
+    AI_SDK.MoveTo(dstX, dstY, moveNum)
+end
+
+function AI_SDK.MoveByCoordinates(srcX, srcY, dstX, dstY, moveNum)
+    if not AI_SDK.IsConnected(srcX, srcY, dstX, dstY) then
+        return
+    end
+    AI_SDK.SelectPos.x, AI_SDK.SelectPos.y = srcX, srcY
+    AI_SDK.MoveTo(dstX, dstY, moveNum)
+end
+
+-- 检查pos之间是否相邻
 -- 参数分别为点1和点2的坐标
 function AI_SDK.IsConnected(posX1, posY1, posX2, posY2)
     if posX1 == posX2 then
@@ -157,9 +159,6 @@ function AI_SDK.IsConnected(posX1, posY1, posX2, posY2)
         end
     end
     return false
-end
-
-function AI_SDK.UpdateTimerSecond(dt)
 end
 
 -- 返回一个反向Table
@@ -196,11 +195,10 @@ function AI_SDK.update(dt)
         return
     end
     if timer < ReplayGame.step then
-        if AI_SDK.TypeImplementation == "Lua" then
+        if Command["[AIlang]"] == "Lua" then
             Core.Main()
-            print("Lua Implementation Invoke")
         else
-            if AI_SDK.TypeImplementation == "C++" then
+            if Command["[AIlang]"] == "C++" then
                 CCore.userMain()
             end
         end

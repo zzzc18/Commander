@@ -99,8 +99,8 @@ function ButtonsBasic:Load()
             0,
             ButtonsData.startRatio,
             ButtonsData.startRatio,
-            273 / 2,
-            107 / 2
+            307 / 2,
+            141 / 2
         )
         Buttons.NewButton(
             "data/Picture/replay.PNG",
@@ -315,8 +315,8 @@ function Buttons.DrawButtons()
                 button.x,
                 button.y,
                 button.orientation,
-                button.ratioX * windowHeight / 720,
-                button.ratioY * windowHeight / 720,
+                button.ratioX,
+                button.ratioY,
                 button.offsetX,
                 button.offsetY
             )
@@ -606,79 +606,83 @@ function ButtonsBasic:ButtonsRelease(button)
     return button.name
 end
 
---可随窗口大小调整按钮大小，暂时禁止调整窗口大小
+--可随窗口大小调整按钮大小
 function Buttons.Update()
-    -- local windowWidth, windowHeight = love.graphics.getDimensions()
+    local windowWidth, windowHeight = love.graphics.getDimensions()
     local mouseX, mouseY = love.mouse.getPosition()
-    -- if Welcome == Running then
-    --     for i, button in pairs(EachButton) do
-    --         button.x = windowWidth / 2
-    --         if button.name == "start" then
-    --             button.y = windowHeight / 2
-    --             button.ratioX = 0.8 * windowHeight / 990
-    --             button.ratioY = 0.8 * windowHeight / 990
-    --         end
-    --         if button.name == "replay" then
-    --             button.y = windowHeight * 7 / 10
-    --             button.ratioX = 0.7 * windowHeight / 990
-    --             button.ratioY = 0.7 * windowHeight / 990
-    --         end
-    --     end
-    --     Buttons.MouseState(mouseX, mouseY, 1)
-    --     return
-    -- end
-    -- if PlayGame == Running or AI_SDK == Running then
-    --     for i, button in pairs(EachButton) do
-    --         if "menu" ~= button.name and "Menu" == PlayGame.gameState then
-    --             button.x = windowWidth / 2 - 95 * windowWidth / 1080
-    --             if button.name == "continue" then
-    --                 button.y = windowHeight / 2 - 70 * windowHeight / 720
-    --             elseif button.name == "exit" then
-    --                 button.y = windowHeight / 2 + 50 * windowHeight / 720
-    --             end
-    --         end
-    --     end
-    --     Buttons.MouseState(mouseX, mouseY, 1)
-    --     return
-    -- end
-    -- if ReplayGame == Running then
-    --     -- for i, button in pairs(EachButton) do
-    --     -- if 1 == i or 2 == i then
-    --     --     button.x = windowWidth * (i * 0.1 + 0.25)
-    --     -- else
-    --     --     button.x = windowWidth * (i * 0.1 + 0.15)
-    --     -- end
-    --     -- button.ratioX = ButtonsData.initialRatio * windowWidth / 1080
-    --     -- button.ratioY = ButtonsData.initialRatio * windowWidth / 1080
-    --     -- end
-    --     for i, button in pairs(EachButton) do
-    --         if "Menu" == ReplayGame.gameState and ("continue_Opt" == button.name or "exit_Opt" == button.name) then
-    --             button.x = windowWidth / 2 - 95 * windowWidth / 1080
-    --             if button.name == "continue_Opt" then
-    --                 button.y = windowHeight / 2 - 70 * windowHeight / 720
-    --             elseif button.name == "exit_Opt" then
-    --                 button.y = windowHeight / 2 + 50 * windowHeight / 720
-    --             end
-    --         end
-    --     end
-    --     Buttons.MouseState(mouseX, mouseY, 1)
-    --     return
-    -- end
-    -- if GameOver == Running then
-    --     local ratio = windowHeight / 720
-    --     for i, button in pairs(EachButton) do
-    --         button.x = windowWidth / 2 - 95 * ratio
-    --         if button.name == "play again" then
-    --             button.y = windowHeight / 2 - 70 * ratio
-    --         elseif button.name == "watch replay" then
-    --             button.y = windowHeight / 2 + 10 * ratio
-    --         elseif button.name == "exit" then
-    --             button.y = windowHeight / 2 + 90 * ratio
-    --         end
-    --     end
-    --     Buttons.MouseState(mouseX, mouseY, 1)
-    --     return
-    -- end
+    if Welcome == Running then
+        for i, button in pairs(EachButton) do
+            button.x = windowWidth / 2
+            if button.name == "start" then
+                button.y = windowHeight / 2
+                button.ratioX = 0.8 * windowHeight / 990
+                button.ratioY = 0.8 * windowHeight / 990
+            -- button.offsetX = 307 / 2 * button.ratioX
+            -- button.offsetY = 141 / 2 * button.ratioY
+            end
+            if button.name == "replay" then
+                button.y = windowHeight * 7 / 10
+                button.ratioX = 0.7 * windowHeight / 990
+                button.ratioY = 0.7 * windowHeight / 990
+            -- button.offsetX = button.imag:getWidth() / 2
+            -- button.offsetY = button.imag:getHeight() / 2
+            end
+        end
+        Buttons.MouseState(mouseX, mouseY, 1)
+        return
+    end
+    if PlayGame == Running or AI_SDK == Running then
+        for i, button in pairs(EachButton) do
+            if "menu" ~= button.name and "Menu" == PlayGame.gameState then
+                button.x = windowWidth / 2 - 95 * windowWidth / 1080
+                if button.name == "continue" then
+                    button.y = windowHeight / 2 - 70 * windowHeight / 720
+                elseif button.name == "exit" then
+                    button.y = windowHeight / 2 + 50 * windowHeight / 720
+                end
+            end
+        end
+        Buttons.MouseState(mouseX, mouseY, 1)
+        return
+    end
+    if ReplayGame == Running then
+        for i, button in pairs(EachButton) do
+            if 1 == i or 2 == i then
+                button.x = windowWidth * (i * 0.1 + 0.25)
+            else
+                button.x = windowWidth * (i * 0.1 + 0.15)
+            end
+            button.ratioX = ButtonsData.initialRatio * windowWidth / 1080
+            button.ratioY = ButtonsData.initialRatio * windowWidth / 1080
+        end
+        for i, button in pairs(EachButton) do
+            if "Menu" == ReplayGame.gameState and ("continue_Opt" == button.name or "exit_Opt" == button.name) then
+                button.x = windowWidth / 2 - 95 * windowWidth / 1080
+                if button.name == "continue_Opt" then
+                    button.y = windowHeight / 2 - 70 * windowHeight / 720
+                elseif button.name == "exit_Opt" then
+                    button.y = windowHeight / 2 + 50 * windowHeight / 720
+                end
+            end
+        end
+        Buttons.MouseState(mouseX, mouseY, 1)
+        return
+    end
+    if GameOver == Running then
+        local ratio = windowHeight / 720
+        for i, button in pairs(EachButton) do
+            button.x = windowWidth / 2 - 95 * ratio
+            if button.name == "play again" then
+                button.y = windowHeight / 2 - 70 * ratio
+            elseif button.name == "watch replay" then
+                button.y = windowHeight / 2 + 10 * ratio
+            elseif button.name == "exit" then
+                button.y = windowHeight / 2 + 90 * ratio
+            end
+        end
+        Buttons.MouseState(mouseX, mouseY, 1)
+        return
+    end
     Buttons.MouseState(mouseX, mouseY, 1)
 end
 
