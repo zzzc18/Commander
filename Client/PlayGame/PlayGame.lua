@@ -35,17 +35,7 @@ end
 function PlayGame.LoadMap()
     -- CGameMap.RandomGenMap()
     -- CGameMap.WriteMap()
-    local command = {"false", "1e10", "default", "default", "C++"}
-    local task = io.open("../ClientTask.txt", "r")
-    if task ~= nil then
-        local i = 1
-        for line in task:lines() do
-            command[i] = line
-            i = i + 1
-        end
-        task:close()
-    end
-    PlayGame.armyNum = CGameMap.LoadMap(command[3], command[4])
+    PlayGame.armyNum = CGameMap.LoadMap(Command["[mapDict]"], Command["[mapName]"])
     BasicMap.Init()
 end
 

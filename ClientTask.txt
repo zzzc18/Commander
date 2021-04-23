@@ -1,5 +1,10 @@
+[autoMatch]
 false
+[timeOut]
 1e10
+[mapDict]
 default
+[mapName]
 default
+[AIlang]
 C++

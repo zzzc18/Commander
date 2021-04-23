@@ -12,18 +12,8 @@ PlayGame.armyNum = 0
 function PlayGame.Init(MapMode)
     -- CGameMap.RandomGenMap()
     -- CGameMap.WriteMap()
-    local command = {"false", "1e10", "default", "default", "default", "default"}
-    local task = io.open("../ServerTask.txt", "r")
-    if task ~= nil then
-        local i = 1
-        for line in task:lines() do
-            command[i] = line
-            i = i + 1
-        end
-        task:close()
-    end
-    PlayGame.armyNum = CGameMap.LoadMap(command[3], command[4])
-    CGameMap.InitSavedata(command[5], command[6])
+    PlayGame.armyNum = CGameMap.LoadMap(Command["[mapDict]"], Command["[mapName]"])
+    CGameMap.InitSavedata(Command["[saveName]"], Command["[saveDict]"])
     BasicMap.Init()
     Judgement.Init()
     Coordinate.Init()
@@ -73,7 +63,7 @@ function PlayGame.update(dt)
         ServerSock.SendUpdate(dt)
         Coordinate.update(dt)
     end
-    if Task == true and PlayGame.gameState == "Over" then
+    if Command["[autoMatch]"] == "true" and PlayGame.gameState == "Over" then
         love.event.quit(0)
     end
 end

@@ -1,8 +1,5 @@
 local AI_SDK = {}
 
-AI_SDK.TypeImplementation = "C++"
--- supported lang: "Lua", "C++"
-
 local Core = require("AI.Core")
 local Operation = require("PlayGame.Operation")
 local CCore = require("lib.UserImplementation")
@@ -27,20 +24,6 @@ function AI_SDK.Init()
     Buttons.Init()
     BGAnimation.load()
     math.randomseed(tonumber(tostring(os.time()):reverse():sub(1, 9)))
-
-    local Implementation_file = io.open("AI/UserImplementationType.txt")
-    io.input(Implementation_file)
-    print(io.read())
-    local lang = io.read()
-    print(lang)
-    if lang == "C++" then
-        AI_SDK.TypeImplementation = "C++"
-    else
-        if lang == "Lua" then
-            AI_SDK.TypeImplementation = "Lua"
-        end
-    end
-    print(AI_SDK.TypeImplementation)
 end
 
 function AI_SDK.DeInit()
@@ -50,18 +33,7 @@ function AI_SDK.DeInit()
 end
 
 function AI_SDK.LoadMap()
-    local command = {"false", "1e10", "default", "default", "C++"}
-    local task = io.open("../ClientTask.txt", "r")
-    if task ~= nil then
-        local i = 1
-        for line in task:lines() do
-            command[i] = line
-            i = i + 1
-        end
-        task:close()
-    end
-    AI_SDK.armyNum = CGameMap.LoadMap(command[3], command[4])
-    AI_SDK.TypeImplementation = command[5]
+    AI_SDK.armyNum = CGameMap.LoadMap(Command["[mapDict]"], Command["[mapName]"])
     BasicMap.Init()
 end
 
@@ -178,17 +150,11 @@ function AI_SDK.IsConnected(posX1, posY1, posX2, posY2)
     end
 
     if posX1 % 2 == 1 then
-        if
-            (posX1 == posX2 + 1 or posX1 == posX2 - 1) and
-                (posY1 == posY2 or posY1 == posY2 - 1)
-         then
+        if (posX1 == posX2 + 1 or posX1 == posX2 - 1) and (posY1 == posY2 or posY1 == posY2 - 1) then
             return true
         end
     else
-        if
-            (posX1 == posX2 + 1 or posX1 == posX2 - 1) and
-                (posY1 == posY2 or posY1 == posY2 + 1)
-         then
+        if (posX1 == posX2 + 1 or posX1 == posX2 - 1) and (posY1 == posY2 or posY1 == posY2 + 1) then
             return true
         end
     end
@@ -229,10 +195,10 @@ function AI_SDK.update(dt)
         return
     end
     if timer < ReplayGame.step then
-        if AI_SDK.TypeImplementation == "Lua" then
+        if Command["[AIlang]"] == "Lua" then
             Core.Main()
         else
-            if AI_SDK.TypeImplementation == "C++" then
+            if Command["[AIlang]"] == "C++" then
                 CCore.userMain()
             end
         end

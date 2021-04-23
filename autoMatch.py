@@ -28,21 +28,43 @@ class autoMatch(object):
 
     def creatClientTask(self, index):
         fp = open("ClientTask.txt", 'w')
+
+        fp.write("[autoMatch]\n")
         fp.write("true\n")  # 是否为自动对战任务
+
+        fp.write("[timeOut]\n")
         fp.write(str(self.timeOut)+"\n")
+
+        fp.write("[mapDict]\n")
         fp.write(self.mapDict+"\n")
+
+        fp.write("[mapName]\n")
         fp.write(self.mapName+"\n")
+
+        fp.write("[AIlang]\n")
         fp.write(self.AI[index]+"\n")
         fp.close()
         return
 
     def creatServerTask(self):
         fp = open("ServerTask.txt", 'w')
+
+        fp.write("[autoMatch]\n")
         fp.write("true\n")  # 是否为自动对战任务
+
+        fp.write("[timeOut]\n")
         fp.write(str(self.timeOut)+"\n")
+
+        fp.write("[mapDict]\n")
         fp.write(self.mapDict+"\n")
+
+        fp.write("[mapName]\n")
         fp.write(self.mapName+"\n")
+
+        fp.write("[saveName]\n")
         fp.write(self.saveName+"\n")
+
+        fp.write("[saveDict]\n")
         fp.write(self.saveDict+"\n")
         fp.close()
         return
@@ -77,6 +99,7 @@ class autoMatch(object):
             else:
                 break
         os.remove("ClientTask.txt")
+        time.sleep(self.timeDelay)
         return
 
     def getMatchResult(self, index):
