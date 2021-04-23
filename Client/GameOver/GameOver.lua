@@ -51,7 +51,7 @@ end
 
 -- 初始化
 function GameOver.Init()
-    if Task == true then
+    if Command["[autoMatch]"] == "true" then
         Debug.Log("info", "auto quit game")
         love.event.quit(0)
     end
