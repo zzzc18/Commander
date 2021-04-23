@@ -58,7 +58,7 @@ function love.load()
     Switcher.Init()
     if Visable then
         local gillsans50 = love.graphics.newFont("Font/gillsans.ttf", 50)
-        table.insert(Font, 1, gillsans50)
+        Font.gillsans50 = gillsans50
         Picture.Init()
     end
 end
