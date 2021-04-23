@@ -469,6 +469,10 @@ int MAP::Surrender(int armyID, int vanquisherID) {
 }
 
 NODE_TYPE MAP::GetType(VECTOR pos) const {
+    if (!InMap(pos)) {
+        Debug::Singleton().Log("error", "Invalid Position");
+        throw std::runtime_error("Invalid Position");
+    }
     NODE_TYPE type = _mat[pos.x][pos.y].type;
     if (this->IsViewable(pos)) return type;
     switch (type) {
