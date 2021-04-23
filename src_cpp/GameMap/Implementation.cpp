@@ -504,6 +504,7 @@ std::pair<VECTOR, VECTOR> MAP::GetArmyPath(int armyID, int step) const {
 const char* MAP::GetFolder() { return (SaveDict).c_str(); }
 
 std::pair<int, int> MAP::GetKingPos(int armyID) const {
+    armyID = VERIFY::Singleton().GetArmyID();
     int x = MAP::Singleton().kingState.kingPos[armyID].x;
     int y = MAP::Singleton().kingState.kingPos[armyID].y;
     return {x, y};
