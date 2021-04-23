@@ -20,9 +20,7 @@ CurrentTime = 0
 --客户端是否正运行自动对战任务，如果为true，客户端会在游戏结束或超时后关闭
 Task = false
 
-Font = {
-    gillsans50 = love.graphics.newFont("Font/gillsans.ttf", 50)
-}
+Font = {}
 
 require("System.Color")
 require("System.Picture")
@@ -48,13 +46,21 @@ function love.load()
             Running = AI_SDK
         else
             Debug.Log("info", "start without task")
-            Running = Welcome
+            if Visable then
+                Running = Welcome
+            else
+                Running = PlayGame
+            end
         end
         task:close()
     end
     Running.Init()
     Switcher.Init()
-    Picture.Init()
+    if Visable then
+        local gillsans50 = love.graphics.newFont("Font/gillsans.ttf", 50)
+        table.insert(Font, 1, gillsans50)
+        Picture.Init()
+    end
 end
 
 function love.wheelmoved(x, y)
