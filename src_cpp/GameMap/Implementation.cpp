@@ -17,7 +17,7 @@
 #include "Debug.hpp"
 #include "GameMap.hpp"
 #include "Tools.hpp"
-#include "Verify.hpp"
+#include "Verification.hpp"
 
 VECTOR VECTOR::operator-() const { return {-x, -y}; }
 
@@ -133,17 +133,17 @@ void MAP::Update() {
         MoveUpdate();
     }
     if (step % SaveMapStep == 0 &&
-        VERIFY::Singleton().GetPrivilege() == 3) {  //只有服务器会保存
+        VERIFICATION::Singleton().GetPrivilege() == 3) {  //只有服务器会保存
         SaveMap();
     }
-    if (VERIFY::Singleton().GetPrivilege() == 2) {  //只有回放器会读取
+    if (VERIFICATION::Singleton().GetPrivilege() == 2) {  //只有回放器会读取
         ReadMove(step);
     }
     return;
 }
 
 bool MAP::PushMove(int armyID, VECTOR src, VECTOR dst, double num) {
-    if (VERIFY::Singleton().GetPrivilege() == 3) {
+    if (VERIFICATION::Singleton().GetPrivilege() == 3) {
         SaveStep(armyID, src, dst, num);
     }
     if (src == VECTOR{-1, -1} && dst == VECTOR{-1, -1}) {  //撤销移动命令
@@ -425,14 +425,15 @@ bool MAP::InMap(VECTOR pos) const {
 }
 
 bool MAP::IsViewable(VECTOR pos) const {
-    if (SERVER == VERIFY::Singleton().GetArmyID()) {
+    if (SERVER == VERIFICATION::Singleton().GetArmyID()) {
         return true;
     }
-    if (_mat[pos.x][pos.y].belong == VERIFY::Singleton().GetArmyID())
+    if (_mat[pos.x][pos.y].belong == VERIFICATION::Singleton().GetArmyID())
         return true;
     for (auto dta : DIR[pos.x & 1]) {  //判断是奇数行还是偶数行
         if (VECTOR next = pos + dta; this->InMap(next)) {
-            if (_mat[next.x][next.y].belong == VERIFY::Singleton().GetArmyID())
+            if (_mat[next.x][next.y].belong ==
+                VERIFICATION::Singleton().GetArmyID())
                 return true;
         }
     }
@@ -450,7 +451,7 @@ int MAP::Judge(int armyID) {
 }
 
 int MAP::Surrender(int armyID, int vanquisherID) {
-    if (VERIFY::Singleton().GetPrivilege() == 3) {
+    if (VERIFICATION::Singleton().GetPrivilege() == 3) {
         SaveStep(0, {-2, -2}, {armyID, vanquisherID}, 0);
     }
     for (int i = 0; i < MAX_GRAPH_SIZE; i++) {
@@ -504,7 +505,8 @@ std::pair<VECTOR, VECTOR> MAP::GetArmyPath(int armyID, int step) const {
 const char* MAP::GetFolder() { return (SaveDict).c_str(); }
 
 std::pair<int, int> MAP::GetKingPos(int armyID) const {
-    armyID = VERIFY::Singleton().GetArmyID();
+    //夺笋啊
+    armyID = VERIFICATION::Singleton().GetArmyID();
     int x = MAP::Singleton().kingState.kingPos[armyID].x;
     int y = MAP::Singleton().kingState.kingPos[armyID].y;
     return {x, y};

@@ -19,7 +19,7 @@ function ReplayGame.Init(MapMode)
     else
         Debug.Log("info", "Folder:" .. ReplayGame.droppedDir)
         ReplayGame.armyNum = CGameMap.LoadReplayFile(ReplayGame.droppedDir)
-        CVerify.Register(0, 2)
+        CVerification.Register(0, 2)
         ReplayGame.gameState = "Start"
         BasicMap.Init()
         Buttons.Init()

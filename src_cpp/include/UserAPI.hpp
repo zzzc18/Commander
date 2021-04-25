@@ -111,7 +111,7 @@ class UserAPI {
     }
 
     // 获取当前选中的位置
-    VECTOR selected_pos() {
+    VECTOR getSelectedPos() {
         get_lua_property("AI_SDK", "SelectPos");
         if (!lua_istable(luaState, -1)) {
             throw "not a table: SelectPos";
@@ -123,14 +123,15 @@ class UserAPI {
         return {x, y};
     }
     // 设置当前选中位置
-    void selected_pos(VECTOR pos) {
+    // Python接口中改名为setSelected
+    void setSelectedPos(VECTOR pos) {
         init_func_call("AI_SDK", "setSelected");
         lua_pushnumber(luaState, pos.x);
         lua_pushnumber(luaState, pos.y);
         execute_func_call(2, 0);
     }
 
-   private:
+   protected:
     lua_State *luaState;
     UserAPI(lua_State *L) : luaState(L) {}
 };

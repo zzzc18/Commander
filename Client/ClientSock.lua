@@ -12,7 +12,7 @@ function ClientSock.Init()
         function(data)
             Debug.Log("info", "Received armyID: " .. data.armyID)
             Running.armyID = data.armyID
-            CVerify.Register(data.armyID)
+            CVerification.Register(data.armyID)
             Running.LoadMap()
             if Running == AI_SDK then
                 AI_SDK.KingPos.x, AI_SDK.KingPos.y = CGameMap.GetKingPos(AI_SDK.armyID)

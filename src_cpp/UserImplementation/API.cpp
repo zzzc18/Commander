@@ -5,7 +5,7 @@
 #include "GameMap.hpp"
 #include "LuaAPI.hpp"
 #include "UserAPI.hpp"
-#include "Verify.hpp"
+#include "Verification.hpp"
 
 using namespace std;
 
@@ -23,10 +23,10 @@ int id;
 void testInfo() {
     UserAPI &API = UserAPI::Singleton();
     MAP &mmap = MAP::Singleton();
-    cout << "Current selected pos: " << API.selected_pos().x << ", "
-         << API.selected_pos().y;
-    cout << " Belongs: " << mmap.GetBelong(API.selected_pos());
-    cout << " UnitNum: " << mmap.GetUnitNum(API.selected_pos()) << endl;
+    cout << "Current selected pos: " << API.getSelectedPos().x << ", "
+         << API.getSelectedPos().y;
+    cout << " Belongs: " << mmap.GetBelong(API.getSelectedPos());
+    cout << " UnitNum: " << mmap.GetUnitNum(API.getSelectedPos()) << endl;
 }
 
 double get_rand_percentage(double lower_bound = 0.0, double upper_bound = 1.0) {
@@ -48,24 +48,24 @@ bool move_from_select() {
     double move_ratio = 0.5;
     // 判断当前位置周围是否有敌人
     for (int i = 0; i < 6; i++) {
-        VECTOR apos = after_move_pos(API.selected_pos(), i);
+        VECTOR apos = after_move_pos(API.getSelectedPos(), i);
         if (id == mmap.GetBelong(apos)) continue;             // 平凡情况
         if (mmap.GetType(apos) == NODE_TYPE::HILL) continue;  // 山丘 不可通过
         if (mmap.GetType(apos) == NODE_TYPE::FORT &&
-            mmap.GetUnitNum(API.selected_pos()) < 1.5 * mmap.GetUnitNum(apos))
+            mmap.GetUnitNum(API.getSelectedPos()) < 1.5 * mmap.GetUnitNum(apos))
             continue;  // 无法占有或占有后容易被夺去
         double tmp;
         if (tmp = get_rand_percentage() > 0.5) {
             cout << "Skip, tmp = " << tmp << endl;
             continue;
         }  // 随机跳过
-        cout << "Prepare to move " << API.selected_pos() << "->";
+        cout << "Prepare to move " << API.getSelectedPos() << "->";
         cout << apos << endl;
 
         move_ratio = get_rand_percentage(0.4, 0.8);  // 随机移动
-        //API.move_by_direction(API.selected_pos(), move_ratio, i);
-        //API.move_to(apos, move_ratio);
-        API.move_by_coordinates(API.selected_pos(), apos, move_ratio);
+        // API.move_by_direction(API.getSelectedPos(), move_ratio, i);
+        // API.move_to(apos, move_ratio);
+        API.move_by_coordinates(API.getSelectedPos(), apos, move_ratio);
         return true;
     }
     return false;
@@ -80,10 +80,10 @@ void random_select() {
     MAP &mmap = MAP::Singleton();
 
     // 从当前位置出发的所有可选位置
-    vector<VECTOR> options = {API.selected_pos()};
+    vector<VECTOR> options = {API.getSelectedPos()};
 
     for (int i = 0; i < 6; i++) {
-        VECTOR apos = after_move_pos(API.selected_pos(), i);
+        VECTOR apos = after_move_pos(API.getSelectedPos(), i);
         if (mmap.GetType(apos) == NODE_TYPE::HILL) continue;
         if (mmap.GetBelong(apos) != id) continue;
         if (mmap.GetUnitNum(apos) < 2) continue;
@@ -99,9 +99,9 @@ void random_select() {
     int choice = rand() % options.size();
 
     // 不改变位置，直接返回
-    if (options[choice] == API.selected_pos()) return;
+    if (options[choice] == API.getSelectedPos()) return;
 
-    API.selected_pos(options[choice]);
+    API.setSelectedPos(options[choice]);
     cout << "Selection: " << options[choice] << endl;
     random_select();
 }
@@ -109,20 +109,20 @@ void random_select() {
 static int userMain(lua_State *luaState) {
     UserAPI &API = UserAPI::Singleton(luaState);
     MAP &mmap = MAP::Singleton();
-    id = VERIFY::Singleton().GetArmyID();
+    id = VERIFICATION::Singleton().GetArmyID();
 
     static bool init = false;
     if (!init) {
         init = true;
-        API.selected_pos(API.king_pos());
+        API.setSelectedPos(API.king_pos());
     }
     testInfo();
     double move_ratio = 0.5;
-    if (API.selected_pos().x == -1 ||
-        API.selected_pos().y == -1 ||                // 选择位置非法
-        mmap.GetBelong(API.selected_pos()) != id ||  // 不可移动
-        mmap.GetUnitNum(API.selected_pos()) < 2) {   // 兵力过少
-        API.selected_pos(API.king_pos());
+    if (API.getSelectedPos().x == -1 ||
+        API.getSelectedPos().y == -1 ||                // 选择位置非法
+        mmap.GetBelong(API.getSelectedPos()) != id ||  // 不可移动
+        mmap.GetUnitNum(API.getSelectedPos()) < 2) {   // 兵力过少
+        API.setSelectedPos(API.king_pos());
     }
 
     random_select();
