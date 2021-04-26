@@ -30,12 +30,12 @@ if(WINDOWS)
     find_package(Python 3.6 EXACT REQUIRED)
     include_directories(${PYTHON_INCLUDE_DIRS})
 
-    #position of .dll file
-    # set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/../lib)
     link_directories(${PWD}/../lib)
 elseif(LINUX)
-    #position of .so file
-    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/../lib)
+    find_package(Python 3.6 EXACT REQUIRED)
+    include_directories(${PYTHON_INCLUDE_DIRS})
+    
+    link_directories(${PWD}/../lib)
 endif()
 
 #add source files to variable xxx_SOURCE_FILES

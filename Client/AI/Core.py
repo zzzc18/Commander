@@ -1,28 +1,32 @@
-from Commander import AI_SDK,GameMap,Verification
+from Commander import AI_SDK, GameMap, Verification
 from random import randint
 
-initialized=False
-armyID = 0
+armyID, mapX, mapY = 0, 0, 0
+
 
 def RunOnce():
-    mapX,mapY = GameMap.GetSize()
+    global armyID, mapX, mapY
     armyID = Verification.GetArmyID()
+    mapX, mapY = GameMap.GetSize()
+
 
 def RandomSelect():
     controllingArea = []
     for i in range(mapX):
         for j in range(mapY):
-            if GameMap.GetBelong(i,j)==armyID:
-                controllingArea.append([i,j])
+            if GameMap.GetBelong(i, j) == armyID:
+                controllingArea.append([i, j])
 
-    u = randint(0,len(controllingArea))
-    direction = randint(1,7)
-    return controllingArea[u][0],controllingArea[u][1],direction
+    u = randint(0, len(controllingArea)-1)
+    direction = randint(0, 5)
+    return controllingArea[u][0], controllingArea[u][1], direction
+
+
+def Load():
+    RunOnce()
+
 
 def Main():
-    if not initialized:
-        initialized=True
-        RunOnce()
-    x,y,direction=RandomSelect()
-    AI_SDK.MoveByDirection(x,y,direction,0)
+    x, y, direction = RandomSelect()
+    AI_SDK.MoveByDirection(x, y, 0, direction)
     print("Python Called")
