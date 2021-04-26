@@ -1,12 +1,12 @@
 /**
  * @file API.cpp
  *
- * @brief @c Verify 模块对 Lua 提供的 API
+ * @brief @c Verification 模块对 Lua 提供的 API
  */
 
 #include "Debug.hpp"
 #include "LuaAPI.hpp"
-#include "Verify.hpp"
+#include "Verification.hpp"
 
 /**
  * @brief 注册当前军队的各个属性
@@ -18,7 +18,7 @@
 static int Register(lua_State* luaState) {
     int armyID, privilege;
     APIparam(luaState, armyID, privilege);
-    return APIreturn(luaState, VERIFY::Register(armyID, privilege));
+    return APIreturn(luaState, VERIFICATION::Register(armyID, privilege));
 }
 
 static int InitDebugLog(lua_State* luaState) {
@@ -35,6 +35,6 @@ static int Log(lua_State* luaState) {
 }
 
 /**
- * @brief 向 Lua 注册 API，模块名为 lib/Verify.dll
+ * @brief 向 Lua 注册 API，模块名为 lib/Verification.dll
  */
-LUA_REG_FUNC(Verify, C_API(Register), C_API(InitDebugLog), C_API(Log))
+LUA_REG_FUNC(Verification, C_API(Register), C_API(InitDebugLog), C_API(Log))

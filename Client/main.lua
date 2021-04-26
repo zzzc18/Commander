@@ -1,7 +1,7 @@
 package.path = package.path .. ";../?.lua;..\\?.lua"
 package.cpath = package.cpath .. ";../?.so;..\\?.dll"
 
-CVerify = require("lib.Verify")
+CVerification = require("lib.Verification")
 CGameMap = require("lib.GameMap")
 CSystem = require("lib.System")
 

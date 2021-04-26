@@ -1,7 +1,7 @@
 package.path = package.path .. ";../?.lua;..\\?.lua"
 package.cpath = package.cpath .. ";../?.so;..\\?.dll"
 
-CVerify = require("lib.Verify")
+CVerification = require("lib.Verification")
 CGameMap = require("lib.GameMap")
 CSystem = require("lib.System")
 
@@ -42,7 +42,7 @@ function love.load()
     end
     Debug.Init()
     Debug.Log("info", "game start as server")
-    CVerify.Register(0, 3)
+    CVerification.Register(0, 3)
     Coordinate.valid()
     Running = PlayGame
     Running.Init()

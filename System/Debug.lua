@@ -2,7 +2,7 @@
 Debug = {}
 
 function Debug.Init()
-    CVerify.InitDebugLog()
+    CVerification.InitDebugLog()
     Debug.Log("info", "init Debug")
 end
 
@@ -11,5 +11,5 @@ end
 --text:日志信息
 function Debug.Log(priority, text)
     print("[" .. priority .. "] " .. text)
-    CVerify.Log(priority, text)
+    CVerification.Log(priority, text)
 end

@@ -3,6 +3,7 @@ local AI_SDK = {}
 local Core = require("AI.Core")
 local Operation = require("PlayGame.Operation")
 local CCore = require("lib.UserImplementation")
+local PyCore = require("lib.PythonAPI")
 
 --READY:游戏未开始，不显示界面，无法操作
 --Start:游戏进行中
@@ -197,10 +198,10 @@ function AI_SDK.update(dt)
     if timer < ReplayGame.step then
         if Command["[AIlang]"] == "Lua" then
             Core.Main()
-        else
-            if Command["[AIlang]"] == "C++" then
-                CCore.userMain()
-            end
+        elseif Command["[AIlang]"] == "C++" then
+            CCore.userMain()
+        elseif Command["[AIlang]"] == "Python" then
+            PyCore.userMain()
         end
     end
     MapAdjust.Update()
