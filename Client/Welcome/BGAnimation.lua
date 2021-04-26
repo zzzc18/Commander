@@ -65,9 +65,9 @@ end
 
 function BGAnimation.update(dt)
     BGAnimation.PixelWidth, BGAnimation.PixelHeight = love.graphics.getPixelDimensions()
-    BGAnimation.BGimg1.heightRatio = BGAnimation.PixelHeight / 720
-    BGAnimation.BGimg2.heightRatio = BGAnimation.PixelHeight / 720
-    BGAnimation.BGimg3.heightRatio = BGAnimation.PixelHeight / 720
+    -- BGAnimation.BGimg1.heightRatio = BGAnimation.PixelHeight / 720
+    -- BGAnimation.BGimg2.heightRatio = BGAnimation.PixelHeight / 720
+    -- BGAnimation.BGimg3.heightRatio = BGAnimation.PixelHeight / 720
     if BGAnimation.moveDistance < 1080 then
         BGAnimation.BGimg1.x = BGAnimation.BGimg1.x - dt * BGAnimation.moveRate
         BGAnimation.BGimg2.x = BGAnimation.BGimg2.x - dt * BGAnimation.moveRate
