@@ -30,7 +30,7 @@ function GameOver.DrawJudgeInfo(state, vanquisherID)
         menu = GameOver.menuD
     end --标题设置
     love.graphics.setColor(1, 1, 1, 1)
-    love.graphics.draw(menu, x - judgeMenuWidth / 2, y - judgeMenuHeight / 2, 0, 0.5 * ratio, 0.5 * ratio, 1)
+    love.graphics.draw(menu, x - judgeMenuWidth / 2, y - judgeMenuHeight / 2, 0, 0.5 * ratio, 0.5 * ratio)
     Buttons.DrawButtons() --创建选项
     -- 上为选项框，下为文字内容
     love.graphics.setColor(0, 0, 0)

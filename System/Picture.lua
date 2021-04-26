@@ -11,7 +11,6 @@ function ReadyImage:Load()
     self.ready = love.graphics.newImage("data/Picture/Waiting.png")
 end
 
-
 function NodeImageSet:Load()
     self.center = {}
     self.center.x = 97
@@ -30,8 +29,6 @@ function NodeImageSet:Load()
     self["NODE_TYPE_MARSH"] =
         love.graphics.newImage("data/Picture/NODE_TYPE_MARSH.png")
 end
-
-
 
 function SelectImage:Load()
     self.center = {}
@@ -154,13 +151,13 @@ function Picture.DrawMenu()
     local windowWidth, windowHeight = love.graphics.getDimensions()
     love.graphics.draw(
         Menu.image,
-        windowWidth / 2,
-        windowHeight / 2,
+        (windowWidth - (250 * windowHeight / 720)) / 2,
+        (windowHeight - (360 * windowHeight / 720)) / 2,
         0,
-        windowWidth / 1080 / 2,
         windowHeight / 720 / 2,
-        Menu.image:getWidth() / 2,
-        Menu.image:getHeight() / 2
+        windowHeight / 720 / 2,
+        0,
+        0
     )
 end
 
