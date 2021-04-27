@@ -9,8 +9,8 @@ elseif(CMAKE_HOST_UNIX)
     set(LINUX 1)
 endif()
 
-set(CompileMode "User")
-# set(CompileMode "Developer")
+# set(CompileMode "User")
+set(CompileMode "Developer")
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -Wall -Weffc++ -fPIC")
@@ -45,7 +45,8 @@ if(CompileMode STREQUAL "Developer")
     set(PythonSDK_LUAAPI_FILES PythonSDK/API.cpp)
     aux_source_directory(UserAPI UserAPI_SOURCE_FILES)
 endif()
-aux_source_directory(UserImplementation UserImplementation_SOURCE_FILES)
+#aux_source_directory(UserImplementation UserImplementation_SOURCE_FILES)
+set(UserImplementation_SOURCE_FILES UserImplementation/API.cpp)
 
 #generate .so/.dll files
 if(CompileMode STREQUAL "Developer")
