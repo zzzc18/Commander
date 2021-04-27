@@ -123,3 +123,8 @@ void UserAPI::setSelectedPos(VECTOR pos) {
     lua_pushnumber(luaState, pos.y);
     execute_func_call(2, 0);
 }
+
+// 仅供lua require时找到包
+static int Handle(lua_State *lua_state) { return 0; }
+
+LUA_REG_FUNC(UserAPI, C_API(Handle))
