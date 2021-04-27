@@ -13,12 +13,10 @@ static int userMain(lua_State *luaState) {
     UserAPI &API = UserAPI::Singleton(luaState);
     MAP &mmap = MAP::Singleton();
     int id = VERIFICATION::Singleton().GetArmyID();
+    // User Code Begin
 
-    static bool init = false;
-    if (!init) {
-        init = true;
-    }
-    
+
+    // User Code End
     return 0;
 }
 
