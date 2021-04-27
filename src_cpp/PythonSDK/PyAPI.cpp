@@ -13,10 +13,6 @@ PYBIND11_MODULE(Commander, m) {
     py::module_ AI_SDK =
         m.def_submodule("AI_SDK", "Python AI_SDK for Commander");
     AI_SDK
-        .def("MoveTo",
-             [](int x, int y, double moveNum) {
-                 UserAPI::Singleton().move_to({x, y}, moveNum);
-             })
         .def("MoveByDirection",
              [](int x, int y, double moveNum, int direction) {
                  UserAPI::Singleton().move_by_direction({x, y}, moveNum,
@@ -32,21 +28,12 @@ PYBIND11_MODULE(Commander, m) {
                  return UserAPI::Singleton().is_connected(srcX, srcY, destX,
                                                           destY);
              })
-        .def("SetSelectedPos",
-             [](int x, int y) {
-                 UserAPI::Singleton().setSelectedPos({x, y});
-             })
-        .def("GetSelectedPos",
-             []() -> std::pair<int, int> {
-                 VECTOR pos = UserAPI::Singleton().getSelectedPos();
-                 return {pos.x, pos.y};
-             })
-        .def("GetCurrentStep",
-             []() { return UserAPI::Singleton().get_current_step(); })
-        .def("GetKingPos", []() -> std::pair<int, int> {
-            VECTOR pos = UserAPI::Singleton().king_pos();
-            return {pos.x, pos.y};
-        });
+        .def("DirectionToDestination",
+             [](int x, int y, int direction) -> std::pair<int, int> {
+                 VECTOR cur = {x, y};
+                 VECTOR ret = cur + DIR[x % 2][direction];
+                 return {ret.x, ret.y};
+             });
 
     py::enum_<NODE_TYPE>(m, "NODE_TYPE")
         .value("BLANK", NODE_TYPE::BLANK)
