@@ -8,8 +8,8 @@ elseif(CMAKE_HOST_UNIX)
     set(LINUX 1)
 endif()
 
-set(CompileMode "User")
-# set(CompileMode "Developer")
+#set(CompileMode "User")
+ set(CompileMode "Developer")
 
 add_definitions(-DDEBUG)
 set(CMAKE_CXX_STANDARD 17)
