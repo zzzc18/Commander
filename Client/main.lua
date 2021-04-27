@@ -4,6 +4,10 @@ package.cpath = package.cpath .. ";../?.so;..\\?.dll"
 CVerification = require("lib.Verification")
 CGameMap = require("lib.GameMap")
 CSystem = require("lib.System")
+-- lib.UserImplementation和lib.PythonAPI会依赖lib.UserAPI
+require("lib.UserAPI")
+CCore = require("lib.UserImplementation")
+PyCore = require("lib.PythonAPI")
 
 Sock = require("sock")
 Bitser = require("spec.bitser")

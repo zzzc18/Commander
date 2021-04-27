@@ -2,8 +2,6 @@ local AI_SDK = {}
 
 local Core = require("AI.Core")
 local Operation = require("PlayGame.Operation")
-local CCore = require("lib.UserImplementation")
-local PyCore = require("lib.PythonAPI")
 
 --READY:游戏未开始，不显示界面，无法操作
 --Start:游戏进行中
