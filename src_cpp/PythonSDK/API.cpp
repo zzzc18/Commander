@@ -22,7 +22,10 @@ void Init(lua_State* luaState) {
     Py_Initialize();  //初始化，创建一个Python虚拟环境
     if (Py_IsInitialized()) {
         PyRun_SimpleString("import sys,os");
-        PyRun_SimpleString("sys.path.append(os.getcwd()+'\\AI')");
+        PyRun_SimpleString("sys.path.append(os.path.join(os.getcwd(),'AI'))");
+        PyRun_SimpleString(
+            "sys.path.append(os.path.join(os.path.join(os.getcwd(),'..'),'lib')"
+            ")");
 
         moudulePtr = PyImport_ImportModule("Core");  //参数为Python脚本的文件名
         if (moudulePtr) {
