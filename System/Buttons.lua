@@ -344,7 +344,7 @@ function Buttons.DrawButtons()
                     button.x,
                     button.y,
                     button.orientation,
-                    button.ratioX * windowWidth / 1080,
+                    button.ratioX * windowHeight / 720,
                     button.ratioY * windowHeight / 720,
                     button.offsetX,
                     button.offsetY
@@ -382,7 +382,7 @@ function Buttons.DrawButtons()
                     button.x,
                     button.y,
                     button.orientation,
-                    button.ratioX * windowWidth / 1080,
+                    button.ratioX * windowHeight / 720,
                     button.ratioY * windowHeight / 720,
                     button.offsetX,
                     button.offsetY
@@ -632,13 +632,14 @@ function Buttons.Update()
         return
     end
     if PlayGame == Running or AI_SDK == Running then
+        local ratio = windowHeight / 720
         for i, button in pairs(EachButton) do
             if "menu" ~= button.name and "Menu" == PlayGame.gameState then
-                button.x = windowWidth / 2 - 95 * windowWidth / 1080
+                button.x = windowWidth / 2 - 95 * ratio
                 if button.name == "continue" then
-                    button.y = windowHeight / 2 - 70 * windowHeight / 720
+                    button.y = windowHeight / 2 - 70 * ratio
                 elseif button.name == "exit" then
-                    button.y = windowHeight / 2 + 50 * windowHeight / 720
+                    button.y = windowHeight / 2 + 50 * ratio
                 end
             end
         end
@@ -647,22 +648,19 @@ function Buttons.Update()
     end
     if ReplayGame == Running then
         for i, button in pairs(EachButton) do
-            if 1 == i or 2 == i then
-                button.x = windowWidth * (i * 0.1 + 0.25)
-            else
-                button.x = windowWidth * (i * 0.1 + 0.15)
-            end
-            button.ratioX = ButtonsData.initialRatio * windowWidth / 1080
-            button.ratioY = ButtonsData.initialRatio * windowWidth / 1080
-        end
-        for i, button in pairs(EachButton) do
             if "Menu" == ReplayGame.gameState and ("continue_Opt" == button.name or "exit_Opt" == button.name) then
-                button.x = windowWidth / 2 - 95 * windowWidth / 1080
+                button.x = windowWidth / 2 - 95 * windowHeight / 720
                 if button.name == "continue_Opt" then
                     button.y = windowHeight / 2 - 70 * windowHeight / 720
                 elseif button.name == "exit_Opt" then
                     button.y = windowHeight / 2 + 50 * windowHeight / 720
                 end
+            elseif 1 == i or 2 == i then
+                button.x = windowWidth * (i * 0.1 + 0.25)
+            elseif "menu" == button.name then
+                button.x, button.y = windowWidth * 0.01, windowHeight * 0.01
+            else
+                button.x = windowWidth * (i * 0.1 + 0.15)
             end
         end
         Buttons.MouseState(mouseX, mouseY, 1)

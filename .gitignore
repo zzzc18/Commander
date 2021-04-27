@@ -7,3 +7,5 @@ tmp
 Output
 Savedata
 GameLog
+__pycache__
+*.pyd

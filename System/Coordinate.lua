@@ -3,15 +3,15 @@ Coordinate = {}
 local Suspension = {}
 
 function Coordinate.invalid()
-    Suspension.available = false
+    Coordinate.available = false
 end
 
 function Coordinate.valid()
-    Suspension.available = true
+    Coordinate.available = true
 end
 
 function Coordinate.Init()
-    if not Suspension.available then
+    if not Coordinate.available then
         return
     end
     Suspension.triggerTime = 0.2
@@ -24,7 +24,7 @@ function Coordinate.DeInit()
 end
 
 function Coordinate.draw()
-    if not Suspension.available then
+    if not Coordinate.available then
         return
     end
     if Suspension.suspendTime >= Suspension.triggerTime then
@@ -39,7 +39,7 @@ function Coordinate.draw()
 end
 
 function Coordinate.update(dt)
-    if not Suspension.available then
+    if not Coordinate.available then
         return
     end
     if Suspension.lastX == love.mouse.getX() and Suspension.lastY == love.mouse.getY() then

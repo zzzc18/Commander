@@ -1,7 +1,7 @@
 /**
  * @file Implementation.cpp
  *
- * @brief @c Verify 模块类相关函数的定义
+ * @brief @c Verification 模块类相关函数的定义
  */
 
 #include <windows.h>
@@ -12,23 +12,23 @@
 
 #include "Constant.hpp"
 #include "Debug.hpp"
-#include "Verify.hpp"
+#include "Verification.hpp"
 
-int VERIFY::Register(int armyID, int privilege) {  // FIXME magic numbers
+int VERIFICATION::Register(int armyID, int privilege) {  // FIXME magic numbers
     if (singletonPtr_) delete singletonPtr_;
     try {
-        singletonPtr_ = new VERIFY(armyID, privilege);
+        singletonPtr_ = new VERIFICATION(armyID, privilege);
     } catch (int error) {
         return error;
     }
     return 0;
 }
-VERIFY& VERIFY::Singleton() { return *singletonPtr_; }
+VERIFICATION& VERIFICATION::Singleton() { return *singletonPtr_; }
 
-int VERIFY::GetArmyID() const { return _armyID; }
-int VERIFY::GetPrivilege() const { return _privilege; }
+int VERIFICATION::GetArmyID() const { return _armyID; }
+int VERIFICATION::GetPrivilege() const { return _privilege; }
 
-VERIFY::VERIFY(int armyID, int privilege) {  // FIXME magic numbers
+VERIFICATION::VERIFICATION(int armyID, int privilege) {  // FIXME magic numbers
     switch (privilege) {
         case 0:  // army commander
             if (armyID == SERVER) throw -2;
@@ -51,8 +51,8 @@ VERIFY::VERIFY(int armyID, int privilege) {  // FIXME magic numbers
 
 // FIXME
 // 如果是inline在hpp里好像会在GameMap.dll也有一个？然后delete两次，需要研究一下这个问题
-VERIFY::DELETER VERIFY::deleter_;
-VERIFY::DELETER::~DELETER() { delete singletonPtr_; }
+VERIFICATION::DELETER VERIFICATION::deleter_;
+VERIFICATION::DELETER::~DELETER() { delete singletonPtr_; }
 
 Debug& Debug::Singleton() {
     static Debug singleton;

@@ -5,7 +5,7 @@ local Operation = require("PlayGame.Operation")
 PlayGame.armyNum = 0
 
 function PlayGame.Init()
-    CVerify.Register(0, 3)
+    CVerification.Register(0, 3)
     PlayGame.LoadMap()
 end
 
