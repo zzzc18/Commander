@@ -23,6 +23,7 @@ def Load():
     global armyID, mapX, mapY
     armyID = Verification.GetArmyID()
     mapX, mapY = GameMap.GetSize()
+    print(AI_SDK.DirectionToDestination(11, 11, 0))
 
 
 def Main():
