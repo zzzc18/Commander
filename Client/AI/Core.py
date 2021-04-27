@@ -4,12 +4,6 @@ from random import randint
 armyID, mapX, mapY = 0, 0, 0
 
 
-def RunOnce():
-    global armyID, mapX, mapY
-    armyID = Verification.GetArmyID()
-    mapX, mapY = GameMap.GetSize()
-
-
 def RandomSelect():
     controllingArea = []
     for i in range(mapX):
@@ -23,10 +17,18 @@ def RandomSelect():
 
 
 def Load():
-    RunOnce()
+    '''
+    开始时调用
+    '''
+    global armyID, mapX, mapY
+    armyID = Verification.GetArmyID()
+    mapX, mapY = GameMap.GetSize()
 
 
 def Main():
+    '''
+    每个Step调用一次
+    '''
     x, y, direction = RandomSelect()
     AI_SDK.MoveByDirection(x, y, 0, direction)
     print("Python Called")
