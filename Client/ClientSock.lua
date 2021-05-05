@@ -28,7 +28,7 @@ function ClientSock.Init()
     Client:on(
         "Update",
         function(data)
-            ReplayGame.step = CSystem.Update(data)
+            Running.step = CSystem.Update(data)
         end
     )
     Client:on(

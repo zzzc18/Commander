@@ -6,6 +6,7 @@ local Judgement = require("PlayGame.Judgement")
 --Start:游戏进行中
 --Over:游戏结束，显示界面，不发送地图更新
 PlayGame.gameState = "READY"
+PlayGame.step = 0
 PlayGame.armyID = nil
 PlayGame.armyNum = 0
 
@@ -62,6 +63,10 @@ function PlayGame.update(dt)
         Judgement.Judge()
         ServerSock.SendUpdate(dt)
         Coordinate.update(dt)
+    end
+    if PlayGame.step > Command["[stepLimit]"] and Command["[autoMatch]"] == "true" then
+        Debug.Log("info", "game quit because out of stepLimit")
+        love.event.quit(0)
     end
     if Command["[autoMatch]"] == "true" and PlayGame.gameState == "Over" then
         love.event.quit(0)

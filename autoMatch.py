@@ -6,21 +6,21 @@ class autoMatch(object):
     # 总计游戏局数,1<=matchNumber<=100
     matchNumber = 5
     # 参与游戏的智能体列表
-    AI = ["null", "Lua", "C++", "C++"]
+    AI = ["Lua", "C++", "Python"]
     # 智能体获胜记录，数量应与上方的智能体数匹配
-    AIwinnings = [[], [], [], []]
+    AIwinnings = [[], []]
     # 游戏使用的地图目录，地图中玩家数应与上方的智能体数匹配
     #mapDict = "maps_3player"
     mapDict = "default"
     mapName = ""
     # 存档文件夹名
-    saveDict = "Lua_C++_C++"
+    saveDict = "Lua_C++_Python"
     saveName = ""
-    timeDelay = 2
-    # 自动对战超时时间，超过后强制结束游戏并进入下一局，不产生获胜者
-    timeOut = 20
+    timeDelay = 1
+    # 自动对战步数限制，超过后强制结束游戏并进入下一局，不产生获胜者
+    stepLimit = 2000
     # 启动游戏时是否打开控制台
-    runWithConsol = True
+    runWithConsol = False
 
     def __init__(self):
         self.startTime = time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime())
@@ -32,8 +32,8 @@ class autoMatch(object):
         fp.write("[autoMatch]\n")
         fp.write("true\n")  # 是否为自动对战任务
 
-        fp.write("[timeOut]\n")
-        fp.write(str(self.timeOut)+"\n")
+        fp.write("[stepLimit]\n")
+        fp.write(str(self.stepLimit)+"\n")
 
         fp.write("[mapDict]\n")
         fp.write(self.mapDict+"\n")
@@ -52,8 +52,8 @@ class autoMatch(object):
         fp.write("[autoMatch]\n")
         fp.write("true\n")  # 是否为自动对战任务
 
-        fp.write("[timeOut]\n")
-        fp.write(str(self.timeOut)+"\n")
+        fp.write("[stepLimit]\n")
+        fp.write(str(self.stepLimit)+"\n")
 
         fp.write("[mapDict]\n")
         fp.write(self.mapDict+"\n")
@@ -70,8 +70,8 @@ class autoMatch(object):
         return
 
     def startMatch(self, index):
-        #self.mapName = str(index)+".map"
-        self.mapName = "default"
+        self.mapName = str(index)+".map"
+        #self.mapName = "default"
         self.saveName = "round"+str(index)
         self.creatServerTask()
         if self.runWithConsol == True:
@@ -79,8 +79,8 @@ class autoMatch(object):
         else:
             os.system('cd Server&start love .')
         time.sleep(self.timeDelay)
-        for i in range(len(self.AI)-1):
-            self.creatClientTask(i+1)
+        for i in range(len(self.AI)):
+            self.creatClientTask(i)
             if self.runWithConsol == True:
                 os.system("cd Client&start lovec .")
             else:
@@ -92,7 +92,7 @@ class autoMatch(object):
         roundStartTime = time.time()
         while True:
             if os.path.exists("ServerTask.txt"):
-                if time.time()-roundStartTime > self.timeOut:
+                if time.time()-roundStartTime > self.stepLimit:
                     os.remove("ServerTask.txt")
                     break
                 time.sleep(1)
@@ -112,17 +112,17 @@ class autoMatch(object):
 
     def saveMatchResult(self):
         self.endTime = time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime())
-        fp = open("matchResult.txt", 'w')
+        fp = open(self.saveDict+"matchResult.txt", 'w')
         fp.write("match start: "+self.startTime+"\n")
         fp.write("match end: "+self.endTime+"\n")
         fp.write("total round: "+str(self.matchNumber)+"\n")
         fp.write("savedata: "+self.saveDict+"\n\n\n")
-        for i in range(len(self.AI)-1):
+        for i in range(len(self.AI)):
             fp.write("armyID: "+str(i+1)+"\n")
-            fp.write("AI: "+self.AI[i+1]+"\n")
-            fp.write("winning: "+str(self.AIwinnings[i+1])+"\n")
+            fp.write("AI: "+self.AI[i]+"\n")
+            fp.write("winning: "+str(self.AIwinnings[i])+"\n")
             fp.write("winning rate: " +
-                     str(len(self.AIwinnings[i+1])/self.matchNumber)+"\n\n")
+                     str(len(self.AIwinnings[i])/self.matchNumber)+"\n\n")
         fp.close()
         return
 

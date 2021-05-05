@@ -1,7 +1,7 @@
 [autoMatch]
 false
-[timeOut]
-1e10
+[stepLimit]
+100000
 [mapDict]
 default
 [mapName]

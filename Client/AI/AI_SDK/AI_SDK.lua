@@ -9,6 +9,7 @@ local Operation = require("PlayGame.Operation")
 --Menu:菜单界面
 AI_SDK.gameState = "READY"
 AI_SDK.judgementState = "Running"
+AI_SDK.step = 0
 AI_SDK.armyID = nil
 AI_SDK.armyNum = 0
 AI_SDK.KingPos = {x = -1, y = -1}
@@ -75,7 +76,7 @@ function AI_SDK.draw()
         return
     end
     love.graphics.setColor(1, 1, 1, 1)
-    Picture.PrintStepAndSpeed(ReplayGame.step)
+    Picture.PrintStepAndSpeed(AI_SDK.step)
     BasicMap.DrawMap()
     BasicMap.DrawPath()
     Operation.DrawSelect()
@@ -188,12 +189,16 @@ function AI_SDK.update(dt)
     if AI_SDK.gameState == "READY" then
         BGAnimation.update(dt)
     end
-    timer = ReplayGame.step
+    timer = AI_SDK.step
     Client:update()
+    if AI_SDK.step > Command["[stepLimit]"] and Command["[autoMatch]"] == "true" then
+        Debug.Log("info", "game quit because out of stepLimit")
+        love.event.quit(0)
+    end
     if AI_SDK.gameState ~= "Start" and AI_SDK.gameState ~= "Menu" then
         return
     end
-    if timer < ReplayGame.step then
+    if timer < AI_SDK.step then
         if Command["[AIlang]"] == "Lua" then
             Core.Main()
         elseif Command["[AIlang]"] == "C++" then

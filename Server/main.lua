@@ -11,7 +11,7 @@ Bitser = require("spec.bitser")
 Command = {}
 --服务端是否正运行自动对战任务，如果为true，服务端会在超时后结束游戏并关闭、在关闭时删除ServerTask.txt
 Command["[autoMatch]"] = "false"
-Command["[timeOut]"] = 1e10
+Command["[stepLimit]"] = 100000
 Command["[mapDict]"] = "default"
 Command["[mapName]"] = "default"
 Command["[saveName]"] = "default"
@@ -33,7 +33,7 @@ function love.load()
         local line = task:read()
         while line ~= nil do
             Command[line] = task:read()
-            if line == "[timeOut]" then
+            if line == "[stepLimit]" then
                 Command[line] = tonumber(Command[line])
             end
             line = task:read()
@@ -76,10 +76,6 @@ end
 
 function love.update(dt)
     CurrentTime = CurrentTime + dt
-    if CurrentTime > Command["[timeOut]"] and Command["[autoMatch]"] == "true" then
-        Debug.Log("info", "game quit because timeout")
-        love.event.quit(0)
-    end
     -- 倍速开关，用于快速测试，可以通过注释和取消注释调整
     -- dt = dt * 10
     Server:update()

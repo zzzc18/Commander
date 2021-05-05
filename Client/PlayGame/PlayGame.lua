@@ -8,6 +8,7 @@ local Operation = require("PlayGame.Operation")
 --Menu:菜单界面
 PlayGame.gameState = "READY"
 PlayGame.judgementState = "Running"
+PlayGame.step = 0
 PlayGame.armyID = nil
 PlayGame.armyNum = 0
 
@@ -75,7 +76,7 @@ function PlayGame.draw()
         Picture.DrawReady(BGAnimation)
         return
     end
-    Picture.PrintStepAndSpeed(ReplayGame.step)
+    Picture.PrintStepAndSpeed(PlayGame.step)
     BasicMap.DrawMap()
     BasicMap.DrawPath()
     Operation.DrawSelect()
@@ -94,6 +95,10 @@ function PlayGame.update(dt)
         BGAnimation.update(dt)
     end
     ClientSock.Update()
+    if PlayGame.step > Command["[stepLimit]"] and Command["[autoMatch]"] == "true" then
+        Debug.Log("info", "game quit because out of stepLimit")
+        love.event.quit(0)
+    end
     if PlayGame.gameState ~= "Start" and PlayGame.gameState ~= "Menu" then
         return
     end
