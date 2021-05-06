@@ -20,6 +20,7 @@ Switcher = require("Switcher")
 AI_SDK = require("AI.AI_SDK.AI_SDK")
 
 Command = {}
+Command["[port]"] = 22122
 --客户端是否正运行自动对战任务，如果为true，客户端会在游戏结束或超时后关闭
 Command["[autoMatch]"] = "false"
 Command["[stepLimit]"] = 100000
@@ -50,7 +51,7 @@ function love.load()
         local line = task:read()
         while line ~= nil do
             Command[line] = task:read()
-            if line == "[stepLimit]" then
+            if line == "[stepLimit]" or line == "[port]" then
                 Command[line] = tonumber(Command[line])
             end
             line = task:read()

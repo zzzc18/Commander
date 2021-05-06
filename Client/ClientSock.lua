@@ -5,7 +5,7 @@ local Connected = 0
 local PlayGameCore = require("PlayGame.Core")
 
 function ClientSock.Init()
-    Client = Sock.newClient("localhost", 22122)
+    Client = Sock.newClient("localhost", Command["[port]"])
     Client:setSerialization(Bitser.dumps, Bitser.loads)
     Client:on(
         "SetArmyID",

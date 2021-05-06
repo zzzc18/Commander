@@ -21,6 +21,7 @@ class autoMatch(object):
     stepLimit = 2000
     # 启动游戏时是否打开控制台
     runWithConsol = False
+    port = 22122
 
     def __init__(self):
         self.startTime = time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime())
@@ -28,6 +29,9 @@ class autoMatch(object):
 
     def creatClientTask(self, index):
         fp = open("ClientTask.txt", 'w')
+
+        fp.write("[port]\n")
+        fp.write(self.port+"\n")
 
         fp.write("[autoMatch]\n")
         fp.write("true\n")  # 是否为自动对战任务
@@ -48,6 +52,9 @@ class autoMatch(object):
 
     def creatServerTask(self):
         fp = open("ServerTask.txt", 'w')
+
+        fp.write("[port]\n")
+        fp.write(self.port+"\n")
 
         fp.write("[autoMatch]\n")
         fp.write("true\n")  # 是否为自动对战任务

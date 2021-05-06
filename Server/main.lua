@@ -9,6 +9,7 @@ Sock = require("sock")
 Bitser = require("spec.bitser")
 
 Command = {}
+Command["[port]"] = 22122
 --服务端是否正运行自动对战任务，如果为true，服务端会在超时后结束游戏并关闭、在关闭时删除ServerTask.txt
 Command["[autoMatch]"] = "false"
 Command["[stepLimit]"] = 100000
@@ -33,7 +34,7 @@ function love.load()
         local line = task:read()
         while line ~= nil do
             Command[line] = task:read()
-            if line == "[stepLimit]" then
+            if line == "[stepLimit]" or line == "[port]" then
                 Command[line] = tonumber(Command[line])
             end
             line = task:read()
