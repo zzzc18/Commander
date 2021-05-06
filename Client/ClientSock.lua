@@ -72,7 +72,6 @@ function ClientSock.Init()
     Client:connect()
 end
 
--- srcX,Y是出发点 dstX,Y是目标点，显然二者应当相邻
 function ClientSock.SendMove(data)
     Client:send("PushMove", data)
 end

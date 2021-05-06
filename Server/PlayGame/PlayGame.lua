@@ -69,9 +69,6 @@ function PlayGame.update(dt)
         Debug.Log("info", "game quit because out of stepLimit")
         love.event.quit(0)
     end
-    if Command["[autoMatch]"] == "true" and PlayGame.gameState == "Over" then
-        love.event.quit(0)
-    end
 end
 
 return PlayGame

@@ -95,10 +95,6 @@ function PlayGame.update(dt)
         BGAnimation.update(dt)
     end
     ClientSock.Update()
-    if PlayGame.step > Command["[stepLimit]"] and Command["[autoMatch]"] == "true" then
-        Debug.Log("info", "game quit because out of stepLimit")
-        love.event.quit(0)
-    end
     if PlayGame.gameState ~= "Start" and PlayGame.gameState ~= "Menu" then
         return
     end

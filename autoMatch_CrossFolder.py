@@ -99,12 +99,8 @@ class autoMatch(object):
         return
 
     def waitUntilMatchOver(self):
-        roundStartTime = time.time()
         while True:
             if os.path.exists("ServerTask.txt"):
-                if time.time()-roundStartTime > self.stepLimit:
-                    os.remove("ServerTask.txt")
-                    break
                 time.sleep(1)
             else:
                 break
@@ -117,8 +113,8 @@ class autoMatch(object):
         fp = open(self.saveDict+"/"+self.saveName+"/steps.txt", 'r')
         lines = fp.readlines()
         fp.close()
-        if lines[-1][3] == 3 and lines[-1][6] == 3:
-            self.AIwinning[lines[-1][0]].append(index)
+        if lines[-1][3] == "3" and lines[-1][6] == "3":
+            self.AIwinning[int(lines[-1][0])-1].append(index)
         return
 
     def saveMatchResult(self):

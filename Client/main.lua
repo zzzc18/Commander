@@ -114,6 +114,7 @@ function love.update(dt)
 end
 
 function love.quit()
+    os.exit()
     Debug.Log("info", "game quit")
     return false
 end
