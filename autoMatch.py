@@ -8,17 +8,17 @@ class autoMatch(object):
     # 参与游戏的智能体列表
     AI = ["Lua", "C++", "Python"]
     # 智能体获胜记录，数量应与上方的智能体数匹配
-    AIwinnings = [[], []]
+    AIwinnings = [[], [],[]]
     # 游戏使用的地图目录，地图中玩家数应与上方的智能体数匹配
-    #mapDict = "maps_3player"
-    mapDict = "default"
+    mapDict = "maps_3player"
+    #mapDict = "default"
     mapName = ""
     # 存档文件夹名
     saveDict = "Lua_C++_Python"
     saveName = ""
     timeDelay = 1
     # 自动对战步数限制，超过后强制结束游戏并进入下一局，不产生获胜者
-    stepLimit = 2000
+    stepLimit = 200
     # 启动游戏时是否打开控制台
     runWithConsol = False
     port = 22122
@@ -31,7 +31,7 @@ class autoMatch(object):
         fp = open("ClientTask.txt", 'w')
 
         fp.write("[port]\n")
-        fp.write(self.port+"\n")
+        fp.write(str(self.port)+"\n")
 
         fp.write("[autoMatch]\n")
         fp.write("true\n")  # 是否为自动对战任务
@@ -54,7 +54,7 @@ class autoMatch(object):
         fp = open("ServerTask.txt", 'w')
 
         fp.write("[port]\n")
-        fp.write(self.port+"\n")
+        fp.write(str(self.port)+"\n")
 
         fp.write("[autoMatch]\n")
         fp.write("true\n")  # 是否为自动对战任务
@@ -119,7 +119,7 @@ class autoMatch(object):
 
     def saveMatchResult(self):
         self.endTime = time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime())
-        fp = open(self.saveDict+"matchResult.txt", 'w')
+        fp = open(self.saveDict+"/matchResult.txt", 'w')
         fp.write("match start: "+self.startTime+"\n")
         fp.write("match end: "+self.endTime+"\n")
         fp.write("total round: "+str(self.matchNumber)+"\n")
