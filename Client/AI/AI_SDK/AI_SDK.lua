@@ -1,6 +1,5 @@
 local AI_SDK = {}
 
-local Core = require("AI.Core")
 local Operation = require("PlayGame.Operation")
 
 --READY:游戏未开始，不显示界面，无法操作
@@ -18,6 +17,13 @@ AI_SDK.SelectPos = {x = -1, y = -1}
 local timer = 0
 
 function AI_SDK.Init()
+    if Command["[AIlang]"] == "Lua" then
+        LuaCore = require("AI.Core")
+    elseif Command["[AIlang]"] == "C++" then
+        CCore = require("lib.UserImplementation")
+    elseif Command["[AIlang]"] == "Python" then
+        PyCore = require("lib.PythonAPI")
+    end
     AI_SDK.gameState = "READY"
     AI_SDK.judgementState = "Running"
     ClientSock.Init()
@@ -200,7 +206,7 @@ function AI_SDK.update(dt)
     end
     if timer < AI_SDK.step then
         if Command["[AIlang]"] == "Lua" then
-            Core.Main()
+            LuaCore.Main()
         elseif Command["[AIlang]"] == "C++" then
             CCore.userMain()
         elseif Command["[AIlang]"] == "Python" then

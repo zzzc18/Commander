@@ -6,8 +6,6 @@ CGameMap = require("lib.GameMap")
 CSystem = require("lib.System")
 -- lib.UserImplementation和lib.PythonAPI会依赖lib.UserAPI
 require("lib.UserAPI")
-CCore = require("lib.UserImplementation")
-PyCore = require("lib.PythonAPI")
 
 Sock = require("sock")
 Bitser = require("spec.bitser")
@@ -17,7 +15,6 @@ ReplayGame = require("Replayer.ReplayGame")
 Welcome = require("Welcome.Welcome")
 BGAnimation = require("Welcome.BGAnimation")
 Switcher = require("Switcher")
-AI_SDK = require("AI.AI_SDK.AI_SDK")
 
 Command = {}
 Command["[port]"] = 22122
@@ -28,6 +25,7 @@ Command["[mapDict]"] = "default"
 Command["[mapName]"] = "default"
 Command["[AIlang]"] = "Lua"
 CurrentTime = 0
+AI_SDK = require("AI.AI_SDK.AI_SDK")
 
 Font = {}
 
