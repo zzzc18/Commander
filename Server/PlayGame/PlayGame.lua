@@ -6,6 +6,7 @@ local Judgement = require("PlayGame.Judgement")
 --Start:游戏进行中
 --Over:游戏结束，显示界面，不发送地图更新
 PlayGame.gameState = "READY"
+PlayGame.step = 0
 PlayGame.armyID = nil
 PlayGame.armyNum = 0
 
@@ -63,7 +64,9 @@ function PlayGame.update(dt)
         ServerSock.SendUpdate(dt)
         Coordinate.update(dt)
     end
-    if Command["[autoMatch]"] == "true" and PlayGame.gameState == "Over" then
+    --服务端在到达步数限制后再运行5步，这是因为没有服务端客户端就无法更新步数导致不会退出。这额外的5步不会影响对战结果。
+    if PlayGame.step > Command["[stepLimit]"]+5 and Command["[autoMatch]"] == "true" then
+        Debug.Log("info", "game quit because out of stepLimit")
         love.event.quit(0)
     end
 end

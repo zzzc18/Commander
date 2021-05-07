@@ -8,6 +8,7 @@ local Operation = require("PlayGame.Operation")
 --Menu:菜单界面
 PlayGame.gameState = "READY"
 PlayGame.judgementState = "Running"
+PlayGame.step = 0
 PlayGame.armyID = nil
 PlayGame.armyNum = 0
 
@@ -75,7 +76,7 @@ function PlayGame.draw()
         Picture.DrawReady(BGAnimation)
         return
     end
-    Picture.PrintStepAndSpeed(ReplayGame.step)
+    Picture.PrintStepAndSpeed(PlayGame.step)
     BasicMap.DrawMap()
     BasicMap.DrawPath()
     Operation.DrawSelect()

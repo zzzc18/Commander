@@ -6,8 +6,6 @@ CGameMap = require("lib.GameMap")
 CSystem = require("lib.System")
 -- lib.UserImplementation和lib.PythonAPI会依赖lib.UserAPI
 require("lib.UserAPI")
-CCore = require("lib.UserImplementation")
-PyCore = require("lib.PythonAPI")
 
 Sock = require("sock")
 Bitser = require("spec.bitser")
@@ -17,16 +15,17 @@ ReplayGame = require("Replayer.ReplayGame")
 Welcome = require("Welcome.Welcome")
 BGAnimation = require("Welcome.BGAnimation")
 Switcher = require("Switcher")
-AI_SDK = require("AI.AI_SDK.AI_SDK")
 
 Command = {}
+Command["[port]"] = 22122
 --客户端是否正运行自动对战任务，如果为true，客户端会在游戏结束或超时后关闭
 Command["[autoMatch]"] = "false"
-Command["[timeOut]"] = 1e10
+Command["[stepLimit]"] = 100000
 Command["[mapDict]"] = "default"
 Command["[mapName]"] = "default"
 Command["[AIlang]"] = "Lua"
 CurrentTime = 0
+AI_SDK = require("AI.AI_SDK.AI_SDK")
 
 Font = {}
 
@@ -50,7 +49,7 @@ function love.load()
         local line = task:read()
         while line ~= nil do
             Command[line] = task:read()
-            if line == "[timeOut]" then
+            if line == "[stepLimit]" or line == "[port]" then
                 Command[line] = tonumber(Command[line])
             end
             line = task:read()
@@ -109,16 +108,13 @@ end
 
 function love.update(dt)
     CurrentTime = CurrentTime + dt
-    if CurrentTime > Command["[timeOut]"] and Command["[autoMatch]"] == "true" then
-        Debug.Log("info", "game quit because timeout")
-        love.event.quit(0)
-    end
     -- 倍速开关，用于快速测试，可以通过注释和取消注释调整
-    -- dt = dt * 10
+    dt = dt * 10
     Running.update(dt)
 end
 
 function love.quit()
+    os.exit()
     Debug.Log("info", "game quit")
     return false
 end

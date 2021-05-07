@@ -5,7 +5,7 @@ local Connected = 0
 local PlayGameCore = require("PlayGame.Core")
 
 function ClientSock.Init()
-    Client = Sock.newClient("localhost", 22122)
+    Client = Sock.newClient("localhost", Command["[port]"])
     Client:setSerialization(Bitser.dumps, Bitser.loads)
     Client:on(
         "SetArmyID",
@@ -28,7 +28,7 @@ function ClientSock.Init()
     Client:on(
         "Update",
         function(data)
-            ReplayGame.step = CSystem.Update(data)
+            Running.step = CSystem.Update(data)
         end
     )
     Client:on(
@@ -72,7 +72,6 @@ function ClientSock.Init()
     Client:connect()
 end
 
--- srcX,Y是出发点 dstX,Y是目标点，显然二者应当相邻
 function ClientSock.SendMove(data)
     Client:send("PushMove", data)
 end

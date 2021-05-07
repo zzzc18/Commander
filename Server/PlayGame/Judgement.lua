@@ -35,6 +35,11 @@ function Judgement.Judge()
         end
         ServerSock.SendGameOver()
         PlayGame.gameState = "Over"
+        if Command["[autoMatch]"] == "true" then
+            Server:update()
+            Debug.Log("info","auto quit game")
+            love.event.quit(0)
+        end
     end
 end
 
