@@ -1,0 +1,12 @@
+[port]
+22122
+[autoMatch]
+true
+[stepLimit]
+2000
+[mapDict]
+maps_2player
+[mapName]
+0.map
+[AIlang]
+Lua

@@ -6,12 +6,12 @@ class autoMatch(object):
     # 总计游戏局数,1<=matchNumber<=100
     matchNumber = 100
     # 参与游戏的智能体列表
-    AI = ["C++", "Lua", "Lua"]
+    AI = ["C++", "Lua"]
     # 智能体获胜记录，数量应与上方的智能体数匹配
     AIwinnings = [[], []]
     # 游戏使用的地图目录，地图中玩家数应与上方的智能体数匹配
-    #mapDict = "maps_2player"
-    mapDict = "default"
+    mapDict = "maps_2player"
+    #mapDict = "default"
     mapName = ""
     # 存档文件夹名，不能跨文件夹，例如使用../
     saveDict = "DDL_God_of_War"
