@@ -64,7 +64,7 @@ function love.load()
         if Visable then
             Running = Welcome
         else
-            Running = PlayGame
+            Running = AI_SDK
         end
     end
     Running.Init()

@@ -27,8 +27,10 @@ function AI_SDK.Init()
     AI_SDK.gameState = "READY"
     AI_SDK.judgementState = "Running"
     ClientSock.Init()
-    Buttons.Init()
-    BGAnimation.load()
+    if Visable then
+        Buttons.Init()
+        BGAnimation.load()
+    end
     math.randomseed(tonumber(tostring(os.time()):reverse():sub(1, 9)))
 end
 
@@ -192,7 +194,7 @@ function AI_SDK.deepCopy(table)
 end
 
 function AI_SDK.update(dt)
-    if AI_SDK.gameState == "READY" then
+    if AI_SDK.gameState == "READY" and Visable then
         BGAnimation.update(dt)
     end
     timer = AI_SDK.step
