@@ -6,29 +6,31 @@ class autoMatch(object):
     # 总计游戏局数,1<=matchNumber<=100
     matchNumber = 100
     # 参与游戏的智能体列表
-    AI = ["C++", "Lua"]
+    AI = ["C++", "Python"]
     # 智能体获胜记录，数量应与上方的智能体数匹配
     AIwinnings = [[], []]
     # 游戏使用的地图目录，地图中玩家数应与上方的智能体数匹配
     mapDict = "maps_2player"
-    #mapDict = "default"
+    # mapDict = "default"
     mapName = ""
     # 存档文件夹名，不能跨文件夹，例如使用../
-    saveDict = "DDL_God_of_War"
+    saveDict = "输出文件夹"
     saveName = ""
-    timeDelay = 0.5
+    timeDelay = 1.0
     # 自动对战步数限制，超过后强制结束游戏并进入下一局，不产生获胜者
     stepLimit = 2000
     # 启动游戏时是否打开控制台
     runWithConsol = False
-    port = 22122
+    ClientConfigFile = "ClientTask.txt"
+    ServerConfigFile = "ServerTask.txt"
 
-    def __init__(self):
+    def __init__(self, port=22122):
+        self.port = port
         self.startTime = time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime())
         return
 
     def creatClientTask(self, index):
-        fp = open("ClientTask.txt", 'w')
+        fp = open(self.ClientConfigFile, 'w')
 
         fp.write("[port]\n")
         fp.write(str(self.port)+"\n")
@@ -51,7 +53,7 @@ class autoMatch(object):
         return
 
     def creatServerTask(self):
-        fp = open("ServerTask.txt", 'w')
+        fp = open(self.ServerConfigFile, 'w')
 
         fp.write("[port]\n")
         fp.write(str(self.port)+"\n")
@@ -76,36 +78,43 @@ class autoMatch(object):
         fp.close()
         return
 
-    def startMatch(self, index):
+    def startMatch(self, index, multiTest=False):
         self.mapName = str(index)+".map"
-        #self.mapName = "default"
+        # self.mapName = "default"
         self.saveName = "round"+str(index)
         self.creatServerTask()
+
+        # 传入给love的参数
+        args = ""
+        if multiTest:
+            args = " multiprocess "+str(self.port)
+
         if self.runWithConsol == True:
-            os.system('cd Server&start lovec .')
+            os.system('cd Server&start lovec .'+args)
         else:
-            os.system('cd Server&start love .')
+            os.system('cd Server&start love .'+args)
         time.sleep(self.timeDelay)
         for i in range(len(self.AI)):
             self.creatClientTask(i)
             if self.runWithConsol == True:
-                os.system("cd Client&start lovec .")
+                os.system("cd Client&start lovec ."+args)
             else:
-                os.system("cd Client&start love .")
+                os.system("cd Client&start love . "+args)
             time.sleep(self.timeDelay)
         return
 
     def waitUntilMatchOver(self):
         while True:
-            if os.path.exists("ServerTask.txt"):
+            if os.path.exists(self.ServerConfigFile):
                 time.sleep(1)
             else:
                 break
-        os.remove("ClientTask.txt")
+        os.remove(self.ClientConfigFile)
         time.sleep(self.timeDelay)
         return
 
     def getMatchResult(self, index):
+        self.saveName = "round"+str(index)
         fp = open(self.saveDict+"/"+self.saveName+"/steps.txt", 'r')
         lines = fp.readlines()
         fp.close()
@@ -137,6 +146,24 @@ class autoMatch(object):
         self.saveMatchResult()
         return
 
+    def countMatchResult(self):
+        '''
+        用于统计整个文件夹的对局信息
+        '''
+        for i in range(self.matchNumber):
+            self.getMatchResult(i)
+        self.saveMatchResult()
 
-am = autoMatch()
-am.match()
+
+if __name__ == "__main__":
+    am = autoMatch()
+    am.match()
+
+
+def Match(port, index):
+    print(f"Running on match {index}")
+    am = autoMatch(port)
+    am.ClientConfigFile += str(am.port)
+    am.ServerConfigFile += str(am.port)
+    am.startMatch(index, multiTest=True)
+    am.waitUntilMatchOver()
