@@ -40,11 +40,18 @@ require("ClientSock")
 
 Running = {}
 
+-- arg 为传入参数
+-- arg[1] 是否为多进程模式
+-- arg[2] 端口号
 function love.load()
-    Debug.Init()
-    Debug.Log("info", "game start as client")
-    Coordinate.valid()
-    local task = io.open("../ClientTask.txt", "r")
+    ClientTaskFile = "..\\ClientTask.txt"
+    -- love和lovec的参数数目不一样，love会计算 . 而lovec不会（应该是）
+    if arg[1] == "multiprocess" then
+        ClientTaskFile = ClientTaskFile .. arg[2]
+    elseif arg[2] == "multiprocess" then
+        ClientTaskFile = ClientTaskFile .. arg[3]
+    end
+    local task = io.open(ClientTaskFile, "r")
     if task ~= nil then
         local line = task:read()
         while line ~= nil do
@@ -56,6 +63,10 @@ function love.load()
         end
         task:close()
     end
+
+    Debug.Init()
+    Debug.Log("info", "game start as client")
+    Coordinate.valid()
     if Command["[autoMatch]"] == "true" then
         Debug.Log("info", "start as AI")
         Running = AI_SDK
@@ -109,7 +120,7 @@ end
 function love.update(dt)
     CurrentTime = CurrentTime + dt
     -- 倍速开关，用于快速测试，可以通过注释和取消注释调整
-    dt = dt * 10
+    dt = dt * 1000
     Running.update(dt)
 end
 
