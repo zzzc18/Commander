@@ -16,7 +16,7 @@ class autoMatch(object):
     # 存档文件夹名，不能跨文件夹，例如使用../
     saveDict = "输出文件夹"
     saveName = ""
-    timeDelay = 1.0
+    timeDelay = 2.2
     # 自动对战步数限制，超过后强制结束游戏并进入下一局，不产生获胜者
     stepLimit = 2000
     # 启动游戏时是否打开控制台
