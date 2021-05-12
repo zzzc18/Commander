@@ -1,5 +1,5 @@
-#跨文件夹对战，用于小组赛
-#此脚本应置于服务端所在文件夹内
+# 跨文件夹对战，用于小组赛
+# 此脚本应置于服务端所在文件夹内
 import os
 import time
 
@@ -7,12 +7,12 @@ import time
 class autoMatch(object):
     # 总计游戏局数,1<=matchNumber<=100
     matchNumber = 5
-    #参与游戏的智能体文件夹名列表
-    AIteam=["team_1","team_2","team_3"]
+    # 参与游戏的智能体文件夹名列表
+    AIteam = ["team_1", "team_2", "team_3"]
     # 参与游戏的智能体语言列表，顺序应与上一个列表对应
     AIlang = ["Lua", "C++", "Python"]
     # 智能体获胜记录，数量应与上方的智能体数匹配
-    AIwinning = [[], [],[]]
+    AIwinning = [[], [], []]
     # 游戏使用的地图目录，地图中玩家数应与上方的智能体数匹配；此目录位于服务端所在文件夹外
     mapDict = "../maps_3player"
     mapName = ""
@@ -24,15 +24,16 @@ class autoMatch(object):
     stepLimit = 200
     # 启动游戏时是否打开控制台
     runWithConsol = False
-    port = 22122
+    ClientConfigFile = "ClientTask.txt"
+    ServerConfigFile = "ServerTask.txt"
 
-    def __init__(self,_port=22122):
+    def __init__(self, _port=22122):
         self.startTime = time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime())
-        self.port=_port
+        self.port = _port
         return
 
     def creatClientTask(self, index):
-        fp = open("../"+self.AIteam[index]+"/ClientTask.txt", 'w')
+        fp = open("../"+self.AIteam[index]+"/"+self.ClientConfigFile, 'w')
 
         fp.write("[port]\n")
         fp.write(str(self.port)+"\n")
@@ -55,7 +56,7 @@ class autoMatch(object):
         return
 
     def creatServerTask(self):
-        fp = open("ServerTask.txt", 'w')
+        fp = open(self.ServerConfigFile, 'w')
 
         fp.write("[port]\n")
         fp.write(str(self.port)+"\n")
@@ -80,36 +81,43 @@ class autoMatch(object):
         fp.close()
         return
 
-    def startMatch(self, index):
+    def startMatch(self, index, multiTest=False):
         self.mapName = str(index)+".map"
         self.saveName = "round"+str(index)
         self.creatServerTask()
+
+        # 传入给love的参数
+        args = ""
+        if multiTest:
+            args = " multiprocess "+str(self.port)
+
         if self.runWithConsol == True:
-            os.system('cd Server&start lovec .')
+            os.system('cd Server&start lovec .'+args)
         else:
-            os.system('cd Server&start love .')
+            os.system('cd Server&start love .'+args)
         time.sleep(self.timeDelay)
         for i in range(len(self.AIlang)):
             self.creatClientTask(i)
             if self.runWithConsol == True:
-                os.system("cd ../"+self.AIteam[i]+"/Client&start lovec .")
+                os.system("cd ../"+self.AIteam[i]+"/Client&start lovec ."+args)
             else:
-                os.system("cd ../"+self.AIteam[i]+"/Client&start love .")
+                os.system("cd ../"+self.AIteam[i]+"/Client&start love ."+args)
             time.sleep(self.timeDelay)
         return
 
     def waitUntilMatchOver(self):
         while True:
-            if os.path.exists("ServerTask.txt"):
+            if os.path.exists(self.ServerConfigFile):
                 time.sleep(1)
             else:
                 break
         for i in range(len(self.AIlang)):
-            os.remove("../"+self.AIteam[i]+"/ClientTask.txt")
+            os.remove("../"+self.AIteam[i]+"/"+self.ClientConfigFile)
         time.sleep(self.timeDelay)
         return
 
     def getMatchResult(self, index):
+        self.saveName = "round"+str(index)
         fp = open(self.saveDict+"/"+self.saveName+"/steps.txt", 'r')
         lines = fp.readlines()
         fp.close()
@@ -142,6 +150,29 @@ class autoMatch(object):
         self.saveMatchResult()
         return
 
+    def countMatchResult(self):
+        '''
+        用于统计整个文件夹的对局信息
+        '''
+        for i in range(self.matchNumber):
+            self.getMatchResult(i)
+        self.saveMatchResult()
 
-am = autoMatch()
-am.match()
+
+if __name__ == "__main__":
+    am = autoMatch()
+    am.match()
+
+
+def Match(port, index, _AIlang, _mapDict, _saveDict):
+    print(f"Running on match {index}")
+    am = autoMatch(port)
+    am.AIteam = ["Commender_1", "Commender_2", "Commender_3", "Commender_4",
+                 "Commender_5", "Commender_6", "Commender_7", "Commender_8"]
+    am.AIlang = _AIlang
+    am.mapDict = _mapDict
+    am.saveDict = _saveDict
+    am.ClientConfigFile += str(am.port)
+    am.ServerConfigFile += str(am.port)
+    am.startMatch(index, multiTest=True)
+    am.waitUntilMatchOver()
