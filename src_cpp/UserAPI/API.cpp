@@ -99,7 +99,7 @@ VECTOR UserAPI::king_pos() {
 }
 // 获取当前的step数
 int UserAPI::get_current_step() {
-    get_lua_property("ReplayGame", "step");
+    get_lua_property("AI_SDK", "step");
     return lua_tonumber(luaState, -1);
 }
 
