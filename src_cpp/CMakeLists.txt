@@ -9,8 +9,8 @@ elseif(CMAKE_HOST_UNIX)
     set(LINUX 1)
 endif()
 
-set(CompileMode "User")
-# set(CompileMode "Developer")
+# set(CompileMode "User")
+set(CompileMode "Developer")
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -Wall -Weffc++ -fPIC")

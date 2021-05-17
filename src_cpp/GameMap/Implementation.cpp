@@ -230,13 +230,20 @@ bool MAP::ChangeBelong(VECTOR aim) {
     return true;
 }
 
-void MAP::RandomGen(int armyCnt, int level) {
+void MAP::RandomGen(
+    int armyCnt, int sizeX, int sizeY, std::string mapName,
+    int level) {  // sizeX = 24, sizeY = 24, mapName = "map", level = 0
     _armyCnt = armyCnt;
-    _sizeX = _sizeY = 24;  // FIXME magic number
+    _sizeX = sizeX;
+    _sizeY = sizeY;
     //设置每个点的类型
+reset:
     for (int i = 0; i < _sizeX; ++i) {
-        for (int j = 0; j < _sizeY; ++j)
+        for (int j = 0; j < _sizeY; ++j) {
             _mat[i][j].type = RandomNodeType(level);
+            _mat[i][j].belong = SERVER;
+            _mat[i][j].unitNum = 0;
+        }
     }
     //放置 king
     std::vector<std::pair<VECTOR, NODE_TYPE>> kings;  //(pos,pre_type)
@@ -271,12 +278,16 @@ void MAP::RandomGen(int armyCnt, int level) {
         for (auto [pos, type] : kings) _mat[pos.x][pos.y].type = type;
         return true;  //利用逻辑运算的短路求值特性
     };
+    int genTimes = 0;
     do {  //不断随机放置 king，直至合法
         for (int i = 1; i <= _armyCnt; ++i) {
             VECTOR pos = {Random(0, _sizeX - 1), Random(0, _sizeY - 1)};
             kings.emplace_back(pos, _mat[pos.x][pos.y].type);
             _mat[pos.x][pos.y].type = NODE_TYPE::KING;
         }
+        genTimes++;
+        // 有的地图就生成不出来合法的王，从reset处重新生成地图
+        if (genTimes > 10) goto reset;
     } while (!ValidateConnectivity() && Recovery());
     //设置 king 的所属军队
     for (int i = 0; i < _armyCnt; ++i)
@@ -288,6 +299,10 @@ void MAP::RandomGen(int armyCnt, int level) {
                 _mat[i][j].unitNum = Random(40, 50);  // FIXME magic number
         }
     }
+    mapName = std::string("./") + mapName + ".map";  // + std::string(".map");
+    std::ofstream fout(mapName);
+    std::cout << mapName << fout.is_open() << std::endl;
+    fout << *this;
 }
 
 void MAP::InitSavedata(std::string name,
