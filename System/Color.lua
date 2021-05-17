@@ -16,8 +16,8 @@ function Color.Orange()
     return 1, 0.6470588235294118, 0
 end
 
-function Color.Green()
-    return 0, 1, 0
+function Color.Red()
+    return Color.convert255(178, 34, 34)
 end
 
 function Color.DarkGreen()
@@ -54,6 +54,18 @@ function Color.Gray()
     return Color.convert255(192, 192, 192)
 end
 
+function Color.Pink()
+    return Color.convert255(206, 0, 113)
+end
+
+function Color.Yellow()
+    return Color.convert255(255, 255, 115)
+end
+
+function Color.Blue()
+    return Color.convert255(0, 0, 205)
+end
+
 function Color.Army(k)
     local colorName
     if k == 0 then
@@ -72,7 +84,16 @@ function Color.Army(k)
         colorName = "Orange"
     end
     if k == 5 then
-        colorName = "Green"
+        colorName = "Red"
+    end
+    if k == 6 then
+        colorName = "Pink"
+    end
+    if k == 7 then
+        colorName = "Yellow"
+    end
+    if k == 8 then
+        colorName = "Blue"
     end
     return Color.GetColor(colorName, 0.5)
 end

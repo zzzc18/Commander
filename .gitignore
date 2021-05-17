@@ -9,3 +9,6 @@ Savedata
 GameLog
 __pycache__
 *.pyd
+maps_2player
+maps_3player
+maps_4player

@@ -15,7 +15,6 @@ static int userMain(lua_State *luaState) {
     int id = VERIFICATION::Singleton().GetArmyID();
     // User Code Begin
 
-
     // User Code End
     return 0;
 }

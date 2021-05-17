@@ -122,14 +122,15 @@ class MAP final {
     std::string ReplayFile;
 
     //以 level 为参数随机生成有armyCnt个军队的地图
-    void RandomGen(int armyCnt, int level);
+    void RandomGen(int armyCnt, int sizeX = 24, int sizeY = 24,
+                   std::string mapName = "map", int level = 0);
 
     //初始化存档文件夹，默认以游戏开始时间命名
     void InitSavedata(std::string name = "", std::string dict = "Savedata");
     //游戏存档保存路径
     std::string SaveDict;
     //从dict目录下读取地图name
-    int LoadMap(std::string dict = "Data", std::string name = "3Player.map");
+    int LoadMap(std::string dict = "Data", std::string name = "default.map");
     //将地图保存至SaveDict文件夹(未设置则为开始时间)，以步数命名
     void SaveMap();
     //向SaveDict文件夹中的steps.txt保存当前步数的操作

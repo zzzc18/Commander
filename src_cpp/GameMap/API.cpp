@@ -14,7 +14,11 @@
  * @return @c void
  */
 static int RandomGenMap(lua_State *luaState) {
-    MAP::Singleton().RandomGen(2, 0);  // FIXME magic numbers
+    int armyCnt, sizeX, sizeY;
+    std::string mapName;
+    APIparam(luaState, armyCnt, sizeX, sizeY, mapName);
+    MAP::Singleton().RandomGen(armyCnt, sizeX, sizeY, mapName,
+                               0);  // FIXME magic numbers
     return APIreturn(luaState);
 }
 /**

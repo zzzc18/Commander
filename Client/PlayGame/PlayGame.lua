@@ -8,6 +8,7 @@ local Operation = require("PlayGame.Operation")
 --Menu:菜单界面
 PlayGame.gameState = "READY"
 PlayGame.judgementState = "Running"
+PlayGame.step = 0
 PlayGame.armyID = nil
 PlayGame.armyNum = 0
 
@@ -15,7 +16,7 @@ function PlayGame.Init()
     PlayGame.gameState = "READY"
     PlayGame.judgementState = "Running"
     ClientSock.Init()
-    if Visable then
+    if Visible then
         Buttons.Init()
         BGAnimation.load()
     end
@@ -75,7 +76,7 @@ function PlayGame.draw()
         Picture.DrawReady(BGAnimation)
         return
     end
-    Picture.PrintStepAndSpeed(ReplayGame.step)
+    Picture.PrintStepAndSpeed(PlayGame.step)
     BasicMap.DrawMap()
     BasicMap.DrawPath()
     Operation.DrawSelect()
@@ -90,14 +91,14 @@ function PlayGame.UpdateTimerSecond(dt)
 end
 
 function PlayGame.update(dt)
-    if PlayGame.gameState == "READY" and Visable then
+    if PlayGame.gameState == "READY" and Visible then
         BGAnimation.update(dt)
     end
     ClientSock.Update()
     if PlayGame.gameState ~= "Start" and PlayGame.gameState ~= "Menu" then
         return
     end
-    if Visable then
+    if Visible then
         MapAdjust.Update()
     end
     Operation.Update()
