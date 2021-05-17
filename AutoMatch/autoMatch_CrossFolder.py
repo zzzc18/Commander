@@ -1,5 +1,5 @@
-#跨文件夹对战，用于小组赛
-#此脚本应置于服务端所在文件夹内
+# 跨文件夹对战，用于小组赛
+# 此脚本应置于服务端所在文件夹内
 import os
 import time
 
@@ -7,14 +7,14 @@ import time
 class autoMatch(object):
     # 总计游戏局数,1<=matchNumber<=100
     matchNumber = 5
-    #参与游戏的智能体文件夹名列表
-    AIteam=["team_1","team_2","team_3"]
+    # 参与游戏的智能体文件夹名列表
+    AIteam = ["team_1", "team_2"]
     # 参与游戏的智能体语言列表，顺序应与上一个列表对应
-    AIlang = ["Lua", "C++", "Python"]
+    AIlang = ["Lua", "Python"]
     # 智能体获胜记录，数量应与上方的智能体数匹配
-    AIwinning = [[], [],[]]
+    AIwinning = [[], [], []]
     # 游戏使用的地图目录，地图中玩家数应与上方的智能体数匹配；此目录位于服务端所在文件夹外
-    mapDict = "../maps_3player"
+    mapDict = "../maps_2player"
     mapName = ""
     # 存档文件夹名，不能跨文件夹，例如使用../
     saveDict = "teamMatch_1"
@@ -26,9 +26,9 @@ class autoMatch(object):
     runWithConsol = False
     port = 22122
 
-    def __init__(self,_port=22122):
+    def __init__(self, _port=22122):
         self.startTime = time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime())
-        self.port=_port
+        self.port = _port
         return
 
     def creatClientTask(self, index):

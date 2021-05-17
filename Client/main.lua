@@ -72,7 +72,7 @@ function love.load()
         Running = AI_SDK
     else
         Debug.Log("info", "start without task")
-        if Visable then
+        if Visible then
             Running = Welcome
         else
             Running = AI_SDK
@@ -80,7 +80,7 @@ function love.load()
     end
     Running.Init()
     Switcher.Init()
-    if Visable then
+    if Visible then
         local gillsans50 = love.graphics.newFont("Font/gillsans.ttf", 50)
         Font.gillsans50 = gillsans50
         Picture.Init()
