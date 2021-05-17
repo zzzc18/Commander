@@ -27,7 +27,7 @@ function AI_SDK.Init()
     AI_SDK.gameState = "READY"
     AI_SDK.judgementState = "Running"
     ClientSock.Init()
-    if Visable then
+    if Visible then
         Buttons.Init()
         BGAnimation.load()
     end
@@ -194,7 +194,7 @@ function AI_SDK.deepCopy(table)
 end
 
 function AI_SDK.update(dt)
-    if AI_SDK.gameState == "READY" and Visable then
+    if AI_SDK.gameState == "READY" and Visible then
         BGAnimation.update(dt)
     end
     timer = AI_SDK.step

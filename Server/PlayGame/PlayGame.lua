@@ -13,6 +13,7 @@ PlayGame.armyNum = 0
 function PlayGame.Init(MapMode)
     -- CGameMap.RandomGenMap()
     -- CGameMap.WriteMap()
+    print(Command["[mapDict]"], Command["[mapName]"])
     PlayGame.armyNum = CGameMap.LoadMap(Command["[mapDict]"], Command["[mapName]"])
     CGameMap.InitSavedata(Command["[saveName]"], Command["[saveDict]"])
     BasicMap.Init()
@@ -65,7 +66,7 @@ function PlayGame.update(dt)
         Coordinate.update(dt)
     end
     --服务端在到达步数限制后再运行5步，这是因为没有服务端客户端就无法更新步数导致不会退出。这额外的5步不会影响对战结果。
-    if PlayGame.step > Command["[stepLimit]"]+5 and Command["[autoMatch]"] == "true" then
+    if PlayGame.step > Command["[stepLimit]"] + 5 and Command["[autoMatch]"] == "true" then
         Debug.Log("info", "game quit because out of stepLimit")
         love.event.quit(0)
     end

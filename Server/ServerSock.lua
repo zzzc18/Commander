@@ -5,6 +5,7 @@ local PlayGameCore = require("PlayGame.Core")
 ServerSock.clientNum = 0
 
 function ServerSock.Init(armyNum)
+    print(armyNum)
     Server = Sock.newServer("*", Command["[port]"], armyNum)
     Server:setSerialization(Bitser.dumps, Bitser.loads)
     Server:on(
@@ -40,7 +41,7 @@ end
 
 function ServerSock.SendUpdate(dt)
     Server:sendToAll("Update", dt)
-    PlayGame.step=CSystem.Update(dt)
+    PlayGame.step = CSystem.Update(dt)
 end
 
 function ServerSock.SendGameOver()
