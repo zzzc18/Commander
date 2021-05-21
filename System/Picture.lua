@@ -6,7 +6,7 @@ local ArrowImage = {}
 local ReadyImage = {}
 local Menu = {}
 
-function ReadyImage:Load() 
+function ReadyImage:Load()
     self.title = love.graphics.newImage("data/Picture/Title.png")
     self.ready = love.graphics.newImage("data/Picture/Waiting.png")
 end
@@ -16,18 +16,12 @@ function NodeImageSet:Load()
     self.center.x = 97
     self.center.y = 97
     self.divRatio = 135
-    self["NODE_TYPE_BLANK"] =
-        love.graphics.newImage("data/Picture/NODE_TYPE_BLANK.png")
-    self["NODE_TYPE_HILL"] =
-        love.graphics.newImage("data/Picture/NODE_TYPE_HILL.png")
-    self["NODE_TYPE_FORT"] =
-        love.graphics.newImage("data/Picture/NODE_TYPE_FORT.png")
-    self["NODE_TYPE_KING"] =
-        love.graphics.newImage("data/Picture/NODE_TYPE_KING.png")
-    self["NODE_TYPE_OBSTACLE"] =
-        love.graphics.newImage("data/Picture/NODE_TYPE_OBSTACLE.png")
-    self["NODE_TYPE_MARSH"] =
-        love.graphics.newImage("data/Picture/NODE_TYPE_MARSH.png")
+    self["NODE_TYPE_BLANK"] = love.graphics.newImage("data/Picture/NODE_TYPE_BLANK.png")
+    self["NODE_TYPE_HILL"] = love.graphics.newImage("data/Picture/NODE_TYPE_HILL.png")
+    self["NODE_TYPE_FORT"] = love.graphics.newImage("data/Picture/NODE_TYPE_FORT.png")
+    self["NODE_TYPE_KING"] = love.graphics.newImage("data/Picture/NODE_TYPE_KING.png")
+    self["NODE_TYPE_OBSTACLE"] = love.graphics.newImage("data/Picture/NODE_TYPE_OBSTACLE.png")
+    self["NODE_TYPE_MARSH"] = love.graphics.newImage("data/Picture/NODE_TYPE_MARSH.png")
 end
 
 function SelectImage:Load()
@@ -50,11 +44,11 @@ end
 
 function Picture.Init()
     NodeImageSet:Load()
-    if ServerSock == nil then
-        SelectImage:Load()
-    end
+    --if ServerSock == nil then
+    SelectImage:Load()
+    ArrowImage:Load()
+    --end
     if ClientSock ~= nil then
-        ArrowImage:Load()
         Menu:Load()
         ReadyImage:Load()
     end

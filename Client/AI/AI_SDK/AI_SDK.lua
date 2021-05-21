@@ -198,7 +198,7 @@ function AI_SDK.update(dt)
         BGAnimation.update(dt)
     end
     timer = AI_SDK.step
-    Client:update()
+    ClientSock.Update()
     if AI_SDK.step > Command["[stepLimit]"] and Command["[autoMatch]"] == "true" then
         Debug.Log("info", "game quit because out of stepLimit")
         love.event.quit(0)
@@ -215,6 +215,7 @@ function AI_SDK.update(dt)
             PyCore.userMain()
         end
     end
+    ClientSock.SendRoundPulse()
     MapAdjust.Update()
     Buttons.Update()
 end

@@ -53,6 +53,7 @@ function love.load(arg)
     end
     Debug.Init()
     Debug.Log("info", "game start as server")
+    Debug.Log("info", "open " .. ServerTaskFile)
     CVerification.Register(0, 3)
     Coordinate.valid()
     Running = PlayGame
@@ -88,7 +89,7 @@ end
 function love.update(dt)
     CurrentTime = CurrentTime + dt
     -- 倍速开关，用于快速测试，可以通过注释和取消注释调整
-    dt = dt * 1000
+    dt = dt * 4
     Server:update()
     Running.update(dt)
 end

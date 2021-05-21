@@ -52,6 +52,7 @@ function PlayGame.draw()
         return
     end
     BasicMap.DrawMap()
+    BasicMap.DrawPath()
     Coordinate.draw()
 end
 

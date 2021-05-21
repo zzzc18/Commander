@@ -1,5 +1,7 @@
 ClientSock = {}
 
+ClientSock.Lock = 0
+
 local Connected = 0
 
 local PlayGameCore = require("PlayGame.Core")
@@ -73,10 +75,19 @@ function ClientSock.Init()
 end
 
 function ClientSock.SendMove(data)
-    Client:send("PushMove", data)
+    ClientSock.Lock = ClientSock.Lock + 1
+    print(ClientSock.Lock)
+    if ClientSock.Lock < 2 then
+        Client:send("PushMove", data)
+    end
+end
+
+function ClientSock.SendRoundPulse()
+    Client:send("RoundPulse")
 end
 
 function ClientSock.Update()
+    ClientSock.Lock = 0
     Client:update()
     if Connected == 0 and Client:isConnected() then
         Connected = 1
