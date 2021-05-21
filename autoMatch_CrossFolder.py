@@ -19,11 +19,11 @@ class autoMatch(object):
     # 存档文件夹名，不能跨文件夹，例如使用../
     saveDict = "teamMatch_1"
     saveName = ""
-    timeDelay = 0.5
+    timeDelay = 1
     # 自动对战步数限制，超过后强制结束游戏并进入下一局，不产生获胜者
-    stepLimit = 200
+    stepLimit = 2000
     # 启动游戏时是否打开控制台
-    runWithConsol = False
+    runWithConsol = True
     ClientConfigFile = "ClientTask.txt"
     ServerConfigFile = "ServerTask.txt"
 
@@ -33,7 +33,9 @@ class autoMatch(object):
         return
 
     def creatClientTask(self, index):
-        fp = open("../"+self.AIteam[index]+"/"+self.ClientConfigFile, 'w')
+        print(index)
+        fp = open(os.path.join("..",
+                  self.AIteam[index], self.ClientConfigFile), 'w')
 
         fp.write("[port]\n")
         fp.write(str(self.port)+"\n")
@@ -132,7 +134,9 @@ class autoMatch(object):
         fp.write("match end: "+self.endTime+"\n")
         fp.write("total round: "+str(self.matchNumber)+"\n")
         fp.write("savedata: "+self.saveDict+"\n\n\n")
+        print(self.AIlang)
         for i in range(len(self.AIlang)):
+            print(i)
             fp.write("team: "+self.AIteam[i]+"\n")
             fp.write("armyID: "+str(i+1)+"\n")
             fp.write("AILang: "+self.AIlang[i]+"\n")
@@ -167,8 +171,8 @@ if __name__ == "__main__":
 def Match(port, index, _AIlang, _mapDict, _saveDict):
     print(f"Running on match {index}")
     am = autoMatch(port)
-    am.AIteam = ["Commender_1", "Commender_2", "Commender_3", "Commender_4",
-                 "Commender_5", "Commender_6", "Commender_7", "Commender_8"]
+    am.AIteam = ["Commander_1", "Commander_2", "Commander_3", "Commander_4",
+                 "Commander_5", "Commander_6", "Commander_7", "Commander_8"]
     am.AIlang = _AIlang
     am.mapDict = _mapDict
     am.saveDict = _saveDict

@@ -4,6 +4,7 @@
  * @brief @c GameMap 模块对 Lua 提供的 API
  */
 
+#include "Debug.hpp"
 #include "GameMap.hpp"
 #include "LuaAPI.hpp"
 
@@ -28,11 +29,14 @@ static int LoadMap(lua_State *luaState) {
     int armyNum = 0;
     APIparam(luaState, dict, name);
     if (dict == "default")
-        armyNum = MAP::Singleton().LoadMap();
+        Debug::Singleton().Log("info", "default loadmap"),
+            armyNum = MAP::Singleton().LoadMap();
     else if (name == "default")
-        armyNum = MAP::Singleton().LoadMap(dict);
+        Debug::Singleton().Log("info", "default2 loadmap"),
+            armyNum = MAP::Singleton().LoadMap(dict);
     else
-        armyNum = MAP::Singleton().LoadMap(dict, name);
+        Debug::Singleton().Log("info", "nodefault loadmap"),
+            armyNum = MAP::Singleton().LoadMap(dict, name);
     return APIreturn(luaState, armyNum);
 }
 /**
