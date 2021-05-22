@@ -18,8 +18,8 @@ import time
 from multiprocessing import Pool
 import numpy as np
 import re
-import autoMatch_CrossFolder
-from autoMatch_CrossFolder import autoMatch, Match
+import AutoMatch.autoMatch_CrossFolder
+from AutoMatch.autoMatch_CrossFolder import autoMatch, Match
 
 
 def copyFile(teamName, teamAI, index):
