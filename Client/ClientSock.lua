@@ -34,6 +34,13 @@ function ClientSock.Init()
         end
     )
     Client:on(
+        "UpdateStep",
+        function(data)
+            Running.step = data
+            CSystem.UpdateStep(Running.step)
+        end
+    )
+    Client:on(
         "GameStart",
         function(data)
             Running.gameState = "Start"

@@ -100,8 +100,8 @@ function ServerSock.Init(armyNum)
 end
 
 function ServerSock.SendUpdate(dt)
-    Server:sendToAll("Update", dt)
     PlayGame.step = CSystem.Update(dt)
+    Server:sendToAll("UpdateStep", PlayGame.step)
 end
 
 function ServerSock.SendGameOver()
