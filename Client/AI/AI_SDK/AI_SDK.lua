@@ -13,6 +13,7 @@ AI_SDK.armyID = nil
 AI_SDK.armyNum = 0
 AI_SDK.KingPos = {x = -1, y = -1}
 AI_SDK.SelectPos = {x = -1, y = -1}
+AI_SDK.timeout = 0.5
 
 local timer = 0
 
@@ -207,6 +208,7 @@ function AI_SDK.update(dt)
         return
     end
     if timer < AI_SDK.step then
+        local startTime = os.clock()
         if Command["[AIlang]"] == "Lua" then
             LuaCore.Main()
         elseif Command["[AIlang]"] == "C++" then
@@ -214,8 +216,14 @@ function AI_SDK.update(dt)
         elseif Command["[AIlang]"] == "Python" then
             PyCore.userMain()
         end
+        local endTime = os.clock()
+        Debug.Log("error", "RunningTime " .. endTime .. " " .. startTime)
+        if endTime - startTime > AI_SDK.timeout then
+            -- 超时，强制停止
+            love.quit()
+        end
+        ClientSock.SendRoundPulse()
     end
-    ClientSock.SendRoundPulse()
     MapAdjust.Update()
     Buttons.Update()
 end
