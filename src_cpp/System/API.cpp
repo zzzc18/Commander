@@ -27,7 +27,15 @@ static int Update(lua_State* luaState) {
     return APIreturn(luaState, MAP::Singleton().step);
 }
 
+static int UpdateStep(lua_State* luaState) {
+    int nextStep;
+    APIparam(luaState, nextStep);
+    for (int i = MAP::Singleton().step + 1; i <= nextStep; i++)
+        MAP::Singleton().Update();
+    return APIreturn(luaState, MAP::Singleton().step);
+}
+
 /**
  * @brief 向 Lua 注册 API，模块名为 lib/System.dll
  */
-LUA_REG_FUNC(System, C_API(Update))
+LUA_REG_FUNC(System, C_API(Update), C_API(UpdateStep))

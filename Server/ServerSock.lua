@@ -2,35 +2,33 @@ ServerSock = {}
 
 local PlayGameCore = require("PlayGame.Core")
 
+ServerSock.ClientID = {}
 ServerSock.clientNum = 0
 
 ServerSock.Sync = {}
 
-function ServerSock.Sync:Init()
-    self.clientSyncState = {}
-    self.clientSyncTimeout = 1.0 --seconds
+function ServerSock.Sync:Init(clientNum)
+    self.clientStep = {}
+    for i = 1, clientNum do
+        self.clientStep[i] = 0
+    end
+    self.clientSyncTimeout = 4.0 --seconds
     self.clientSyncTime = 0
 end
 
-function ServerSock.Sync:Clear()
-    for armyID, val in pairs(self.clientSyncState) do
-        if val == "Sync" then
-            self.clientSyncState[armyID] = "unSync"
-        end
-    end
-end
-
 function ServerSock.Sync:IsSync()
-    for armyID, val in pairs(self.clientSyncState) do
-        if val == "unSync" then
+    for armyID, val in pairs(self.clientStep) do
+        if val ~= Running.step and val >= 0 then
             return false
         end
     end
     return true
 end
 
-function ServerSock.Sync:SetSync(armyID)
-    self.clientSyncState[armyID] = "Sync"
+function ServerSock.Sync:SetSync(armyID, data)
+    if type(data) == "number" and self.clientStep[armyID] >= 0 then
+        self.clientStep[armyID] = data
+    end
 end
 
 function ServerSock.Sync:Update(dt)
@@ -45,10 +43,10 @@ function ServerSock.Sync:TimerReset()
     self.clientSyncTime = 0
 end
 
-function ServerSock.Sync:KillTimeoutClient()
-    for armyID, val in pairs(self.clientSyncState) do
-        if val == "unSync" then
-            self.clientSyncState[armyID] = "lose"
+function ServerSock.Sync:MarkTimeoutClient()
+    for armyID, val in pairs(self.clientStep) do
+        if val ~= Running.step and val >= 0 then
+            ServerSock.Sync:SetSync(armyID, -2)
             ServerSock.SendLose(armyID, -1)
         end
     end
@@ -59,13 +57,19 @@ function ServerSock.Init(armyNum)
     print(Command["[port]"])
     Server = Sock.newServer("*", Command["[port]"], armyNum)
     Server:setSerialization(Bitser.dumps, Bitser.loads)
-    ServerSock.Sync:Init()
+    ServerSock.Sync:Init(armyNum)
     Server:on(
         "connect",
-        function(data, client)
-            client:send("SetArmyID", {armyID = client:getIndex()})
+        function(data, client) --仅用于非自动评测
+            if data == nil then
+                client:send("SetArmyID", {armyID = client:getIndex()})
+                ServerSock.ClientID[client:getIndex()] = client:getIndex()
+            else
+                client:send("SetArmyID", {armyID = data})
+                ServerSock.ClientID[client:getIndex()] = data
+            end
             ServerSock.clientNum = ServerSock.clientNum + 1
-            ServerSock.Sync:SetSync(client:getIndex())
+            ServerSock.Sync:SetSync(ServerSock.ClientID[client:getIndex()], 0)
             if PlayGame.gameState == "Over" then
                 PlayGame.gameState = "READY"
                 Running.Init()
@@ -78,30 +82,46 @@ function ServerSock.Init(armyNum)
     )
     Server:on(
         "disconnect",
-        function()
+        function(data, client)
             ServerSock.clientNum = ServerSock.clientNum - 1
+            ServerSock.Sync:SetSync(ServerSock.ClientID[client:getIndex()], -1)
         end
     )
     Server:on(
         "PushMove",
-        function(data)
+        function(data, client)
             Debug.Log("info", "Received PushMove from " .. data.armyID)
-            Server:sendToAll("PushMove", data)
-            PlayGameCore.PushMove(data)
+            if ServerSock.ClientID[client:getIndex()] == data.armyID then
+                Server:sendToAll("PushMove", data)
+                PlayGameCore.PushMove(data)
+            end
         end
     )
     -- 尝试解决error during service，进行各客户端同步
     Server:on(
-        "RoundPulse",
+        "StepPluse",
         function(data, client)
-            ServerSock.Sync:SetSync(client:getIndex())
+            ServerSock.Sync:SetSync(ServerSock.ClientID[client:getIndex()], data)
         end
     )
 end
 
 function ServerSock.SendUpdate(dt)
-    Server:sendToAll("Update", dt)
-    PlayGame.step = CSystem.Update(dt)
+    if Command["[autoMatch]"] == "true" then
+        ServerSock.Sync:Update(dt)
+        if ServerSock.Sync:Timeout() then
+            ServerSock.Sync:MarkTimeoutClient()
+        end
+        if ServerSock.Sync:IsSync() then
+            ServerSock.Sync:TimerReset()
+            Running.step = CSystem.UpdateStep(Running.step + 1)
+            Server:sendToAll("UpdateStep", Running.step)
+        end
+    else
+        Running.step = CSystem.Update(dt)
+        Server:sendToAll("UpdateStep", Running.step)
+    end
+    -- Debug.Log("info", "Running.step = " .. Running.step)
 end
 
 function ServerSock.SendGameOver()
@@ -109,6 +129,7 @@ function ServerSock.SendGameOver()
 end
 
 function ServerSock.SendLose(armyID, vanquisherID)
+    ServerSock.Sync:SetSync(armyID, -2)
     Server:sendToAll("Lose", {armyID = armyID, vanquisherID = vanquisherID})
 end
 

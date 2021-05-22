@@ -19,11 +19,11 @@ class autoMatch(object):
     # 存档文件夹名，不能跨文件夹，例如使用../
     saveDict = "teamMatch_1"
     saveName = ""
-    timeDelay = 1
+    timeDelay = 0.3
     # 自动对战步数限制，超过后强制结束游戏并进入下一局，不产生获胜者
     stepLimit = 2000
     # 启动游戏时是否打开控制台
-    runWithConsol = True
+    runWithConsol = False
     ClientConfigFile = "ClientTask.txt"
     ServerConfigFile = "ServerTask.txt"
 
@@ -54,6 +54,9 @@ class autoMatch(object):
 
         fp.write("[AIlang]\n")
         fp.write(self.AIlang[index]+"\n")
+
+        fp.write("[teamID]\n")
+        fp.write(str(index+1)+"\n")
         fp.close()
         return
 
@@ -80,6 +83,14 @@ class autoMatch(object):
 
         fp.write("[saveDict]\n")
         fp.write(self.saveDict+"\n")
+
+        fp.write("[saveDict]\n")
+        fp.write(self.saveDict+"\n")
+
+        # for i in range(len(self.AIteam)):
+        #     fp.write("[teamID]\n")
+        #     fp.write(str(self.AIteam[i])+" "+str(i+1)+"\n")
+
         fp.close()
         return
 

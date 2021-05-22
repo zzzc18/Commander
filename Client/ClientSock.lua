@@ -34,6 +34,18 @@ function ClientSock.Init()
         end
     )
     Client:on(
+        "UpdateStep",
+        function(data)
+            local lastStep = Running.step
+            Running.step = CSystem.UpdateStep(data)
+            if lastStep < Running.step then
+                ClientSock.Lock = 0
+                Debug.Log("info", "unlocking at " .. lastStep .. " -> " .. Running.step)
+            end
+            Debug.Log("info", "Running.step = " .. Running.step)
+        end
+    )
+    Client:on(
         "GameStart",
         function(data)
             Running.gameState = "Start"
@@ -71,7 +83,13 @@ function ClientSock.Init()
             end
         end
     )
-    Client:connect()
+    -- 自动评测需要强制说明自己的ID，否则无法运行
+    if Command["[autoMatch]"] == "true" then
+        print(Command["[teamID]"])
+        Client:connect(Command["[teamID]"])
+    else
+        Client:connect()
+    end
 end
 
 function ClientSock.SendMove(data)
@@ -82,12 +100,11 @@ function ClientSock.SendMove(data)
     end
 end
 
-function ClientSock.SendRoundPulse()
-    Client:send("RoundPulse")
+function ClientSock.SendStepPluse()
+    Client:send("StepPluse", Running.step)
 end
 
 function ClientSock.Update()
-    ClientSock.Lock = 0
     Client:update()
     if Connected == 0 and Client:isConnected() then
         Connected = 1

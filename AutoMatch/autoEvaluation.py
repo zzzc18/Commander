@@ -18,8 +18,8 @@ import time
 from multiprocessing import Pool
 import numpy as np
 import re
-import autoMatch_CrossFolder
-from autoMatch_CrossFolder import autoMatch, Match
+import AutoMatch.autoMatch_CrossFolder
+from AutoMatch.autoMatch_CrossFolder import autoMatch, Match
 
 
 def copyFile(teamName, teamAI, index):
@@ -31,15 +31,15 @@ def copyFile(teamName, teamAI, index):
             index)+"\\lib\\UserImplementation.dll")
     elif(teamAI == "Lua"):
         print("\ntring to copy Lua file from"+teamName)
-        os.system("copy /y ..\\..\\TeamsFolder\\"+teamName+"\\Client\\AI\\Core.lua ..\\Commander_"+str(
-            index)+"\\Client\\AI\\Core.lua")
+        os.system("copy /y ..\\..\\TeamsFolder\\"+teamName+"\\Client\\AI\\*.lua ..\\Commander_"+str(
+            index)+"\\Client\\AI\\")
     elif(teamAI == "Python"):
         print("\ntring to copy Python file from"+teamName)
-        os.system("copy /y ..\\..\\TeamsFolder\\"+teamName+"\\Client\\AI\\Core.py ..\\Commander_"+str(
-            index)+"\\Client\\AI\\Core.py")
+        os.system("copy /y ..\\..\\TeamsFolder\\"+teamName+"\\Client\\AI\\*.py ..\\Commander_"+str(
+            index)+"\\Client\\AI\\")
 
 
-if __name__ == '__main__':
+def main():
     # 对局类型，ffa=八队混战，共一轮；1v1=八选二一对一，共56轮
     matchType = "ffa"
     # 每轮游戏局数,1<=matchNumber<=100
@@ -54,7 +54,7 @@ if __name__ == '__main__':
     if(matchType == "ffa"):
         for i in range(8):
             copyFile(AIteam[i], AIlang[i], i+1)
-        with Pool(processes=1) as pool:
+        with Pool(processes=12) as pool:
             args = []  # [[port,index,AIlang,mapDict,saveDict],...]
             for i in range(teamMatchNumber):
                 args.append(
@@ -96,3 +96,7 @@ if __name__ == '__main__':
                 fp.close()
                 findTeamName = re.compile(r'team: (.*)')
                 TeamName = findTeamName.findall(res)
+
+
+if __name__ == '__main__':
+    main()
