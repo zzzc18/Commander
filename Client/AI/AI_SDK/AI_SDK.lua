@@ -13,7 +13,7 @@ AI_SDK.armyID = nil
 AI_SDK.armyNum = 0
 AI_SDK.KingPos = {x = -1, y = -1}
 AI_SDK.SelectPos = {x = -1, y = -1}
-AI_SDK.timeout = 0.5
+AI_SDK.timeout = 1.0
 
 local timer = 0
 
@@ -217,9 +217,9 @@ function AI_SDK.update(dt)
             PyCore.userMain()
         end
         local endTime = os.clock()
-        Debug.Log("error", "RunningTime " .. endTime .. " " .. startTime)
         if endTime - startTime > AI_SDK.timeout then
             -- 超时，强制停止
+            Debug.Log("error", "RunningTime " .. endTime .. " " .. startTime)
             love.quit()
         end
         ClientSock.SendRoundPulse()
