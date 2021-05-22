@@ -31,12 +31,12 @@ def copyFile(teamName, teamAI, index):
             index)+"\\lib\\UserImplementation.dll")
     elif(teamAI == "Lua"):
         print("\ntring to copy Lua file from"+teamName)
-        os.system("copy /y ..\\..\\TeamsFolder\\"+teamName+"\\Client\\AI\\Core.lua ..\\Commander_"+str(
-            index)+"\\Client\\AI\\Core.lua")
+        os.system("copy /y ..\\..\\TeamsFolder\\"+teamName+"\\Client\\AI\\*.lua ..\\Commander_"+str(
+            index)+"\\Client\\AI\\")
     elif(teamAI == "Python"):
         print("\ntring to copy Python file from"+teamName)
-        os.system("copy /y ..\\..\\TeamsFolder\\"+teamName+"\\Client\\AI\\Core.py ..\\Commander_"+str(
-            index)+"\\Client\\AI\\Core.py")
+        os.system("copy /y ..\\..\\TeamsFolder\\"+teamName+"\\Client\\AI\\*.py ..\\Commander_"+str(
+            index)+"\\Client\\AI\\")
 
 
 if __name__ == '__main__':
