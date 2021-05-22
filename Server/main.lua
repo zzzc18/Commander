@@ -8,6 +8,7 @@ CSystem = require("lib.System")
 Sock = require("sock")
 Bitser = require("spec.bitser")
 
+-- TeamID = {}
 Command = {}
 Command["[port]"] = 22122
 --服务端是否正运行自动对战任务，如果为true，服务端会在超时后结束游戏并关闭、在关闭时删除ServerTask.txt
@@ -47,6 +48,10 @@ function love.load(arg)
             if line == "[stepLimit]" or line == "[port]" then
                 Command[line] = tonumber(Command[line])
             end
+            -- if line == "[teamID]" then
+            --     local pos = string.find(Command[line], " ")
+            --     TeamID[string.sub(Command[line], 1, pos)] = tonumber(string.sub(Command[line], pos + 1, #Command[line]))
+            -- end
             line = task:read()
         end
         task:close()

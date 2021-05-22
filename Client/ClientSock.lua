@@ -83,7 +83,13 @@ function ClientSock.Init()
             end
         end
     )
-    Client:connect()
+    -- 自动评测需要强制说明自己的ID，否则无法运行
+    if Command["[autoMatch]"] == "true" then
+        print(Command["[teamID]"])
+        Client:connect(Command["[teamID]"])
+    else
+        Client:connect()
+    end
 end
 
 function ClientSock.SendMove(data)

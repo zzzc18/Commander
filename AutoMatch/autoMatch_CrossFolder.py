@@ -54,6 +54,9 @@ class autoMatch(object):
 
         fp.write("[AIlang]\n")
         fp.write(self.AIlang[index]+"\n")
+
+        fp.write("[teamID]\n")
+        fp.write(str(index+1)+"\n")
         fp.close()
         return
 
@@ -80,6 +83,14 @@ class autoMatch(object):
 
         fp.write("[saveDict]\n")
         fp.write(self.saveDict+"\n")
+
+        fp.write("[saveDict]\n")
+        fp.write(self.saveDict+"\n")
+
+        # for i in range(len(self.AIteam)):
+        #     fp.write("[teamID]\n")
+        #     fp.write(str(self.AIteam[i])+" "+str(i+1)+"\n")
+
         fp.close()
         return
 

@@ -2,6 +2,7 @@ ServerSock = {}
 
 local PlayGameCore = require("PlayGame.Core")
 
+ServerSock.ClientID = {}
 ServerSock.clientNum = 0
 
 ServerSock.Sync = {}
@@ -11,18 +12,16 @@ function ServerSock.Sync:Init(clientNum)
     for i = 1, clientNum do
         self.clientStep[i] = 0
     end
-    self.clientSyncTimeout = 3.0 --seconds
+    self.clientSyncTimeout = 4.0 --seconds
     self.clientSyncTime = 0
 end
 
 function ServerSock.Sync:IsSync()
     for armyID, val in pairs(self.clientStep) do
         if val ~= Running.step and val >= 0 then
-            Debug.Log("error", "nope")
             return false
         end
     end
-    Debug.Log("error", "sync")
     return true
 end
 
@@ -61,10 +60,16 @@ function ServerSock.Init(armyNum)
     ServerSock.Sync:Init(armyNum)
     Server:on(
         "connect",
-        function(data, client)
-            client:send("SetArmyID", {armyID = client:getIndex()})
+        function(data, client) --仅用于非自动评测
+            if data == nil then
+                client:send("SetArmyID", {armyID = client:getIndex()})
+                ServerSock.ClientID[client:getIndex()] = client:getIndex()
+            else
+                client:send("SetArmyID", {armyID = data})
+                ServerSock.ClientID[client:getIndex()] = data
+            end
             ServerSock.clientNum = ServerSock.clientNum + 1
-            ServerSock.Sync:SetSync(client:getIndex(), 0)
+            ServerSock.Sync:SetSync(ServerSock.ClientID[client:getIndex()], 0)
             if PlayGame.gameState == "Over" then
                 PlayGame.gameState = "READY"
                 Running.Init()
@@ -79,22 +84,24 @@ function ServerSock.Init(armyNum)
         "disconnect",
         function(data, client)
             ServerSock.clientNum = ServerSock.clientNum - 1
-            ServerSock.Sync:SetSync(client:getIndex(), -1)
+            ServerSock.Sync:SetSync(ServerSock.ClientID[client:getIndex()], -1)
         end
     )
     Server:on(
         "PushMove",
-        function(data)
+        function(data, client)
             Debug.Log("info", "Received PushMove from " .. data.armyID)
-            Server:sendToAll("PushMove", data)
-            PlayGameCore.PushMove(data)
+            if ServerSock.ClientID[client:getIndex()] == data.armyID then
+                Server:sendToAll("PushMove", data)
+                PlayGameCore.PushMove(data)
+            end
         end
     )
     -- 尝试解决error during service，进行各客户端同步
     Server:on(
         "StepPluse",
         function(data, client)
-            ServerSock.Sync:SetSync(client:getIndex(), data)
+            ServerSock.Sync:SetSync(ServerSock.ClientID[client:getIndex()], data)
         end
     )
 end
