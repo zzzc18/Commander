@@ -36,8 +36,13 @@ function ClientSock.Init()
     Client:on(
         "UpdateStep",
         function(data)
-            Running.step = data
-            CSystem.UpdateStep(Running.step)
+            local lastStep = Running.step
+            Running.step = CSystem.UpdateStep(data)
+            if lastStep < Running.step then
+                ClientSock.Lock = 0
+                Debug.Log("info", "unlocking at " .. lastStep .. " -> " .. Running.step)
+            end
+            Debug.Log("info", "Running.step = " .. Running.step)
         end
     )
     Client:on(
@@ -94,7 +99,6 @@ function ClientSock.SendRoundPulse()
 end
 
 function ClientSock.Update()
-    ClientSock.Lock = 0
     Client:update()
     if Connected == 0 and Client:isConnected() then
         Connected = 1

@@ -102,6 +102,7 @@ end
 function ServerSock.SendUpdate(dt)
     PlayGame.step = CSystem.Update(dt)
     Server:sendToAll("UpdateStep", PlayGame.step)
+    Debug.Log("info", "Running.step = " .. Running.step)
 end
 
 function ServerSock.SendGameOver()
