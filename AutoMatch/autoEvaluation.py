@@ -39,7 +39,7 @@ def copyFile(teamName, teamAI, index):
             index)+"\\Client\\AI\\")
 
 
-if __name__ == '__main__':
+def main():
     # 对局类型，ffa=八队混战，共一轮；1v1=八选二一对一，共56轮
     matchType = "ffa"
     # 每轮游戏局数,1<=matchNumber<=100
@@ -96,3 +96,7 @@ if __name__ == '__main__':
                 fp.close()
                 findTeamName = re.compile(r'team: (.*)')
                 TeamName = findTeamName.findall(res)
+
+
+if __name__ == '__main__':
+    main()
