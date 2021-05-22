@@ -94,8 +94,8 @@ function ClientSock.SendMove(data)
     end
 end
 
-function ClientSock.SendRoundPulse()
-    Client:send("RoundPulse")
+function ClientSock.SendStepPluse()
+    Client:send("StepPluse", Running.step)
 end
 
 function ClientSock.Update()

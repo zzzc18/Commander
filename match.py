@@ -3,6 +3,7 @@ import AutoMatch.autoEvaluation
 import os
 import sys
 import platform
+from multiprocessing import Pool
 
 
 def PrintHelp():
@@ -15,17 +16,24 @@ def PrintHelp():
     print("例如 4进程评测 python match.py -m 4")
 
 
+def _GenFolder(index):
+    print("rm -rf Commander_"+str(index))
+    os.system("rm -rf Commander_"+str(index))
+    print("cp -r Dev Commander_"+str(index))
+    os.system("cp -r Dev Commander_"+str(index))
+
+
 def GenFolder(teamNum=8):
     os.system("cp -r ../Dev ../Commander/")
     os.chdir("../Commander")
     os.system("rm -rf ./Dev/.git")
+
+    indexes = []
     for i in range(teamNum+1):
-        os.system("cp -r ./Dev ./Dev1")
-        print("rm -rf Commander_"+str(i))
-        os.system("rm -rf Commander_"+str(i))
-        print("mv Dev1 Commander_"+str(i))
-        os.system("mv Dev1 Commander_"+str(i))
-    os.system("rm -rf Dev Dev1")
+        indexes.append(i)
+    with Pool(processes=teamNum+1) as pool:
+        pool.map(_GenFolder, indexes)
+    os.system("rm -rf Dev")
 
 
 if __name__ == "__main__":
