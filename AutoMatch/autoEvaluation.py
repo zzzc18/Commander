@@ -54,7 +54,7 @@ def main():
     if(matchType == "ffa"):
         for i in range(8):
             copyFile(AIteam[i], AIlang[i], i+1)
-        with Pool(processes=1) as pool:
+        with Pool(processes=12) as pool:
             args = []  # [[port,index,AIlang,mapDict,saveDict],...]
             for i in range(teamMatchNumber):
                 args.append(

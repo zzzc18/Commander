@@ -100,16 +100,21 @@ function ServerSock.Init(armyNum)
 end
 
 function ServerSock.SendUpdate(dt)
-    ServerSock.Sync:Update(dt)
-    if ServerSock.Sync:Timeout() then
-        ServerSock.Sync:MarkTimeoutClient()
-    end
-    if ServerSock.Sync:IsSync() then
-        ServerSock.Sync:TimerReset()
+    if Command["[autoMatch]"] == "true" then
+        ServerSock.Sync:Update(dt)
+        if ServerSock.Sync:Timeout() then
+            ServerSock.Sync:MarkTimeoutClient()
+        end
+        if ServerSock.Sync:IsSync() then
+            ServerSock.Sync:TimerReset()
+            Running.step = CSystem.UpdateStep(Running.step + 1)
+            Server:sendToAll("UpdateStep", Running.step)
+        end
+    else
         Running.step = CSystem.Update(dt)
         Server:sendToAll("UpdateStep", Running.step)
     end
-    Debug.Log("info", "Running.step = " .. Running.step)
+    -- Debug.Log("info", "Running.step = " .. Running.step)
 end
 
 function ServerSock.SendGameOver()
