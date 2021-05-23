@@ -112,7 +112,7 @@ class MAP final {
     //编辑器：改变格点类型， 禁止用户调用！！！
     bool ChangeType(VECTOR aim, int type);
     //编辑器：改变格点归属，禁止用户调用！！！
-    bool ChangeBelong(VECTOR aim);
+    bool ChangeBelong(VECTOR aim, int colorNum);
 
     //回放器：从回放文件读取当前步添加到命令队列的命令
     void ReadMove(int ReplayStep);

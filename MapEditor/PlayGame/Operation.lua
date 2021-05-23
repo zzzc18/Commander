@@ -56,7 +56,7 @@ function Operation.CatchKeyPressed(key)
         return
     end
     if key == "space" then
-        CGameMap.ChangeBelong(x, y)
+        CGameMap.ChangeBelong(x, y, Color.colorNum)
         if CGameMap.GetNodeType(x, y) ~= "NODE_TYPE_HILL" then
             Debug.Log("info", string.format("Change the belong of %d,%d", x, y))
         end
