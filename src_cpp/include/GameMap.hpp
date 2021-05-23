@@ -87,6 +87,8 @@ class MAP final {
     int Judge(int);
     //玩家被击败后改变军队归属
     int Surrender(int, int);
+    //计算某玩家的总兵力
+    int SumWithArmyID(int armyID);
 
     /**
      * @brief 将指令加入 moveCommands

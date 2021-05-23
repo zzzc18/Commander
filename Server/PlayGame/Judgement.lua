@@ -9,6 +9,14 @@ function Judgement.Init()
     end
 end
 
+function Judgement.SaveSumWhenTie()
+    for i = 1, PlayGame.armyNum do
+        if Judgement.state[i] == 1 then
+            CGameMap.SaveGameOver(i)
+        end
+    end
+end
+
 function Judgement.Judge()
     -- 存活部队数
     local aliveCnt = 0
@@ -37,7 +45,7 @@ function Judgement.Judge()
         PlayGame.gameState = "Over"
         if Command["[autoMatch]"] == "true" then
             Server:update()
-            Debug.Log("info","auto quit game")
+            Debug.Log("info", "auto quit game")
             love.event.quit(0)
         end
     end
