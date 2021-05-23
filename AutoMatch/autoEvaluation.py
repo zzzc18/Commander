@@ -55,21 +55,21 @@ def main(_processes=8):
         for i in range(8):
             copyFile(AIteam[i], AIlang[i], i+1)
 
-        # with Pool(processes=_processes) as pool:
-        #     args = []  # [[port,index,AIlang,mapDict,saveDict],...]
-        #     for i in range(teamMatchNumber):
-        #         args.append(
-        #             [22122+i, i, AIlang, "../maps_8player", "teamMatch"])
-        #     idx = 0
-        #     blockSize = _processes
-        #     while True:
-        #         pool.starmap(
-        #             Match, args[idx:min(idx+blockSize, teamMatchNumber)])
-        #         os.system("taskkill /f /IM love.exe")
-        #         os.system("taskkill /f /IM lovec.exe")
-        #         idx = idx+blockSize
-        #         if idx >= teamMatchNumber:
-        #             break
+        with Pool(processes=_processes) as pool:
+            args = []  # [[port,index,AIlang,mapDict,saveDict],...]
+            for i in range(teamMatchNumber):
+                args.append(
+                    [22122+i, i, AIlang, "../maps_8player", "teamMatch"])
+            idx = 0
+            blockSize = _processes
+            while True:
+                pool.starmap(
+                    Match, args[idx:min(idx+blockSize, teamMatchNumber)])
+                os.system("taskkill /f /IM love.exe")
+                os.system("taskkill /f /IM lovec.exe")
+                idx = idx+blockSize
+                if idx >= teamMatchNumber:
+                    break
 
         # 统计结果
         am = autoMatch(armyNum=8, AIteam=AIteam,
@@ -87,11 +87,11 @@ def main(_processes=8):
                 print("\nstart match "+AIteam[team_1]+"vs"+AIteam[team_2])
                 copyFile(AIteam[team_1], AIlang[team_1], 1)
                 copyFile(AIteam[team_2], AIlang[team_2], 2)
-                with Pool(processes=10) as pool:
+                with Pool(processes=_processes) as pool:
                     args = []  # [[port,index,AIlang,mapDict,saveDict],...]
                     for i in range(teamMatchNumber):
                         args.append(
-                            [22122+i, i, [AIlang[team_1], AIlang[team_2]], "maps_2player",
+                            [22122+i, i, [AIlang[team_1], AIlang[team_2]], "../maps_2player",
                              "teamMatch_"+AIteam[team_1]+"_"+AIteam[team_2]])
                     idx = 0
                     blockSize = _processes
@@ -104,21 +104,21 @@ def main(_processes=8):
                         if idx >= teamMatchNumber:
                             break
 
-                am = autoMatch()
-                am.saveDict = "teamMatch_"+AIteam[team_1]+"_"+AIteam[team_2]
-                am.AIwinning = [[], []]
-                am.AIteam = [AIteam[team_1], AIteam[team_2]]
-                am.AIlang = [AIlang[team_1], AIlang[team_2]]
-                am.matchNumber = teamMatchNumber
-                am.countMatchResult()  # 这里产生的txt文件里的开始时间是错的
-                endTime = time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime())
-                print(startTime, endTime)
-                fp = open(
-                    "teamMatch_"+AIteam[team_1]+"_"+AIteam[team_2]+"/matchResult.txt", 'r')
-                res = fp.read()
-                fp.close()
-                findTeamName = re.compile(r'team: (.*)')
-                TeamName = findTeamName.findall(res)
+                # am = autoMatch()
+                # am.saveDict = "teamMatch_"+AIteam[team_1]+"_"+AIteam[team_2]
+                # am.AIwinning = [[], []]
+                # am.AIteam = [AIteam[team_1], AIteam[team_2]]
+                # am.AIlang = [AIlang[team_1], AIlang[team_2]]
+                # am.matchNumber = teamMatchNumber
+                # am.countMatchResult()  # 这里产生的txt文件里的开始时间是错的
+                # endTime = time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime())
+                # print(startTime, endTime)
+                # fp = open(
+                #     "teamMatch_"+AIteam[team_1]+"_"+AIteam[team_2]+"/matchResult.txt", 'r')
+                # res = fp.read()
+                # fp.close()
+                # findTeamName = re.compile(r'team: (.*)')
+                # TeamName = findTeamName.findall(res)
 
 
 if __name__ == '__main__':

@@ -25,7 +25,7 @@ class autoMatch(object):
     saveName = ""
     timeDelay = 0.3
     # 自动对战步数限制，超过后强制结束游戏并进入下一局，不产生获胜者
-    stepLimit = 200
+    stepLimit = 2000
     # 启动游戏时是否打开控制台
     runWithConsol = False
     ClientConfigFile = "ClientTask.txt"
