@@ -42,8 +42,8 @@ def copyFile(teamName, teamAI, index):
 def main(_processes=8):
     # 对局类型，ffa=八队混战，共一轮；1v1=八选二一对一，共56轮
     matchType = "ffa"
-    # 每轮游戏局数,1<=matchNumber<=100
-    teamMatchNumber = 200
+    # 每轮游戏局数,1<=teammatchNumber<=100
+    teamMatchNumber = 100
     # 参与游戏的智能体文件夹名列表
     AIteam = ["zhou", "鹓鶵", "炮灰",
               "NULL", "UED远征计划：海豚行动", "ddl战神", "愿天堂没有ddl", "bot"]
@@ -72,13 +72,15 @@ def main(_processes=8):
                     break
 
         # 统计结果
-        am = autoMatch()
-        am.saveDict = "teamMatch"
-        am.AIwinning = [[], [], [], [], [], [], [], []]
-        am.matchNumber = teamMatchNumber
-        am.countMatchResult()  # 这里产生的txt文件里的开始时间是错的
-        endTime = time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime())
-        print(startTime, endTime)
+        # am = autoMatch()
+        # am.saveDict = "teamMatch"
+        # am.AIwinning = [[], [], [], [], [], [], [], []]
+        # am.matchNumber = teamMatchNumber
+        # am.countMatchResult()
+        # # 这里产生的txt文件里的开始时间是错的
+        # endTime = time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime())
+        # print(startTime, endTime)
+
     elif(matchType == "1v1"):
         for team_1 in range(len(AIteam)):
             for team_2 in range(team_1+1, len(AIteam)):

@@ -132,11 +132,30 @@ class autoMatch(object):
     def getMatchResult(self, index):
         self.saveName = "round"+str(index)
         fp = open(self.saveDict+"/"+self.saveName+"/steps.txt", 'r')
-        lines = fp.readlines()
+        # lines = fp.readlines()
+        _lines = fp.read().split("\n")
+        lines = []
+        for line in _lines:
+            if line != "" and (not line.isnumeric()):
+                line = line.split(' ')
+                for i in range(len(line)):
+                    if i == 5:
+                        line[i] = float(line[i])
+                        continue
+                    line[i] = int(line[i])
+                if (line[1] == -2 and line[2] == -2) or (line[1] == -3 and line[2] == -3):
+                    lines.append(line)
         fp.close()
-        if lines[-1][3] == "3" and lines[-1][6] == "3":
-            self.AIwinning[int(lines[-1][0])-1].append(index)
-        return
+        print(lines)
+        # 重写了杨卓的函数，只完成了一半
+        # message = []
+        # lines.reverse()
+        # for line in lines:
+        #     message.append(list(line.split(' ')))
+
+        # if lines[-1][3] == "3" and lines[-1][6] == "3":
+        #     self.AIwinning[int(lines[-1][0])-1].append(index)
+        # return
 
     def saveMatchResult(self):
         self.endTime = time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime())
