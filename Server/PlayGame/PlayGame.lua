@@ -1,6 +1,6 @@
 PlayGame = {}
 
-local Judgement = require("PlayGame.Judgement")
+Judgement = require("PlayGame.Judgement")
 
 --READY:游戏未开始，不显示界面
 --Start:游戏进行中

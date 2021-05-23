@@ -54,12 +54,23 @@ def main(_processes=8):
     if(matchType == "ffa"):
         for i in range(8):
             copyFile(AIteam[i], AIlang[i], i+1)
+
         with Pool(processes=_processes) as pool:
             args = []  # [[port,index,AIlang,mapDict,saveDict],...]
             for i in range(teamMatchNumber):
                 args.append(
                     [22122+i, i, AIlang, "../maps_8player", "teamMatch"])
-            pool.starmap(Match, args)
+            idx = 0
+            blockSize = _processes
+            while True:
+                pool.starmap(
+                    Match, args[idx:min(idx+blockSize, teamMatchNumber)])
+                os.system("taskkill /f /IM love.exe")
+                os.system("taskkill /f /IM lovec.exe")
+                idx = idx+blockSize
+                if idx >= teamMatchNumber:
+                    break
+
         # 统计结果
         am = autoMatch()
         am.saveDict = "teamMatch"
