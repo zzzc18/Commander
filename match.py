@@ -37,10 +37,12 @@ def GenFolder(teamNum=8):
 
 
 if __name__ == "__main__":
+
     if platform.system() == "Windows":
         os.system("chcp 65001")  # 切换中文编码
     if len(sys.argv) < 2:
         PrintHelp()
+        AutoMatch.autoEvaluation.main(_processes=1)
     elif sys.argv[1] == "--help" or sys.argv[1] == "-h":
         PrintHelp()
     elif sys.argv[1] == "--multi" or sys.argv[1] == "-m":

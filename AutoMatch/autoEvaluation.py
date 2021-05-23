@@ -55,31 +55,31 @@ def main(_processes=8):
         for i in range(8):
             copyFile(AIteam[i], AIlang[i], i+1)
 
-        with Pool(processes=_processes) as pool:
-            args = []  # [[port,index,AIlang,mapDict,saveDict],...]
-            for i in range(teamMatchNumber):
-                args.append(
-                    [22122+i, i, AIlang, "../maps_8player", "teamMatch"])
-            idx = 0
-            blockSize = _processes
-            while True:
-                pool.starmap(
-                    Match, args[idx:min(idx+blockSize, teamMatchNumber)])
-                os.system("taskkill /f /IM love.exe")
-                os.system("taskkill /f /IM lovec.exe")
-                idx = idx+blockSize
-                if idx >= teamMatchNumber:
-                    break
+        # with Pool(processes=_processes) as pool:
+        #     args = []  # [[port,index,AIlang,mapDict,saveDict],...]
+        #     for i in range(teamMatchNumber):
+        #         args.append(
+        #             [22122+i, i, AIlang, "../maps_8player", "teamMatch"])
+        #     idx = 0
+        #     blockSize = _processes
+        #     while True:
+        #         pool.starmap(
+        #             Match, args[idx:min(idx+blockSize, teamMatchNumber)])
+        #         os.system("taskkill /f /IM love.exe")
+        #         os.system("taskkill /f /IM lovec.exe")
+        #         idx = idx+blockSize
+        #         if idx >= teamMatchNumber:
+        #             break
 
         # 统计结果
-        # am = autoMatch()
-        # am.saveDict = "teamMatch"
-        # am.AIwinning = [[], [], [], [], [], [], [], []]
-        # am.matchNumber = teamMatchNumber
-        # am.countMatchResult()
-        # # 这里产生的txt文件里的开始时间是错的
-        # endTime = time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime())
-        # print(startTime, endTime)
+        am = autoMatch(armyNum=8, AIteam=AIteam,
+                       AIlang=AIlang, matchNum=teamMatchNumber)
+        am.saveDict = "teamMatch"
+        am.matchNumber = teamMatchNumber
+        am.countMatchResult()
+        # 这里产生的txt文件里的开始时间是错的
+        endTime = time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime())
+        print(startTime, endTime)
 
     elif(matchType == "1v1"):
         for team_1 in range(len(AIteam)):
