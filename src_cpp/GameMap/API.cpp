@@ -279,9 +279,10 @@ static int ChangeType(lua_State *luaState) {
  * @param aimY @c int 目标点所在列号
  */
 static int ChangeBelong(lua_State *luaState) {
-    int aimX, aimY;
-    APIparam(luaState, aimX, aimY);
-    return APIreturn(luaState, MAP::Singleton().ChangeBelong({aimX, aimY}));
+    int aimX, aimY, colorNum;
+    APIparam(luaState, aimX, aimY, colorNum);
+    return APIreturn(luaState,
+                     MAP::Singleton().ChangeBelong({aimX, aimY}, colorNum));
 }
 static int Judge(lua_State *luaState) {
     int armyID;

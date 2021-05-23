@@ -213,12 +213,12 @@ bool MAP::ChangeType(VECTOR aim, int type) {
     return true;
 }
 
-bool MAP::ChangeBelong(VECTOR aim) {
+bool MAP::ChangeBelong(VECTOR aim, int colorNum) {
     if (_mat[aim.x][aim.y].type == NODE_TYPE::HILL) {
         return false;
     }
     _mat[aim.x][aim.y].belong++;
-    if (_mat[aim.x][aim.y].belong > 4) {
+    if (_mat[aim.x][aim.y].belong > colorNum) {
         _mat[aim.x][aim.y].belong = SERVER;
     }
     if (_mat[aim.x][aim.y].belong == SERVER &&
