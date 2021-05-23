@@ -15,7 +15,7 @@ AI_SDK.KingPos = {x = -1, y = -1}
 AI_SDK.SelectPos = {x = -1, y = -1}
 AI_SDK.timeout = 3.0
 
-local timer = 0
+local lastStep = 0
 
 function AI_SDK.Init()
     if Command["[AIlang]"] == "Lua" then
@@ -198,7 +198,7 @@ function AI_SDK.update(dt)
     if AI_SDK.gameState == "READY" and Visible then
         BGAnimation.update(dt)
     end
-    timer = AI_SDK.step
+    lastStep = AI_SDK.step
     ClientSock.Update()
     if AI_SDK.step > Command["[stepLimit]"] and Command["[autoMatch]"] == "true" then
         Debug.Log("info", "game quit because out of stepLimit")
@@ -207,7 +207,7 @@ function AI_SDK.update(dt)
     if AI_SDK.gameState ~= "Start" and AI_SDK.gameState ~= "Menu" then
         return
     end
-    if timer < AI_SDK.step then
+    if lastStep < AI_SDK.step then
         local startTime = os.clock()
         if Command["[AIlang]"] == "Lua" then
             LuaCore.Main()

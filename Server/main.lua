@@ -94,7 +94,7 @@ end
 function love.update(dt)
     CurrentTime = CurrentTime + dt
     -- 倍速开关，用于快速测试，可以通过注释和取消注释调整
-    dt = dt * 4
+    dt = dt * 1
     Server:update()
     Running.update(dt)
 end
