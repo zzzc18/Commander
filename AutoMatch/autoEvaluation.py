@@ -41,7 +41,7 @@ def copyFile(teamName, teamAI, index):
 
 def main(_processes=8):
     # 对局类型，ffa=八队混战，共一轮；1v1=八选二一对一，共56轮
-    matchType = "ffa"
+    matchType = "1v1"
     # 每轮游戏局数,1<=teammatchNumber<=100
     teamMatchNumber = 100
     # 参与游戏的智能体文件夹名列表
@@ -84,7 +84,7 @@ def main(_processes=8):
     elif(matchType == "1v1"):
         for team_1 in range(len(AIteam)):
             for team_2 in range(team_1+1, len(AIteam)):
-                print("\nstatr match "+AIteam[team_1]+"vs"+AIteam[team_2])
+                print("\nstart match "+AIteam[team_1]+"vs"+AIteam[team_2])
                 copyFile(AIteam[team_1], AIlang[team_1], 1)
                 copyFile(AIteam[team_2], AIlang[team_2], 2)
                 with Pool(processes=10) as pool:
@@ -93,7 +93,17 @@ def main(_processes=8):
                         args.append(
                             [22122+i, i, [AIlang[team_1], AIlang[team_2]], "maps_2player",
                              "teamMatch_"+AIteam[team_1]+"_"+AIteam[team_2]])
-                    pool.starmap(Match, args)
+                    idx = 0
+                    blockSize = _processes
+                    while True:
+                        pool.starmap(
+                            Match, args[idx:min(idx+blockSize, teamMatchNumber)])
+                        os.system("taskkill /f /IM love.exe")
+                        os.system("taskkill /f /IM lovec.exe")
+                        idx = idx+blockSize
+                        if idx >= teamMatchNumber:
+                            break
+
                 am = autoMatch()
                 am.saveDict = "teamMatch_"+AIteam[team_1]+"_"+AIteam[team_2]
                 am.AIwinning = [[], []]

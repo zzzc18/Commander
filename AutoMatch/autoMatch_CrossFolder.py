@@ -160,18 +160,21 @@ class autoMatch(object):
         assert len(lines) == self.armyNum
         for i, line in enumerate(lines):
             loser_teamid = 0
-            self.AIwinning[loser_teamid].append([None] * 3)
-            gameInfo = None
+            gameInfo = None, None
             if line[1] == -2:
                 loser_teamid = line[3]
                 if line[4] == 0:
-                    gameInfo = 'TLE'
+                    gameInfo = 'TLE', 0
                 else:
-                    gameInfo = 'Killed'
+                    gameInfo = 'Killed', line[4]
             elif line[1] == -3:
                 loser_teamid = line[0]
-                gameInfo = 'Alived'
-            self.AIwinning[loser_teamid][0] = 8 - i
+                gameInfo = 'Alive', line[-1]
+
+            self.AIwinning[loser_teamid].append([None] * 3)
+            self.AIwinning[loser_teamid][-1][0] = 8 - i
+            self.AIwinning[loser_teamid][-1][1:3] = gameInfo
+
             self.AIcredit[loser_teamid] = self.AIcredit[loser_teamid] + \
                 self.scoreMap[8-i]
 
@@ -191,41 +194,36 @@ class autoMatch(object):
         for i, team in enumerate(self.AIwinning):
             if i == 0:
                 continue
-            print("Team %d avg rank = %d, sum credit = %d" %
-                  (i, sum(team) / len(team), self.AIcredit[i]))
+            print("Team %d sum credit = %d" % (i, self.AIcredit[i]))
 
             filename = 'testResult.xlsx'
             with xlsxwriter.Workbook(filename) as workbook:
                 ranksheet = workbook.add_worksheet("rank")
+                bold = workbook.add_format({'bold': True})
 
                 for j, teamname in enumerate(self.AIteam):
                     ranksheet.write(0, j+1, teamname)
 
-                curlinenum = 1
                 for j, team in enumerate(self.AIwinning):
+                    curlinenum = 1
                     if j == 0:
                         continue
                     for i, rank in enumerate(team):
-                        ranksheet.write(i + curlinenum, j, rank)
-                        # worksheet.write(1, 1, 'HELKEHJKhk')
-                for i in range(self.matchNumber):
-                    ranksheet.write(i + 1, 0, i)
-                curlinenum = curlinenum + self.matchNumber + 1
-
+                        ranksheet.write(curlinenum, 0, i, bold)
+                        ranksheet.write(
+                            curlinenum, j, rank[0], bold)
+                        curlinenum = curlinenum + 1
+                        for k, blockitem in enumerate(rank):
+                            if k == 0:
+                                continue
+                            ranksheet.write(curlinenum, j, blockitem)
+                            curlinenum = curlinenum + 1
+                        curlinenum = curlinenum + 1
                 ranksheet.write(curlinenum, 0, '总积分')
                 for j in range(1, self.armyNum + 1):
                     ranksheet.write(curlinenum, j, self.AIcredit[j] + 100)
 
                 curlinenum = curlinenum + 1
-
-                infosheet = workbook.add_worksheet("gameInfo")
-                for j, teamname in enumerate(self.AIteam):
-                    ranksheet.write(0, j+1, teamname)
-
-                for i in range(self.matchNumber):
-                    ranksheet.write(i + 1, 0, i)
-                curlinenum = curlinenum + self.matchNumber + 1
-                curlinenum = 1
 
         # self.endTime = time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime())
         # fp = open(self.saveDict+"/matchResult.txt", 'w')
