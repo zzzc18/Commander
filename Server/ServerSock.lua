@@ -47,7 +47,8 @@ function ServerSock.Sync:MarkTimeoutClient()
     for armyID, val in pairs(self.clientStep) do
         if val ~= Running.step and val >= 0 then
             ServerSock.Sync:SetSync(armyID, -2)
-            ServerSock.SendLose(armyID, -1)
+            ServerSock.SendLose(armyID, 0)
+            CGameMap.Surrender(armyID, 0)
         end
     end
 end

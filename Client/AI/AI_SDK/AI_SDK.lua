@@ -220,7 +220,7 @@ function AI_SDK.update(dt)
         if endTime - startTime > AI_SDK.timeout then
             -- 超时，强制停止
             Debug.Log("error", "RunningTime " .. endTime .. " " .. startTime)
-            love.quit()
+            love.event.quit(0)
         end
         ClientSock.SendStepPluse()
     end
