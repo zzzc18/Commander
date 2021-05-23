@@ -362,8 +362,20 @@ void MAP::SaveStep(int armyID, VECTOR src, VECTOR dst, double num) {
     return;
 }
 
+int MAP::SumWithArmyID(int armyID) {
+    int sum = 0;
+    for (int i = 0; i < _sizeX; i++) {
+        for (int j = 0; j < _sizeY; j++) {
+            if (GetBelong({i, j}) == armyID) {
+                sum += GetUnitNum({i, j});
+            }
+        }
+    }
+    return sum;
+}
+
 void MAP::SaveGameOver(int armyID) {
-    SaveStep(armyID, {-3, -3}, {0, 0}, 0);
+    SaveStep(armyID, {-3, -3}, {0, 0}, SumWithArmyID(armyID));
     return;
 }
 

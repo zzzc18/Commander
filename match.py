@@ -46,6 +46,6 @@ if __name__ == "__main__":
     elif sys.argv[1] == "--multi" or sys.argv[1] == "-m":
         MultiTest(_processes=int(sys.argv[2]))
     elif sys.argv[1] == "--cross" or sys.argv[1] == "-c":
-        AutoMatch.autoEvaluation.main()
+        AutoMatch.autoEvaluation.main(_processes=int(sys.argv[2]))
     elif sys.argv[1] == "--gen" or sys.argv[1] == "-g":
         GenFolder(teamNum=8)

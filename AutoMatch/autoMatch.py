@@ -49,6 +49,9 @@ class autoMatch(object):
 
         fp.write("[AIlang]\n")
         fp.write(self.AI[index]+"\n")
+
+        fp.write("[teamID]\n")
+        fp.write(str(index+1)+"\n")
         fp.close()
         return
 
