@@ -25,29 +25,46 @@ from AutoMatch.autoMatch_CrossFolder import autoMatch, Match
 def copyFile(teamName, teamAI, index):
     if(teamAI == "C++"):
         print("\ntring to copy C++ file from"+teamName)
-        print("copy /y ..\\..\\TeamsFolder\\"+teamName+"\\lib\\UserImplementation.dll ..\\Commander_"+str(
+        print("copy /y ..\\..\\TeamsFolder\\"+teamName+"\\UserImplementation.dll ..\\Commander_"+str(
             index)+"\\lib\\UserImplementation.dll")
-        os.system("copy /y ..\\..\\TeamsFolder\\"+teamName+"\\lib\\UserImplementation.dll ..\\Commander_"+str(
+        os.system("copy /y ..\\..\\TeamsFolder\\"+teamName+"\\UserImplementation.dll ..\\Commander_"+str(
             index)+"\\lib\\UserImplementation.dll")
     elif(teamAI == "Lua"):
         print("\ntring to copy Lua file from"+teamName)
-        os.system("copy /y ..\\..\\TeamsFolder\\"+teamName+"\\Client\\AI\\*.lua ..\\Commander_"+str(
+        os.system("copy /y ..\\..\\TeamsFolder\\"+teamName+"\\*.lua ..\\Commander_"+str(
             index)+"\\Client\\AI\\")
     elif(teamAI == "Python"):
         print("\ntring to copy Python file from"+teamName)
-        os.system("copy /y ..\\..\\TeamsFolder\\"+teamName+"\\Client\\AI\\*.py ..\\Commander_"+str(
+        os.system("copy /y ..\\..\\TeamsFolder\\"+teamName+"\\*.py ..\\Commander_"+str(
             index)+"\\Client\\AI\\")
 
 
 def main(_processes=8):
     # 对局类型，ffa=八队混战，共一轮；1v1=八选二一对一，共56轮
-    matchType = "1v1"
+    matchType = "ffa"
     # 每轮游戏局数,1<=teammatchNumber<=100
     teamMatchNumber = 100
     # 参与游戏的智能体文件夹名列表
-    AIteam = ["zhou", "鹓鶵", "炮灰",
-              "NULL", "UED远征计划：海豚行动", "ddl战神", "愿天堂没有ddl", "bot"]
-    AIlang = ["Python", "Lua", "C++", "Lua", "C++", "C++", "C++", "Lua"]
+    # teamMatch1
+    AIteam = ["西西米托", "阿巴阿巴队", "快乐星球小分队",
+              "芜湖起飞", "咕咕咕", "126黑网吧", "选定之剑", "bot"]
+    AIlang = ["Lua", "Lua", "C++", "Lua", "C++", "Python", "C++", "Lua"]
+    # teamMatch2
+    # AIteam = ["zhou", "鹓鶵", "炮灰",
+    #           "NULL", "UED远征计划：海豚行动", "ddl战神", "愿天堂没有ddl", "bot"]
+    # AIlang = ["Python", "Lua", "C++", "Lua", "C++", "C++", "C++", "Lua"]
+
+    # teamMatch3
+    # AIteam = ["阿西莫夫执法队", "LZD_is_our_RED_Sun", "九的三次方",
+    #           "为什么你们这么熟练啊", "啦啦啦啦啦", "生鱼队", "bot", "bot"]
+
+    # AIlang = ["C++", "Lua", "Python", "C++", "Lua", "Lua", "Lua", "Lua"]
+
+    # teamMatch4
+    # AIteam = ["稳谐莽苟偷", "土埋良乡队", "316驾校",
+    #           "我的女人不翼而飞", "能动就行", "这次我觉得你能赢", "琪露诺的完美偷家教室", "bot"]
+
+    # AIlang = ["C++", "C++", "Lua", "Python", "Python", "Python", "C++", "Lua"]
 
     startTime = time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime())
 
@@ -72,14 +89,14 @@ def main(_processes=8):
                     break
 
         # 统计结果
-        am = autoMatch(armyNum=8, AIteam=AIteam,
-                       AIlang=AIlang, matchNum=teamMatchNumber)
-        am.saveDict = "teamMatch"
-        am.matchNumber = teamMatchNumber
-        am.countMatchResult()
-        # 这里产生的txt文件里的开始时间是错的
-        endTime = time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime())
-        print(startTime, endTime)
+        # am = autoMatch(armyNum=8, AIteam=AIteam,
+        #                AIlang=AIlang, matchNum=teamMatchNumber)
+        # am.saveDict = "teamMatch"
+        # am.matchNumber = teamMatchNumber
+        # am.countMatchResult()
+        # # 这里产生的txt文件里的开始时间是错的
+        # endTime = time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime())
+        # print(startTime, endTime)
 
     elif(matchType == "1v1"):
         for team_1 in range(len(AIteam)):
