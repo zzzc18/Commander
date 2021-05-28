@@ -374,8 +374,21 @@ int MAP::SumWithArmyID(int armyID) {
     return sum;
 }
 
+int MAP::AreaWithArmyID(int armyID) {
+    int area = 0;
+    for (int i = 0; i < _sizeX; i++) {
+        for (int j = 0; j < _sizeY; j++) {
+            if (GetBelong({i, j}) == armyID) {
+                area += 1;
+            }
+        }
+    }
+    return area;
+}
+
 void MAP::SaveGameOver(int armyID) {
-    SaveStep(armyID, {-3, -3}, {0, 0}, SumWithArmyID(armyID));
+    SaveStep(armyID, {-3, -3}, {SumWithArmyID(armyID), AreaWithArmyID(armyID)},
+             0);
     return;
 }
 

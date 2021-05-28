@@ -3,6 +3,7 @@
 import os
 import time
 import xlsxwriter
+import math
 import numpy as np
 
 
@@ -156,8 +157,13 @@ class autoMatch(object):
                 if (line[1] == -2 and line[2] == -2) or (line[1] == -3 and line[2] == -3):
                     lines.append(line)
         fp.close()
-        # print(lines)
+
         assert len(lines) == self.armyNum
+
+        # 将最后 alive 的组按照剩余兵力升序排序
+        lines = [l for i, l in sorted(
+            list(enumerate(lines)), key=lambda l: l[0] + math.sqrt(l[1][3]) * l[1][4] if l[1][1] == -3 else 0)]
+
         for i, line in enumerate(lines):
             loser_teamid = 0
             gameInfo = None, None
@@ -169,7 +175,7 @@ class autoMatch(object):
                     gameInfo = 'Killed', line[4]
             elif line[1] == -3:
                 loser_teamid = line[0]
-                gameInfo = 'Alive', line[-1]
+                gameInfo = 'Score', math.log(math.sqrt(line[3]) * line[4], 10)
 
             self.AIwinning[loser_teamid].append([None] * 3)
             self.AIwinning[loser_teamid][-1][0] = 8 - i
@@ -196,7 +202,7 @@ class autoMatch(object):
                 continue
             print("Team %d sum credit = %d" % (i, self.AIcredit[i]))
 
-            filename = 'testResult.xlsx'
+            filename = os.path.join(self.saveDict, 'testResult.xlsx')
             with xlsxwriter.Workbook(filename) as workbook:
                 ranksheet = workbook.add_worksheet("rank")
                 bold = workbook.add_format({'bold': True})
@@ -205,7 +211,7 @@ class autoMatch(object):
                     ranksheet.write(0, j+1, teamname)
 
                 for j, team in enumerate(self.AIwinning):
-                    curlinenum = 1
+                    curlinenum = 3
                     if j == 0:
                         continue
                     for i, rank in enumerate(team):
@@ -219,9 +225,9 @@ class autoMatch(object):
                             ranksheet.write(curlinenum, j, blockitem)
                             curlinenum = curlinenum + 1
                         curlinenum = curlinenum + 1
-                ranksheet.write(curlinenum, 0, '总积分')
+                ranksheet.write(1, 0, '总积分')
                 for j in range(1, self.armyNum + 1):
-                    ranksheet.write(curlinenum, j, self.AIcredit[j] + 100)
+                    ranksheet.write(1, j, self.AIcredit[j] + 100)
 
                 curlinenum = curlinenum + 1
 

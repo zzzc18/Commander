@@ -41,15 +41,15 @@ def copyFile(teamName, teamAI, index):
 
 def main(_processes=8):
     # 对局类型，ffa=八队混战，共一轮；1v1=八选二一对一，共56轮
-    matchType = "ffa"
+    matchType = "1v1"
     # 每轮游戏局数,1<=teammatchNumber<=100
-    teamMatchNumber = 100
+    teamMatchNumber = 500
     # 参与游戏的智能体文件夹名列表
     # teamMatch1
     AIteam = ["西西米托", "阿巴阿巴队", "快乐星球小分队",
               "芜湖起飞", "咕咕咕", "126黑网吧", "选定之剑", "bot"]
     AIlang = ["Lua", "Lua", "C++", "Lua", "C++", "Python", "C++", "Lua"]
-    # teamMatch2
+    # # # teamMatch2
     # AIteam = ["zhou", "鹓鶵", "炮灰",
     #           "NULL", "UED远征计划：海豚行动", "ddl战神", "愿天堂没有ddl", "bot"]
     # AIlang = ["Python", "Lua", "C++", "Lua", "C++", "C++", "C++", "Lua"]
@@ -57,48 +57,47 @@ def main(_processes=8):
     # teamMatch3
     # AIteam = ["阿西莫夫执法队", "LZD_is_our_RED_Sun", "九的三次方",
     #           "为什么你们这么熟练啊", "啦啦啦啦啦", "生鱼队", "bot", "bot"]
-
     # AIlang = ["C++", "Lua", "Python", "C++", "Lua", "Lua", "Lua", "Lua"]
 
-    # teamMatch4
+    # # teamMatch4
     # AIteam = ["稳谐莽苟偷", "土埋良乡队", "316驾校",
     #           "我的女人不翼而飞", "能动就行", "这次我觉得你能赢", "琪露诺的完美偷家教室", "bot"]
-
     # AIlang = ["C++", "C++", "Lua", "Python", "Python", "Python", "C++", "Lua"]
 
     startTime = time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime())
 
     if(matchType == "ffa"):
-        for i in range(8):
-            copyFile(AIteam[i], AIlang[i], i+1)
+        # for i in range(8):
+        #     copyFile(AIteam[i], AIlang[i], i+1)
 
-        with Pool(processes=_processes) as pool:
-            args = []  # [[port,index,AIlang,mapDict,saveDict],...]
-            for i in range(teamMatchNumber):
-                args.append(
-                    [22122+i, i, AIlang, "../maps_8player", "teamMatch"])
-            idx = 0
-            blockSize = _processes
-            while True:
-                pool.starmap(
-                    Match, args[idx:min(idx+blockSize, teamMatchNumber)])
-                os.system("taskkill /f /IM love.exe")
-                os.system("taskkill /f /IM lovec.exe")
-                idx = idx+blockSize
-                if idx >= teamMatchNumber:
-                    break
+        # with Pool(processes=_processes) as pool:
+        #     args = []  # [[port,index,AIlang,mapDict,saveDict],...]
+        #     for i in range(teamMatchNumber):
+        #         args.append(
+        #             [22122+i, i, AIlang, "../maps_8player", "teamMatch"])
+        #     idx = 0
+        #     blockSize = _processes
+        #     while True:
+        #         pool.starmap(
+        #             Match, args[idx:min(idx+blockSize, teamMatchNumber)])
+        #         os.system("taskkill /f /IM love.exe")
+        #         os.system("taskkill /f /IM lovec.exe")
+        #         idx = idx+blockSize
+        #         if idx >= teamMatchNumber:
+        #             break
 
         # 统计结果
-        # am = autoMatch(armyNum=8, AIteam=AIteam,
-        #                AIlang=AIlang, matchNum=teamMatchNumber)
-        # am.saveDict = "teamMatch"
-        # am.matchNumber = teamMatchNumber
-        # am.countMatchResult()
+        am = autoMatch(armyNum=8, AIteam=AIteam,
+                       AIlang=AIlang, matchNum=teamMatchNumber)
+        am.saveDict = "teamMatch"
+        am.matchNumber = teamMatchNumber
+        am.countMatchResult()
         # # 这里产生的txt文件里的开始时间是错的
-        # endTime = time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime())
-        # print(startTime, endTime)
+        endTime = time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime())
+        print(startTime, endTime)
 
     elif(matchType == "1v1"):
+        matches = []
         for team_1 in range(len(AIteam)):
             for team_2 in range(team_1+1, len(AIteam)):
                 print("\nstart match "+AIteam[team_1]+"vs"+AIteam[team_2])
@@ -128,6 +127,7 @@ def main(_processes=8):
                 # am.AIlang = [AIlang[team_1], AIlang[team_2]]
                 # am.matchNumber = teamMatchNumber
                 # am.countMatchResult()  # 这里产生的txt文件里的开始时间是错的
+                # matches.append(am)
                 # endTime = time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime())
                 # print(startTime, endTime)
                 # fp = open(
@@ -136,6 +136,12 @@ def main(_processes=8):
                 # fp.close()
                 # findTeamName = re.compile(r'team: (.*)')
                 # TeamName = findTeamName.findall(res)
+
+
+# def generateStatMatchResult(matches):
+
+
+#     end
 
 
 if __name__ == '__main__':

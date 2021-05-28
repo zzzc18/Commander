@@ -89,6 +89,8 @@ class MAP final {
     int Surrender(int, int);
     //计算某玩家的总兵力
     int SumWithArmyID(int armyID);
+    //计算某玩家占地
+    int AreaWithArmyID(int armyID);
 
     /**
      * @brief 将指令加入 moveCommands
