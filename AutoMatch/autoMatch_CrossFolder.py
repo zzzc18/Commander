@@ -155,6 +155,9 @@ class autoMatch(object):
                         continue
                     line[i] = int(line[i])
                 if (line[1] == -2 and line[2] == -2) or (line[1] == -3 and line[2] == -3):
+                    if (line[3] < 0 or line[4] < 0):
+                        continue
+                    # 与非法的移动指令区分，e.g 2 -3 -3 1 0 和 2 -3 -3 -3 -4
                     lines.append(line)
         fp.close()
 
@@ -178,11 +181,11 @@ class autoMatch(object):
                 gameInfo = 'Score', math.log(math.sqrt(line[3]) * line[4], 10)
 
             self.AIwinning[loser_teamid].append([None] * 3)
-            self.AIwinning[loser_teamid][-1][0] = 8 - i
+            self.AIwinning[loser_teamid][-1][0] = self.armyNum - i
             self.AIwinning[loser_teamid][-1][1:3] = gameInfo
 
             self.AIcredit[loser_teamid] = self.AIcredit[loser_teamid] + \
-                self.scoreMap[8-i]
+                self.scoreMap[self.armyNum-i]
 
             # 8-i 为当前队伍的名次
 
@@ -227,7 +230,8 @@ class autoMatch(object):
                         curlinenum = curlinenum + 1
                 ranksheet.write(1, 0, '总积分')
                 for j in range(1, self.armyNum + 1):
-                    ranksheet.write(1, j, self.AIcredit[j] + 100)
+                    ranksheet.write(1, j, self.AIcredit[j])
+                    # ranksheet.write(1, j, self.AIcredit[j] + 100)
 
                 curlinenum = curlinenum + 1
 
