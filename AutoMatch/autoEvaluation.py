@@ -20,6 +20,7 @@ import numpy as np
 import re
 import AutoMatch.autoMatch_CrossFolder
 from AutoMatch.autoMatch_CrossFolder import autoMatch, Match
+import xlsxwriter
 
 
 def copyFile(teamName, teamAI, index):
@@ -55,14 +56,14 @@ def main(_processes=8):
     # AIlang = ["Python", "Lua", "C++", "Lua", "C++", "C++", "C++", "Lua"]
 
     # teamMatch3
-    AIteam = ["阿西莫夫执法队", "LZD_is_our_RED_Sun", "九的三次方",
-              "为什么你们这么熟练啊", "啦啦啦啦啦", "生鱼队", "bot", "bot"]
-    AIlang = ["C++", "Lua", "Python", "C++", "Lua", "Lua", "Lua", "Lua"]
+    # AIteam = ["阿西莫夫执法队", "LZD_is_our_RED_Sun", "九的三次方",
+    #           "为什么你们这么熟练啊", "啦啦啦啦啦", "生鱼队", "bot", "bot"]
+    # AIlang = ["C++", "Lua", "Python", "C++", "Lua", "Lua", "Lua", "Lua"]
 
     # # teamMatch4
-    # AIteam = ["稳谐莽苟偷", "土埋良乡队", "316驾校",
-    #           "我的女人不翼而飞", "能动就行", "这次我觉得你能赢", "琪露诺的完美偷家教室", "bot"]
-    # AIlang = ["C++", "C++", "Lua", "Python", "Python", "Python", "C++", "Lua"]
+    AIteam = ["稳谐莽苟偷", "土埋良乡队", "316驾校",
+              "我的女人不翼而飞", "能动就行", "这次我觉得你能赢", "琪露诺的完美偷家教室", "bot"]
+    AIlang = ["C++", "C++", "Lua", "Python", "Python", "Python", "C++", "Lua"]
 
     startTime = time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime())
 
@@ -130,6 +131,7 @@ def main(_processes=8):
                 matches.append(am)
                 endTime = time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime())
                 print(startTime, endTime)
+
                 # fp = open(
                 #     "teamMatch_"+AIteam[team_1]+"_"+AIteam[team_2]+"/matchResult.txt", 'r')
                 # res = fp.read()
@@ -137,12 +139,39 @@ def main(_processes=8):
                 # findTeamName = re.compile(r'team: (.*)')
                 # TeamName = findTeamName.findall(res)
 
+                # filename = os.path.join(self.saveDict, '')
+                pass
+        filename = os.path.abspath(os.path.join(os.getcwd(), "statistic.xlsx"))
+        print(filename)
+
+        with xlsxwriter.Workbook(filename) as workbook:
+            sheet = workbook.add_worksheet('statistic')
+            bold = workbook.add_format({'bold': True})
+            for j, teamname in enumerate(AIteam):
+                sheet.write(0, j+1, teamname)
+                sheet.write(j+1, 0, teamname)
+
+            total_grade = [0] * 8
+            for match in matches:
+                team_1_name, team_2_name = match.AIteam[0], match.AIteam[1]
+                team_1_id = [i for i, teamname in enumerate(
+                    AIteam) if teamname == team_1_name][0]
+                team_2_id = [i for i, teamname in enumerate(
+                    AIteam) if teamname == team_2_name][0]
+                print(team_1_id, team_2_id)
+                sheet.write(team_1_id + 1, team_2_id + 1, match.AIcredit[1])
+                # sheet.write(team_2_id + 1, team_1_id + 1, match.AIcredit[1])
+                total_grade[team_1_id] = total_grade[team_1_id] + \
+                    match.AIcredit[1]
+                total_grade[team_2_id] = total_grade[team_2_id] + \
+                    match.AIcredit[2]
+
+            sheet.write(0, len(AIteam) + 2, "总积分")
+            for i, grade in enumerate(total_grade):
+                sheet.write(i + 1, len(AIteam) + 2, grade)
+
 
 # def generateStatMatchResult(matches):
-
-
 #     end
-
-
 if __name__ == '__main__':
     main()
