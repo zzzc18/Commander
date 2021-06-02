@@ -56,16 +56,41 @@ function Picture.Init()
 end
 
 function Picture.DrawNode(pixelX, pixelY, nodeType)
+    local scaleFactor = BasicMap.radius / NodeImageSet.divRatio
     love.graphics.draw(
         NodeImageSet[nodeType],
         pixelX,
         pixelY,
         0,
-        BasicMap.radius / NodeImageSet.divRatio, --- scale factor x
-        BasicMap.radius / NodeImageSet.divRatio, --- scale factor y
+        scaleFactor,
+        scaleFactor,
         NodeImageSet.center.x,
         NodeImageSet.center.y
     )
+    if nodeType == "NODE_TYPE_KING" then
+        local nodeX, nodeY = {}, {}
+        for i = 0, math.pi * 5 / 3, math.pi / 3 do --极坐标变换
+            table.insert(nodeX, pixelX + math.sin(i) * BasicMap.radius + 13 * scaleFactor)
+            table.insert(nodeY, pixelY + math.cos(i) * BasicMap.radius + 28 * scaleFactor)
+        end
+        love.graphics.setColor(1, 1, 0, 0.9)
+        love.graphics.setLineWidth(5 * scaleFactor)
+        love.graphics.polygon(
+            "line",
+            nodeX[1],
+            nodeY[1],
+            nodeX[2],
+            nodeY[2],
+            nodeX[3],
+            nodeY[3],
+            nodeX[4],
+            nodeY[4],
+            nodeX[5],
+            nodeY[5],
+            nodeX[6],
+            nodeY[6]
+        )
+    end
 end
 
 function Picture.DrawSelect(pixelX, pixelY)
