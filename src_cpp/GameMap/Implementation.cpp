@@ -322,7 +322,7 @@ void MAP::InitSavedata(std::string name,
 }
 
 int MAP::LoadMap(std::string dict,    // dict = "Data"
-                 std::string name) {  // name = "3Player.map"
+                 std::string name) {  // name = "default.map"
     Debug::Singleton().Log("info", "LoadMap: ../" + dict + "/" + name);
     step = 0;
     kingNum = 0;
