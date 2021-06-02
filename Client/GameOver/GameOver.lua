@@ -52,7 +52,7 @@ end
 -- 初始化
 function GameOver.Init()
     if Command["[autoMatch]"] == "true" then
-        Debug.Log("info","auto quit game")
+        Debug.Log("info", "auto quit game")
         love.event.quit(0)
     end
     GameOver.armyNum = PlayGame.armyNum
@@ -73,6 +73,7 @@ function GameOver.update(dt)
     Client:update()
     Buttons.Update()
     MapAdjust.Update()
+    Coordinate.update(dt)
 end
 
 function GameOver.wheelmoved(x, y)
