@@ -55,7 +55,7 @@ function Picture.Init()
     Debug.Log("info", "init Picture")
 end
 
-function Picture.DrawNode(pixelX, pixelY, nodeType)
+function Picture.DrawNode(pixelX, pixelY, nodeType, belong)
     local scaleFactor = BasicMap.radius / NodeImageSet.divRatio
     love.graphics.draw(
         NodeImageSet[nodeType],
@@ -67,13 +67,20 @@ function Picture.DrawNode(pixelX, pixelY, nodeType)
         NodeImageSet.center.x,
         NodeImageSet.center.y
     )
-    if nodeType == "NODE_TYPE_KING" then
+    if nodeType == "NODE_TYPE_KING" or nodeType == "NODE_TYPE_FORT" then
         local nodeX, nodeY = {}, {}
         for i = 0, math.pi * 5 / 3, math.pi / 3 do --极坐标变换
             table.insert(nodeX, pixelX + math.sin(i) * BasicMap.radius + 13 * scaleFactor)
             table.insert(nodeY, pixelY + math.cos(i) * BasicMap.radius + 28 * scaleFactor)
         end
-        love.graphics.setColor(1, 1, 0, 0.9)
+        if nodeType == "NODE_TYPE_FORT" then
+            if belong == 0 then
+                return
+            end
+            love.graphics.setColor(1, 0, 0, 1)
+        else
+            love.graphics.setColor(1, 1, 0, 1)
+        end
         love.graphics.setLineWidth(5 * scaleFactor)
         love.graphics.polygon(
             "line",
