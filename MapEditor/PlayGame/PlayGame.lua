@@ -7,6 +7,7 @@ PlayGame.armyNum = 0
 function PlayGame.Init()
     CVerification.Register(0, 3)
     PlayGame.LoadMap()
+    Coordinate.Init()
 end
 
 function PlayGame.LoadMap()
@@ -39,11 +40,13 @@ end
 function PlayGame.update(dt)
     MapAdjust.Update()
     Operation.Update()
+    Coordinate.update(dt)
 end
 
 function PlayGame.draw()
     BasicMap.DrawMap()
     Operation.DrawSelect()
+    Coordinate.draw()
 end
 
 return PlayGame

@@ -14,12 +14,14 @@ require("System.BasicMap")
 require("System.MapAdjust")
 require("System.Buttons")
 require("System.Debug")
+require("System.Coordinate")
 
 Running = {}
 
 function love.load()
     Picture.Init()
     Running = PlayGame
+    Coordinate.valid()
     Running.Init()
 end
 

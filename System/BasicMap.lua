@@ -150,12 +150,16 @@ end
 function BasicMap.DrawNode(x, y)
     local pixelX, pixelY = BasicMap.Coordinate2Pixel(x, y)
     BasicMap.SetNodeColor(x, y)
-    Picture.DrawNode(pixelX, pixelY, BasicMap.Map[x][y].nodeType)
+    Picture.DrawNode(pixelX, pixelY, BasicMap.Map[x][y].nodeType, CGameMap.GetBelong(x, y))
     local unitNum = CGameMap.GetUnitNum(x, y)
     -- TODO: 我觉得可能变成nil更合理
     if unitNum ~= 0 then
         love.graphics.setColor(Color.White())
-        love.graphics.print(unitNum, pixelX, pixelY, 0, 1, 1, 2, 2)
+        if CGameMap.GetUnitNum(x, y) > 1000 then
+            love.graphics.print(unitNum, pixelX - 10, pixelY, 0, 0.8, 1, 2, 2)
+        else
+            love.graphics.print(unitNum, pixelX, pixelY, 0, 1, 1, 2, 2)
+        end
     end
 end
 
@@ -210,33 +214,5 @@ function BasicMap.Init()
     BasicMap.horizontalDis = math.sqrt(3) * BasicMap.radius
     BasicMap.verticalDis = 1.5 * BasicMap.radius
 end
-
--- function BasicMap.DrawReady()
---     love.graphics.setColor(1, 1, 1, 1)
---     local background = {img = love.graphics.newImage("data/Picture/BackGround.jpg"), widthRatio = 3, heightRatio = 3}
---     local title = {img = love.graphics.newImage("data/Picture/Title.png"), widthRatio = 0.6, heightRatio = 0.6}
---     local waiting = {img = love.graphics.newImage("data/Picture/Waiting.png"), widthRatio = 0.4, heightRatio = 0.4}
---     love.graphics.draw(background.img, 0, 0, 0, background.widthRatio, background.heightRatio)
---     love.graphics.draw(
---         title.img,
---         PixelWidth / 2,
---         PixelHeight / 3,
---         0,
---         title.widthRatio,
---         title.heightRatio,
---         title.img:getWidth() / 2,
---         title.img:getHeight() / 2
---     )
---     love.graphics.draw(
---         waiting.img,
---         PixelWidth / 2,
---         PixelHeight / 3 * 2,
---         0,
---         waiting.widthRatio,
---         waiting.heightRatio,
---         waiting.img:getWidth() / 2,
---         waiting.img:getHeight() / 2
---     )
--- end
 
 return BasicMap
