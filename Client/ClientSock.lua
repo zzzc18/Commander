@@ -38,6 +38,9 @@ function ClientSock.Init()
         function(data)
             local lastStep = Running.step
             Running.step = CSystem.UpdateStep(data)
+            if Command["[autoMatch]"] == "false" then
+                ClientSock.SendStepPluse()
+            end
             if lastStep < Running.step then
                 ClientSock.Lock = 0
                 Debug.Log("info", "unlocking at " .. lastStep .. " -> " .. Running.step)

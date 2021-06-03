@@ -69,8 +69,8 @@ function ServerSock.Init(armyNum)
     ServerSock.Sync:Init(armyNum)
     Server:on(
         "connect",
-        function(data, client) --仅用于非自动评测
-            if data == nil then
+        function(data, client)
+            if data == 0 then
                 client:send("SetArmyID", {armyID = client:getIndex()})
                 ServerSock.ClientID[client:getIndex()] = client:getIndex()
             else
@@ -115,19 +115,38 @@ function ServerSock.Init(armyNum)
     )
 end
 
+function ServerSock.Sleep(t)
+    local start = os.clock()
+    while os.clock() - start < t do
+    end
+end
+
 function ServerSock.SendUpdate(dt)
-    if Command["[autoMatch]"] == "true" then
-        ServerSock.Sync:Update(dt)
-        if ServerSock.Sync:Timeout() then
-            ServerSock.Sync:MarkTimeoutClient()
+    -- if Command["[autoMatch]"] == "true" then
+    --     ServerSock.Sync:Update(dt)
+    --     if ServerSock.Sync:Timeout() then
+    --         ServerSock.Sync:MarkTimeoutClient()
+    --     end
+    --     if ServerSock.Sync:IsSync() then
+    --         ServerSock.Sync:TimerReset()
+    --         Running.step = CSystem.UpdateStep(Running.step + 1)
+    --         Server:sendToAll("UpdateStep", Running.step)
+    --     end
+    -- else
+    --     Running.step = CSystem.Update(dt)
+    --     Server:sendToAll("UpdateStep", Running.step)
+    -- end
+
+    ServerSock.Sync:Update(dt)
+    if ServerSock.Sync:Timeout() then
+        ServerSock.Sync:MarkTimeoutClient()
+    end
+    if ServerSock.Sync:IsSync() then
+        ServerSock.Sync:TimerReset()
+        if Command["[autoMatch]"] == "false" then
+            ServerSock.Sleep(0.5)
         end
-        if ServerSock.Sync:IsSync() then
-            ServerSock.Sync:TimerReset()
-            Running.step = CSystem.UpdateStep(Running.step + 1)
-            Server:sendToAll("UpdateStep", Running.step)
-        end
-    else
-        Running.step = CSystem.Update(dt)
+        Running.step = CSystem.UpdateStep(Running.step + 1)
         Server:sendToAll("UpdateStep", Running.step)
     end
     -- Debug.Log("info", "Running.step = " .. Running.step)
