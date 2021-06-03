@@ -12,3 +12,6 @@ __pycache__
 maps_2player
 maps_3player
 maps_4player
+ServerTask.*
+*.xlsx
+teamMatch

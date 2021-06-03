@@ -2,6 +2,9 @@
 # 此脚本应置于服务端所在文件夹内
 import os
 import time
+import xlsxwriter
+import math
+import numpy as np
 
 
 class autoMatch(object):
@@ -13,6 +16,8 @@ class autoMatch(object):
     AIlang = ["Lua", "Python"]
     # 智能体获胜记录，数量应与上方的智能体数匹配
     AIwinning = [[], [], []]
+    # 智能体的积分总额
+    AIcredit = []
     # 游戏使用的地图目录，地图中玩家数应与上方的智能体数匹配；此目录位于服务端所在文件夹外
     mapDict = "../maps_2player"
     mapName = ""
@@ -26,10 +31,16 @@ class autoMatch(object):
     runWithConsol = False
     ClientConfigFile = "ClientTask.txt"
     ServerConfigFile = "ServerTask.txt"
+    armyNum = 8
+    scoreMap = {1: 8, 2: 5, 3: 4, 4: 3, 5: 2, 6: 1, 7: 0, 8: 0}
 
-    def __init__(self, _port=22122):
+    def __init__(self, _port=22122, armyNum=8, AIteam=[], AIlang=[], matchNum=100):
         self.startTime = time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime())
         self.port = _port
+        self.AIwinning = [[] for i in range(armyNum + 1)]
+        self.armyNum = armyNum
+        self.AIteam, self.AIlang, self.matchNumber = AIteam, AIlang, matchNum
+        self.AIcredit = [0] * (self.armyNum + 1)
         return
 
     def creatClientTask(self, index):
@@ -132,29 +143,115 @@ class autoMatch(object):
     def getMatchResult(self, index):
         self.saveName = "round"+str(index)
         fp = open(self.saveDict+"/"+self.saveName+"/steps.txt", 'r')
-        lines = fp.readlines()
+        # lines = fp.readlines()
+        _lines = fp.read().split("\n")
+        lines = []
+        for line in _lines:
+            if line != "" and (not line.isnumeric()):
+                line = line.split(' ')
+                for i in range(len(line)):
+                    if i == 5:
+                        line[i] = float(line[i])
+                        continue
+                    line[i] = int(line[i])
+                if (line[1] == -2 and line[2] == -2) or (line[1] == -3 and line[2] == -3):
+                    if (line[3] < 0 or line[4] < 0):
+                        continue
+                    # 与非法的移动指令区分，e.g 2 -3 -3 1 0 和 2 -3 -3 -3 -4
+                    lines.append(line)
         fp.close()
-        if lines[-1][3] == "3" and lines[-1][6] == "3":
-            self.AIwinning[int(lines[-1][0])-1].append(index)
-        return
+
+        assert len(lines) == self.armyNum
+
+        # 将最后 alive 的组按照剩余兵力升序排序
+        lines = [l for i, l in sorted(
+            list(enumerate(lines)), key=lambda l: l[0] + math.sqrt(l[1][3]) * l[1][4] if l[1][1] == -3 else 0)]
+
+        for i, line in enumerate(lines):
+            loser_teamid = 0
+            gameInfo = None, None
+            if line[1] == -2:
+                loser_teamid = line[3]
+                if line[4] == 0:
+                    gameInfo = 'TLE', 0
+                else:
+                    gameInfo = 'Killed', line[4]
+            elif line[1] == -3:
+                loser_teamid = line[0]
+                gameInfo = 'Score', math.log(math.sqrt(line[3]) * line[4], 10)
+
+            self.AIwinning[loser_teamid].append([None] * 3)
+            self.AIwinning[loser_teamid][-1][0] = self.armyNum - i
+            self.AIwinning[loser_teamid][-1][1:3] = gameInfo
+
+            self.AIcredit[loser_teamid] = self.AIcredit[loser_teamid] + \
+                self.scoreMap[self.armyNum-i]
+
+            # 8-i 为当前队伍的名次
+
+        # 重写了杨卓的函数，只完成了一半
+        # message = []
+        # lines.reverse()
+        # for line in lines:
+        #     message.append(list(line.split(' ')))
+
+        # if lines[-1][3] == "3" and lines[-1][6] == "3":
+        #     self.AIwinning[int(lines[-1][0])-1].append(index)
+        # return
 
     def saveMatchResult(self):
-        self.endTime = time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime())
-        fp = open(self.saveDict+"/matchResult.txt", 'w')
-        fp.write("match start: "+self.startTime+"\n")
-        fp.write("match end: "+self.endTime+"\n")
-        fp.write("total round: "+str(self.matchNumber)+"\n")
-        fp.write("savedata: "+self.saveDict+"\n\n\n")
-        print(self.AIlang)
-        for i in range(len(self.AIlang)):
-            print(i)
-            fp.write("team: "+self.AIteam[i]+"\n")
-            fp.write("armyID: "+str(i+1)+"\n")
-            fp.write("AILang: "+self.AIlang[i]+"\n")
-            fp.write("winning: "+str(self.AIwinning[i])+"\n")
-            fp.write("winning rate: " +
-                     str(len(self.AIwinning[i])/self.matchNumber)+"\n\n")
-        fp.close()
+        for i, team in enumerate(self.AIwinning):
+            if i == 0:
+                continue
+            print("Team %d sum credit = %d" % (i, self.AIcredit[i]))
+
+            filename = os.path.join(self.saveDict, 'testResult.xlsx')
+            with xlsxwriter.Workbook(filename) as workbook:
+                ranksheet = workbook.add_worksheet("rank")
+                bold = workbook.add_format({'bold': True})
+
+                for j, teamname in enumerate(self.AIteam):
+                    ranksheet.write(0, j+1, teamname)
+
+                for j, team in enumerate(self.AIwinning):
+                    curlinenum = 3
+                    if j == 0:
+                        continue
+                    for i, rank in enumerate(team):
+                        ranksheet.write(curlinenum, 0, i, bold)
+                        ranksheet.write(
+                            curlinenum, j, rank[0], bold)
+                        curlinenum = curlinenum + 1
+                        for k, blockitem in enumerate(rank):
+                            if k == 0:
+                                continue
+                            ranksheet.write(curlinenum, j, blockitem)
+                            curlinenum = curlinenum + 1
+                        curlinenum = curlinenum + 1
+                ranksheet.write(1, 0, '总积分')
+                for j in range(1, self.armyNum + 1):
+                    ranksheet.write(1, j, self.AIcredit[j])
+                    # ranksheet.write(1, j, self.AIcredit[j] + 100)
+
+                curlinenum = curlinenum + 1
+
+        # self.endTime = time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime())
+        # fp = open(self.saveDict+"/matchResult.txt", 'w')
+        # fp.write("match start: "+self.startTime+"\n")
+        # fp.write("match end: "+self.endTime+"\n")
+        # fp.write("total round: "+str(self.matchNumber)+"\n")
+        # fp.write("savedata: "+self.saveDict+"\n\n\n")
+        # print(self.AIlang)
+        # for i in range(len(self.AIlang)):
+        #     print(i)
+        #     fp.write("team: "+self.AIteam[i]+"\n")
+        #     fp.write("armyID: "+str(i+1)+"\n")
+        #     fp.write("AILang: "+self.AIlang[i]+"\n")
+        #     fp.write("winning: "+str(self.AIwinning[i])+"\n")
+        #     fp.write("winning rate: " +
+        #              str(len(self.AIwinning[i])/self.matchNumber)+"\n\n")
+        # fp.close()
+
         return
 
     def match(self):
@@ -181,7 +278,7 @@ if __name__ == "__main__":
 
 def Match(port, index, _AIlang, _mapDict, _saveDict):
     print(f"Running on match {index}")
-    am = autoMatch(port)
+    am = autoMatch(_port=port)
     am.AIteam = ["Commander_1", "Commander_2", "Commander_3", "Commander_4",
                  "Commander_5", "Commander_6", "Commander_7", "Commander_8"]
     am.AIlang = _AIlang

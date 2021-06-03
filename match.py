@@ -12,7 +12,7 @@ def PrintHelp():
     print("    -h/--help: 查看帮助信息")
     print("    -m/--multi process: 多进程评测，同时进行process个")
     print("    -c/--cross: 跨文件夹评测")
-    print("    -g/--gen: 拷贝生成多文件夹评测目录(Linux Shell)")
+    print("    -g/--gen temaNum: 拷贝生成多文件夹评测目录(Linux Shell)，生成teamNum个")
     print("例如 4进程评测 python match.py -m 4")
 
 
@@ -37,10 +37,12 @@ def GenFolder(teamNum=8):
 
 
 if __name__ == "__main__":
+
     if platform.system() == "Windows":
         os.system("chcp 65001")  # 切换中文编码
     if len(sys.argv) < 2:
         PrintHelp()
+        AutoMatch.autoEvaluation.main(_processes=1)
     elif sys.argv[1] == "--help" or sys.argv[1] == "-h":
         PrintHelp()
     elif sys.argv[1] == "--multi" or sys.argv[1] == "-m":
@@ -48,4 +50,4 @@ if __name__ == "__main__":
     elif sys.argv[1] == "--cross" or sys.argv[1] == "-c":
         AutoMatch.autoEvaluation.main(_processes=int(sys.argv[2]))
     elif sys.argv[1] == "--gen" or sys.argv[1] == "-g":
-        GenFolder(teamNum=8)
+        GenFolder(teamNum=int(sys.argv[2]))
