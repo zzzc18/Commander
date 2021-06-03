@@ -12,7 +12,7 @@ function ServerSock.Sync:Init(clientNum)
     for i = 1, clientNum do
         self.clientStep[i] = 0
     end
-    self.clientSyncTimeout = 0.6 --seconds
+    self.clientSyncTimeout = 1.1 --seconds
     self.clientSyncTime = 0
 end
 

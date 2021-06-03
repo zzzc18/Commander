@@ -61,46 +61,53 @@ def main(_processes=8):
     # AIlang = ["C++", "Lua", "Python", "C++", "Lua", "Lua", "Lua", "Lua"]
 
     # # teamMatch4
-    AIteam = ["稳谐莽苟偷", "土埋良乡队", "316驾校",
-              "我的女人不翼而飞", "能动就行", "这次我觉得你能赢", "琪露诺的完美偷家教室", "bot"]
-    AIlang = ["C++", "C++", "Lua", "Python", "Python", "Python", "C++", "Lua"]
+    # AIteam = ["稳谐莽苟偷", "土埋良乡队", "316驾校",
+    #           "我的女人不翼而飞", "能动就行", "这次我觉得你能赢", "琪露诺的完美偷家教室", "bot"]
+    # AIlang = ["C++", "C++", "Lua", "Python", "Python", "Python", "C++", "Lua"]
+
+    # 决赛
+    AIteam = ["316驾校", "ddl战神",
+              "UED远征计划：海豚行动", "咕咕咕", "九的三次方", "啦啦啦啦啦", "琪露诺的完美偷家教室", "芜湖起飞"]
+    AIlang = ["Lua",  "C++",  "C++", "C++", "Python", "Lua", "C++", "Lua"]
 
     startTime = time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime())
 
     if(matchType == "ffa"):
-        # for i in range(8):
-        #     copyFile(AIteam[i], AIlang[i], i+1)
+        for i in range(8):
+            copyFile(AIteam[i], AIlang[i], i+1)
 
-        # with Pool(processes=_processes) as pool:
-        #     args = []  # [[port,index,AIlang,mapDict,saveDict],...]
-        #     for i in range(teamMatchNumber):
-        #         args.append(
-        #             [22122+i, i, AIlang, "../maps_8player", "teamMatch"])
-        #     idx = 0
-        #     blockSize = _processes
-        #     while True:
-        #         pool.starmap(
-        #             Match, args[idx:min(idx+blockSize, teamMatchNumber)])
-        #         os.system("taskkill /f /IM love.exe")
-        #         os.system("taskkill /f /IM lovec.exe")
-        #         idx = idx+blockSize
-        #         if idx >= teamMatchNumber:
-        #             break
+        with Pool(processes=_processes) as pool:
+            args = []  # [[port,index,AIlang,mapDict,saveDict],...]
+            for i in range(teamMatchNumber):
+                args.append(
+                    [22122+i, i, AIlang, "../maps_8player", "teamMatch"])
+            idx = 0
+            blockSize = _processes
+            while True:
+                pool.starmap(
+                    Match, args[idx:min(idx+blockSize, teamMatchNumber)])
+                os.system("taskkill /f /IM love.exe")
+                os.system("taskkill /f /IM lovec.exe")
+                idx = idx+blockSize
+                if idx >= teamMatchNumber:
+                    break
 
         # 统计结果
-        am = autoMatch(armyNum=8, AIteam=AIteam,
-                       AIlang=AIlang, matchNum=teamMatchNumber)
-        am.saveDict = "teamMatch"
-        am.matchNumber = teamMatchNumber
-        am.countMatchResult()
-        # # 这里产生的txt文件里的开始时间是错的
-        endTime = time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime())
-        print(startTime, endTime)
+        # am = autoMatch(armyNum=8, AIteam=AIteam,
+        #                AIlang=AIlang, matchNum=teamMatchNumber)
+        # am.saveDict = "teamMatch"
+        # am.matchNumber = teamMatchNumber
+        # am.countMatchResult()
+        # # # 这里产生的txt文件里的开始时间是错的
+        # endTime = time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime())
+        # print(startTime, endTime)
 
     elif(matchType == "1v1"):
         matches = []
         for team_1 in range(len(AIteam)):
             for team_2 in range(team_1+1, len(AIteam)):
+                if team_1 != 1 or team_2 != 5:
+                    continue
                 # print("\nstart match "+AIteam[team_1]+"vs"+AIteam[team_2])
                 # copyFile(AIteam[team_1], AIlang[team_1], 1)
                 # copyFile(AIteam[team_2], AIlang[team_2], 2)
@@ -141,34 +148,34 @@ def main(_processes=8):
 
                 # filename = os.path.join(self.saveDict, '')
                 pass
-        filename = os.path.abspath(os.path.join(os.getcwd(), "statistic.xlsx"))
-        print(filename)
+        # filename = os.path.abspath(os.path.join(os.getcwd(), "statistic.xlsx"))
+        # print(filename)
 
-        with xlsxwriter.Workbook(filename) as workbook:
-            sheet = workbook.add_worksheet('statistic')
-            bold = workbook.add_format({'bold': True})
-            for j, teamname in enumerate(AIteam):
-                sheet.write(0, j+1, teamname)
-                sheet.write(j+1, 0, teamname)
+        # with xlsxwriter.Workbook(filename) as workbook:
+        #     sheet = workbook.add_worksheet('statistic')
+        #     bold = workbook.add_format({'bold': True})
+        #     for j, teamname in enumerate(AIteam):
+        #         sheet.write(0, j+1, teamname)
+        #         sheet.write(j+1, 0, teamname)
 
-            total_grade = [0] * 8
-            for match in matches:
-                team_1_name, team_2_name = match.AIteam[0], match.AIteam[1]
-                team_1_id = [i for i, teamname in enumerate(
-                    AIteam) if teamname == team_1_name][0]
-                team_2_id = [i for i, teamname in enumerate(
-                    AIteam) if teamname == team_2_name][0]
-                print(team_1_id, team_2_id)
-                sheet.write(team_1_id + 1, team_2_id + 1, match.AIcredit[1])
-                # sheet.write(team_2_id + 1, team_1_id + 1, match.AIcredit[1])
-                total_grade[team_1_id] = total_grade[team_1_id] + \
-                    match.AIcredit[1]
-                total_grade[team_2_id] = total_grade[team_2_id] + \
-                    match.AIcredit[2]
+        #     total_grade = [0] * 8
+        #     for match in matches:
+        #         team_1_name, team_2_name = match.AIteam[0], match.AIteam[1]
+        #         team_1_id = [i for i, teamname in enumerate(
+        #             AIteam) if teamname == team_1_name][0]
+        #         team_2_id = [i for i, teamname in enumerate(
+        #             AIteam) if teamname == team_2_name][0]
+        #         print(team_1_id, team_2_id)
+        #         sheet.write(team_1_id + 1, team_2_id + 1, match.AIcredit[1])
+        #         # sheet.write(team_2_id + 1, team_1_id + 1, match.AIcredit[1])
+        #         total_grade[team_1_id] = total_grade[team_1_id] + \
+        #             match.AIcredit[1]
+        #         total_grade[team_2_id] = total_grade[team_2_id] + \
+        #             match.AIcredit[2]
 
-            sheet.write(0, len(AIteam) + 2, "总积分")
-            for i, grade in enumerate(total_grade):
-                sheet.write(i + 1, len(AIteam) + 2, grade)
+        #     sheet.write(0, len(AIteam) + 2, "总积分")
+        #     for i, grade in enumerate(total_grade):
+        #         sheet.write(i + 1, len(AIteam) + 2, grade)
 
 
 # def generateStatMatchResult(matches):
