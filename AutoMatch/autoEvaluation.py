@@ -121,7 +121,6 @@ def main(_processes=8):
             for team_2 in range(team_1+1, len(AIteam)):
                 if team_1 != 1 or team_2 != 5:
                     continue
-<<<<<<< AutoMatch/autoEvaluation.py
                 print("\nstart match "+AIteam[team_1]+"vs"+AIteam[team_2])
                 copyFile(AIteam[team_1], AIlang[team_1], 1)
                 copyFile(AIteam[team_2], AIlang[team_2], 2)
@@ -141,8 +140,6 @@ def main(_processes=8):
                         idx = idx+blockSize
                         if idx >= teamMatchNumber:
                             break
-=======
->>>>>>> AutoMatch/autoEvaluation.py
 
                 am = autoMatch(armyNum=2, matchNum=teamMatchNumber)
                 am.saveDict = "teamMatch_"+AIteam[team_1]+"_"+AIteam[team_2]
@@ -155,7 +152,6 @@ def main(_processes=8):
                 endTime = time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime())
                 print(startTime, endTime)
                 pass
-<<<<<<< AutoMatch/autoEvaluation.py
     elif(matchType == "Final1v1"):
         print("\nstart match "+AIteam[0]+"vs"+AIteam[1])
 
@@ -227,12 +223,10 @@ def main(_processes=8):
         #     sheet.write(0, len(AIteam) + 2, "总积分")
         #     for i, grade in enumerate(total_grade):
         #         sheet.write(i + 1, len(AIteam) + 2, grade)
-=======
-        
+
     elif(matchType == '4player'):
         for i in range(4):
             copyFile(AIteam[i], AIlang[i], i+1)
->>>>>>> AutoMatch/autoEvaluation.py
 
         with Pool(processes=_processes) as pool:
             args = []  # [[port,index,AIlang,mapDict,saveDict],...]
@@ -249,6 +243,7 @@ def main(_processes=8):
                 idx = idx + blockSize
                 if idx >= teamMatchNumber:
                     break
+
 
 # def generateStatMatchResult(matches):
 #     end
