@@ -59,6 +59,7 @@ function GameOver.Init()
     GameOver.menuV = love.graphics.newImage("data/Picture/OPTION_TYPE_VICTORY.PNG")
     GameOver.menuD = love.graphics.newImage("data/Picture/OPTION_TYPE_DEFEATED.PNG")
     Buttons.Init()
+    Coordinate.Init()
 end
 
 function GameOver.DeInit()
