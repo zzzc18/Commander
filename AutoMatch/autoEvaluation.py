@@ -159,7 +159,7 @@ def main(_processes=8):
         copyFile(AIteam[0], AIlang[0], 1)
         copyFile(AIteam[1], AIlang[1], 2)
         Match(22122, 0, [AIlang[0], AIlang[1]], "../final_2player",
-              "teamMatch_"+AIteam[0]+"_"+AIteam[1])
+              "Match")
         os.system("taskkill /f /IM love.exe")
         os.system("taskkill /f /IM lovec.exe")
         while True:
@@ -168,10 +168,10 @@ def main(_processes=8):
                 break
 
         # Round2
-        copyFile(AIteam[0], AIlang[0], 2)
-        copyFile(AIteam[1], AIlang[1], 1)
+        copyFile(AIteam[0], AIlang[0], 1)
+        copyFile(AIteam[1], AIlang[1], 2)
         Match(22122, 1, [AIlang[1], AIlang[0]], "../final_2player",
-              "teamMatch_"+AIteam[1]+"_"+AIteam[0])
+              "Match")
         os.system("taskkill /f /IM love.exe")
         os.system("taskkill /f /IM lovec.exe")
         while True:
@@ -180,18 +180,19 @@ def main(_processes=8):
                 break
 
         # Round3
+        copyFile(AIteam[0], AIlang[0], 1)
+        copyFile(AIteam[1], AIlang[1], 2)
         Match(22122, 2, [AIlang[0], AIlang[1]], "../final_2player",
-              "teamMatch_"+AIteam[0]+"_"+AIteam[1])
+              "Match")
         os.system("taskkill /f /IM love.exe")
         os.system("taskkill /f /IM lovec.exe")
 
-        am = autoMatch(armyNum=2, matchNum=teamMatchNumber)
-        am.saveDict = "teamMatch_"+AIteam[0]+"_"+AIteam[1]
+        am = autoMatch(armyNum=2, matchNum=3)
+        am.saveDict = "Match"
         am.AIteam = [AIteam[0], AIteam[1]]
         am.AIlang = [AIlang[0], AIlang[1]]
-        am.matchNumber = teamMatchNumber
         am.scoreMap = {1: 1, 2: 0}
-        am.countMatchResult()  # 这里产生的txt文件里的开始时间是错的
+        am.countMatchResult()
         # matches.append(am)
         # endTime = time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime())
         # print(startTime, endTime)
