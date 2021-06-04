@@ -2,11 +2,34 @@ ServerSock = {}
 
 local PlayGameCore = require("PlayGame.Core")
 
-ServerSock.stepTime = 0.2
+ServerSock.stepTime = 0.5
+ServerSock.stepTimeAutoMatch = 0.2
 ServerSock.ClientID = {}
 ServerSock.clientNum = 0
 
 ServerSock.Sync = {}
+ServerSock.StepTimer = {}
+
+function ServerSock.StepTimer:Init(autoMatch)
+    if autoMatch == "true" then
+        self.limit = ServerSock.stepTimeAutoMatch
+    else
+        self.limit = ServerSock.stepTime
+    end
+    self.timer = 0
+end
+
+function ServerSock.StepTimer:Update(dt)
+    self.timer = self.timer + dt
+end
+
+function ServerSock.StepTimer:TimeIsUp()
+    return self.timer > self.limit
+end
+
+function ServerSock.StepTimer:TimerReset()
+    self.timer = 0
+end
 
 function ServerSock.Sync:Init(clientNum)
     self.clientStep = {}
@@ -68,6 +91,7 @@ function ServerSock.Init(armyNum)
     Server = Sock.newServer("*", Command["[port]"], armyNum)
     Server:setSerialization(Bitser.dumps, Bitser.loads)
     ServerSock.Sync:Init(armyNum)
+    ServerSock.StepTimer:Init(Command["[autoMatch]"])
     Server:on(
         "connect",
         function(data, client)
@@ -123,32 +147,18 @@ function ServerSock.Sleep(t)
 end
 
 function ServerSock.SendUpdate(dt)
-    -- if Command["[autoMatch]"] == "true" then
-    --     ServerSock.Sync:Update(dt)
-    --     if ServerSock.Sync:Timeout() then
-    --         ServerSock.Sync:MarkTimeoutClient()
-    --     end
-    --     if ServerSock.Sync:IsSync() then
-    --         ServerSock.Sync:TimerReset()
-    --         Running.step = CSystem.UpdateStep(Running.step + 1)
-    --         Server:sendToAll("UpdateStep", Running.step)
-    --     end
-    -- else
-    --     Running.step = CSystem.Update(dt)
-    --     Server:sendToAll("UpdateStep", Running.step)
-    -- end
-
+    ServerSock.StepTimer:Update(dt)
     ServerSock.Sync:Update(dt)
     if ServerSock.Sync:Timeout() then
         ServerSock.Sync:MarkTimeoutClient()
     end
     if ServerSock.Sync:IsSync() then
         ServerSock.Sync:TimerReset()
-        if Command["[autoMatch]"] == "false" then
-            ServerSock.Sleep(ServerSock.stepTime)
+        if ServerSock.StepTimer:TimeIsUp() then
+            ServerSock.StepTimer:TimerReset()
+            Running.step = CSystem.UpdateStep(Running.step + 1)
+            Server:sendToAll("UpdateStep", Running.step)
         end
-        Running.step = CSystem.UpdateStep(Running.step + 1)
-        Server:sendToAll("UpdateStep", Running.step)
     end
     -- Debug.Log("info", "Running.step = " .. Running.step)
 end
