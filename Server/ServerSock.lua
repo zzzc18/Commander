@@ -2,6 +2,7 @@ ServerSock = {}
 
 local PlayGameCore = require("PlayGame.Core")
 
+ServerSock.stepTime = 0.2
 ServerSock.ClientID = {}
 ServerSock.clientNum = 0
 
@@ -144,7 +145,7 @@ function ServerSock.SendUpdate(dt)
     if ServerSock.Sync:IsSync() then
         ServerSock.Sync:TimerReset()
         if Command["[autoMatch]"] == "false" then
-            ServerSock.Sleep(0.5)
+            ServerSock.Sleep(ServerSock.stepTime)
         end
         Running.step = CSystem.UpdateStep(Running.step + 1)
         Server:sendToAll("UpdateStep", Running.step)
