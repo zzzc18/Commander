@@ -42,7 +42,7 @@ def copyFile(teamName, teamAI, index):
 
 def main(_processes=8):
     # 对局类型，ffa=八队混战，共一轮；1v1=八选二一对一，共56轮
-    matchType = "Final1v1"
+    matchType = "4player"
     # 每轮游戏局数,1<=teammatchNumber<=100
     teamMatchNumber = 100
     # 参与游戏的智能体文件夹名列表
