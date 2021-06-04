@@ -89,6 +89,10 @@ def main(_processes=8):
     # AIteam = ["琪露诺的完美偷家教室", "芜湖起飞"]
     # AIlang = ["C++", "Lua"]
 
+    # 决赛4player
+    AIteam = ["316驾校", "啦啦啦啦啦", "琪露诺的完美偷家教室", "芜湖起飞"]
+    AIlang = ["Lua", "Lua", "C++", "Lua"]
+
     startTime = time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime())
 
     if(matchType == "ffa"):
@@ -111,22 +115,13 @@ def main(_processes=8):
                 if idx >= teamMatchNumber:
                     break
 
-        # 统计结果
-        # am = autoMatch(armyNum=8, AIteam=AIteam,
-        #                AIlang=AIlang, matchNum=teamMatchNumber)
-        # am.saveDict = "teamMatch"
-        # am.matchNumber = teamMatchNumber
-        # am.countMatchResult()
-        # # # 这里产生的txt文件里的开始时间是错的
-        # endTime = time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime())
-        # print(startTime, endTime)
-
     elif(matchType == "1v1"):
         matches = []
         for team_1 in range(len(AIteam)):
             for team_2 in range(team_1+1, len(AIteam)):
                 if team_1 != 1 or team_2 != 5:
                     continue
+<<<<<<< AutoMatch/autoEvaluation.py
                 print("\nstart match "+AIteam[team_1]+"vs"+AIteam[team_2])
                 copyFile(AIteam[team_1], AIlang[team_1], 1)
                 copyFile(AIteam[team_2], AIlang[team_2], 2)
@@ -146,6 +141,8 @@ def main(_processes=8):
                         idx = idx+blockSize
                         if idx >= teamMatchNumber:
                             break
+=======
+>>>>>>> AutoMatch/autoEvaluation.py
 
                 am = autoMatch(armyNum=2, matchNum=teamMatchNumber)
                 am.saveDict = "teamMatch_"+AIteam[team_1]+"_"+AIteam[team_2]
@@ -157,16 +154,8 @@ def main(_processes=8):
                 matches.append(am)
                 endTime = time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime())
                 print(startTime, endTime)
-
-                # fp = open(
-                #     "teamMatch_"+AIteam[team_1]+"_"+AIteam[team_2]+"/matchResult.txt", 'r')
-                # res = fp.read()
-                # fp.close()
-                # findTeamName = re.compile(r'team: (.*)')
-                # TeamName = findTeamName.findall(res)
-
-                # filename = os.path.join(self.saveDict, '')
                 pass
+<<<<<<< AutoMatch/autoEvaluation.py
     elif(matchType == "Final1v1"):
         print("\nstart match "+AIteam[0]+"vs"+AIteam[1])
 
@@ -238,7 +227,28 @@ def main(_processes=8):
         #     sheet.write(0, len(AIteam) + 2, "总积分")
         #     for i, grade in enumerate(total_grade):
         #         sheet.write(i + 1, len(AIteam) + 2, grade)
+=======
+        
+    elif(matchType == '4player'):
+        for i in range(4):
+            copyFile(AIteam[i], AIlang[i], i+1)
+>>>>>>> AutoMatch/autoEvaluation.py
 
+        with Pool(processes=_processes) as pool:
+            args = []  # [[port,index,AIlang,mapDict,saveDict],...]
+            for i in range(teamMatchNumber):
+                args.append(
+                    [22122+i, i, AIlang, "../maps_4player", "teamMatch"])
+            idx = 0
+            blockSize = _processes
+            while True:
+                pool.starmap(
+                    Match, args[idx:min(idx+blockSize, teamMatchNumber)])
+                os.system("taskkill /f /IM love.exe")
+                os.system("taskkill /f /IM lovec.exe")
+                idx = idx + blockSize
+                if idx >= teamMatchNumber:
+                    break
 
 # def generateStatMatchResult(matches):
 #     end
