@@ -42,7 +42,7 @@ def copyFile(teamName, teamAI, index):
 
 def main(_processes=8):
     # 对局类型，ffa=八队混战，共一轮；1v1=八选二一对一，共56轮
-    matchType = "1v1"
+    matchType = "4player"
     # 每轮游戏局数,1<=teammatchNumber<=100
     teamMatchNumber = 100
     # 参与游戏的智能体文件夹名列表
@@ -109,7 +109,7 @@ def main(_processes=8):
                 endTime = time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime())
                 print(startTime, endTime)
                 pass
-        
+
     elif(matchType == '4player'):
         for i in range(4):
             copyFile(AIteam[i], AIlang[i], i+1)
@@ -129,6 +129,7 @@ def main(_processes=8):
                 idx = idx + blockSize
                 if idx >= teamMatchNumber:
                     break
+
 
 # def generateStatMatchResult(matches):
 #     end
