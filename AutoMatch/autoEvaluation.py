@@ -42,7 +42,7 @@ def copyFile(teamName, teamAI, index):
 
 def main(_processes=8):
     # 对局类型，ffa=八队混战，共一轮；1v1=八选二一对一，共56轮
-    matchType = "1v1"
+    matchType = "Final1v1"
     # 每轮游戏局数,1<=teammatchNumber<=100
     teamMatchNumber = 100
     # 参与游戏的智能体文件夹名列表
@@ -66,9 +66,28 @@ def main(_processes=8):
     # AIlang = ["C++", "C++", "Lua", "Python", "Python", "Python", "C++", "Lua"]
 
     # 决赛
-    AIteam = ["316驾校", "ddl战神",
-              "UED远征计划：海豚行动", "咕咕咕", "九的三次方", "啦啦啦啦啦", "琪露诺的完美偷家教室", "芜湖起飞"]
-    AIlang = ["Lua",  "C++",  "C++", "C++", "Python", "Lua", "C++", "Lua"]
+    # AIteam = ["316驾校", "ddl战神",
+    #           "UED远征计划：海豚行动", "咕咕咕", "九的三次方", "啦啦啦啦啦", "琪露诺的完美偷家教室", "芜湖起飞"]
+    # AIlang = ["Lua",  "C++",  "C++", "C++", "Python", "Lua", "C++", "Lua"]
+
+    # 一二名A
+    AIteam = ["316驾校", "啦啦啦啦啦"]
+    AIlang = ["Lua", "Lua"]
+    # 一二名B
+    # AIteam = ["316驾校", "琪露诺的完美偷家教室"]
+    # AIlang = ["Lua", "C++"]
+    # 一二名C
+    # AIteam = ["316驾校", "芜湖起飞"]
+    # AIlang = ["Lua", "Lua"]
+    # 一二名D
+    # AIteam = ["啦啦啦啦啦", "琪露诺的完美偷家教室"]
+    # AIlang = ["Lua", "C++"]
+    # 一二名E
+    # AIteam = ["啦啦啦啦啦", "芜湖起飞"]
+    # AIlang = ["Lua",  "Lua"]
+    # 一二名F
+    # AIteam = ["琪露诺的完美偷家教室", "芜湖起飞"]
+    # AIlang = ["C++", "Lua"]
 
     startTime = time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime())
 
@@ -108,25 +127,25 @@ def main(_processes=8):
             for team_2 in range(team_1+1, len(AIteam)):
                 if team_1 != 1 or team_2 != 5:
                     continue
-                # print("\nstart match "+AIteam[team_1]+"vs"+AIteam[team_2])
-                # copyFile(AIteam[team_1], AIlang[team_1], 1)
-                # copyFile(AIteam[team_2], AIlang[team_2], 2)
-                # with Pool(processes=_processes) as pool:
-                #     args = []  # [[port,index,AIlang,mapDict,saveDict],...]
-                #     for i in range(teamMatchNumber):
-                #         args.append(
-                #             [22122+i, i, [AIlang[team_1], AIlang[team_2]], "../maps_2player",
-                #              "teamMatch_"+AIteam[team_1]+"_"+AIteam[team_2]])
-                #     idx = 0
-                #     blockSize = _processes
-                #     while True:
-                #         pool.starmap(
-                #             Match, args[idx:min(idx+blockSize, teamMatchNumber)])
-                #         os.system("taskkill /f /IM love.exe")
-                #         os.system("taskkill /f /IM lovec.exe")
-                #         idx = idx+blockSize
-                #         if idx >= teamMatchNumber:
-                #             break
+                print("\nstart match "+AIteam[team_1]+"vs"+AIteam[team_2])
+                copyFile(AIteam[team_1], AIlang[team_1], 1)
+                copyFile(AIteam[team_2], AIlang[team_2], 2)
+                with Pool(processes=_processes) as pool:
+                    args = []  # [[port,index,AIlang,mapDict,saveDict],...]
+                    for i in range(teamMatchNumber):
+                        args.append(
+                            [22122+i, i, [AIlang[team_1], AIlang[team_2]], "../maps_2player",
+                             "teamMatch_"+AIteam[team_1]+"_"+AIteam[team_2]])
+                    idx = 0
+                    blockSize = _processes
+                    while True:
+                        pool.starmap(
+                            Match, args[idx:min(idx+blockSize, teamMatchNumber)])
+                        os.system("taskkill /f /IM love.exe")
+                        os.system("taskkill /f /IM lovec.exe")
+                        idx = idx+blockSize
+                        if idx >= teamMatchNumber:
+                            break
 
                 am = autoMatch(armyNum=2, matchNum=teamMatchNumber)
                 am.saveDict = "teamMatch_"+AIteam[team_1]+"_"+AIteam[team_2]
@@ -148,6 +167,49 @@ def main(_processes=8):
 
                 # filename = os.path.join(self.saveDict, '')
                 pass
+    elif(matchType == "Final1v1"):
+        print("\nstart match "+AIteam[0]+"vs"+AIteam[1])
+
+        # Round1
+        copyFile(AIteam[0], AIlang[0], 1)
+        copyFile(AIteam[1], AIlang[1], 2)
+        Match(22122, 0, [AIlang[0], AIlang[1]], "../final_2player",
+              "teamMatch_"+AIteam[0]+"_"+AIteam[1])
+        os.system("taskkill /f /IM love.exe")
+        os.system("taskkill /f /IM lovec.exe")
+        while True:
+            keyboardCommand = input("input string \"next\" to continue")
+            if keyboardCommand == "next":
+                break
+
+        # Round2
+        copyFile(AIteam[0], AIlang[0], 2)
+        copyFile(AIteam[1], AIlang[1], 1)
+        Match(22122, 1, [AIlang[1], AIlang[0]], "../final_2player",
+              "teamMatch_"+AIteam[1]+"_"+AIteam[0])
+        os.system("taskkill /f /IM love.exe")
+        os.system("taskkill /f /IM lovec.exe")
+        while True:
+            keyboardCommand = input("input string \"next\" to continue")
+            if keyboardCommand == "next":
+                break
+
+        # Round3
+        Match(22122, 2, [AIlang[0], AIlang[1]], "../final_2player",
+              "teamMatch_"+AIteam[0]+"_"+AIteam[1])
+        os.system("taskkill /f /IM love.exe")
+        os.system("taskkill /f /IM lovec.exe")
+
+        am = autoMatch(armyNum=2, matchNum=teamMatchNumber)
+        am.saveDict = "teamMatch_"+AIteam[0]+"_"+AIteam[1]
+        am.AIteam = [AIteam[0], AIteam[1]]
+        am.AIlang = [AIlang[0], AIlang[1]]
+        am.matchNumber = teamMatchNumber
+        am.scoreMap = {1: 1, 2: 0}
+        am.countMatchResult()  # 这里产生的txt文件里的开始时间是错的
+        # matches.append(am)
+        # endTime = time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime())
+        # print(startTime, endTime)
         # filename = os.path.abspath(os.path.join(os.getcwd(), "statistic.xlsx"))
         # print(filename)
 
