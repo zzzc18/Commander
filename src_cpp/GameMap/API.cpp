@@ -29,18 +29,16 @@ static int RandomGenMap(lua_State *luaState) {
  * @return @c void
  */
 static int LoadMap(lua_State *luaState) {
-    std::string dict, name;
+    std::string path;
     int armyNum = 0;
-    APIparam(luaState, dict, name);
-    if (dict == "default")
-        Debug::Singleton().Log("info", "default loadmap"),
-            armyNum = MAP::Singleton().LoadMap();
-    else if (name == "default")
-        Debug::Singleton().Log("info", "default2 loadmap"),
-            armyNum = MAP::Singleton().LoadMap(dict);
-    else
-        Debug::Singleton().Log("info", "nodefault loadmap"),
-            armyNum = MAP::Singleton().LoadMap(dict, name);
+    APIparam(luaState, path);
+    if (path == "default") {
+        Debug::Singleton().Log("info", "default loadmap");
+        armyNum = MAP::Singleton().LoadMap();
+    } else {
+        Debug::Singleton().Log("info", "loadmap: " + path);
+        armyNum = MAP::Singleton().LoadMap(path);
+    }
     return APIreturn(luaState, armyNum);
 }
 /**

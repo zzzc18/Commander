@@ -321,12 +321,12 @@ void MAP::InitSavedata(std::string name,
     return;
 }
 
-int MAP::LoadMap(std::string dict,    // dict = "Data"
-                 std::string name) {  // name = "default.map"
-    Debug::Singleton().Log("info", "LoadMap: ../" + dict + "/" + name);
+int MAP::LoadMap(std::string path)  // path = "../Data/default.map"
+{
+    Debug::Singleton().Log("info", "LoadMap: " + path);
     step = 0;
     kingNum = 0;
-    std::ifstream fin("../" + dict + "/" + name);
+    std::ifstream fin(path);
     fin >> *this;
     fin.close();
     return this->_armyCnt;

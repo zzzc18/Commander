@@ -134,7 +134,7 @@ class MAP final {
     //游戏存档保存路径
     std::string SaveDict;
     //从dict目录下读取地图name
-    int LoadMap(std::string dict = "Data", std::string name = "default.map");
+    int LoadMap(std::string path = "../Data/default.map");
     //将地图保存至SaveDict文件夹(未设置则为开始时间)，以步数命名
     void SaveMap();
     //向SaveDict文件夹中的steps.txt保存当前步数的操作
