@@ -47,17 +47,13 @@ end
 
 function love.filedropped(file)
     Debug.Log("info", "directorydropped " .. file:getFilename())
-    for word in string.gmatch(file:getFilename(), "Commander\\.*%.map") do
-        for path in string.gmatch(word, "\\.*\\") do
-            PlayGame.droppedFilePath = path
-            -- print(path)
-            PlayGame.droppedFile = string.sub(word, 10 + string.len(path))
-            -- print(PlayGame.droppedFile)
-        end
-        -- for name in string.gmatch(word, "\\.*%.map") do
-        -- print(name)
-        -- end
-    end
+    PlayGame.droppedFile = file:getFilename()
+    -- for word in string.gmatch(file:getFilename(), "Commander\\.*%.map") do
+    --     for path in string.gmatch(word, "\\.*\\") do
+    --         PlayGame.droppedFilePath = path
+    --         PlayGame.droppedFile = string.sub(word, 10 + string.len(path))
+    --     end
+    -- end
     PlayGame.LoadMap()
 end
 

@@ -3,7 +3,6 @@ local PlayGame = {}
 local Operation = require("PlayGame.Operation")
 
 PlayGame.armyNum = 0
-PlayGame.droppedFilePath = nil
 PlayGame.droppedFile = nil
 
 function PlayGame.Init()
@@ -14,9 +13,9 @@ end
 
 function PlayGame.LoadMap()
     if PlayGame.droppedFile == nil then
-        PlayGame.armyNum = CGameMap.LoadMap("Output", "1v1.map")
+        PlayGame.armyNum = CGameMap.LoadMap("default")
     else
-        PlayGame.armyNum = CGameMap.LoadMap(PlayGame.droppedFilePath, PlayGame.droppedFile)
+        PlayGame.armyNum = CGameMap.LoadMap(PlayGame.droppedFile)
     end
     BasicMap.Init()
 end
