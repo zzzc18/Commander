@@ -192,7 +192,6 @@ bool MAP::ChangeType(VECTOR aim, int type) {
             break;
         case 3:
             _mat[aim.x][aim.y].type = NODE_TYPE::KING;
-            this->_armyCnt++;
             _mat[aim.x][aim.y].unitNum = 0;
             break;
         case 4:

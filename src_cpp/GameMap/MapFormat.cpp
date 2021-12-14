@@ -46,11 +46,18 @@ std::istream& operator>>(std::istream& is, MAP& map) {
     return is;
 }
 std::ostream& operator<<(std::ostream& os, const MAP& map) {
-    os << "army : " << map._armyCnt << std::endl;
+    os << "army : " << std::endl;
+    int armyCnt = 0;
     os << "size : " << map._sizeX << ' ' << map._sizeY << std::endl;
     for (int i = 0; i < map._sizeX; ++i) {
-        for (int j = 0; j < map._sizeY; ++j)
+        for (int j = 0; j < map._sizeY; ++j) {
             os << i << ' ' << j << " : " << map._mat[i][j] << std::endl;
+            if (map._mat[i][j].type == NODE_TYPE::KING) {
+                armyCnt++;
+            }
+        }
     }
+    os.seekp(sizeof("army : ") - 1, std::ios::beg);
+    os << armyCnt;
     return os;
 }
