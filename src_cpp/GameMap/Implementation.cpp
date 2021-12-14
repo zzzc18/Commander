@@ -200,8 +200,9 @@ bool MAP::ChangeType(VECTOR aim, int type) {
             _mat[aim.x][aim.y].unitNum = 1;
             break;
         case 5:
-            _mat[aim.x][aim.y].type = NODE_TYPE::OBSTACLE;
-            _mat[aim.x][aim.y].unitNum = 1;
+            // _mat[aim.x][aim.y].type = NODE_TYPE::OBSTACLE;
+            // _mat[aim.x][aim.y].unitNum = 1;
+            return false;
             break;
         case 6:
             _mat[aim.x][aim.y].type = NODE_TYPE::MARSH;
@@ -336,7 +337,8 @@ void MAP::SaveMap() {
     std::ofstream mapout(SaveDict + "/" + std::to_string(step) + ".map");
     mapout << *this;
     mapout.close();
-    Debug::Singleton().Log("info", "Map Saved");
+    Debug::Singleton().Log("info", "Map Saved to " + SaveDict + "/" +
+                                       std::to_string(step) + ".map");
     std::ofstream mcdout(SaveDict + "/" + std::to_string(step) + ".mcd");
     // mcd是moveCommands的简称
     for (int armyID = 0; armyID < GameMap::MAX_ARMY_CNT + 1; armyID++) {

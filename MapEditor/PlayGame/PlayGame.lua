@@ -37,6 +37,7 @@ function PlayGame.keypressed(key, scancode, isrepeat)
 end
 
 function PlayGame.keyreleased(key, scancode)
+    Operation.CatchKeyreleased(key)
 end
 
 function PlayGame.UpdateTimerSecond(dt)

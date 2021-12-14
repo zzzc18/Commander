@@ -1,0 +1,2 @@
+cd ./MapEditor/
+start lovec .
