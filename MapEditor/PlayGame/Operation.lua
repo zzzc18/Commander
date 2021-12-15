@@ -125,7 +125,7 @@ function Operation.CatchMouseReleased(pixelX, pixelY, button, istouch, presses)
 end
 
 function Operation.Catchwheelmoved(x, y)
-    if Operation.SelectPos == nil then
+    if Operation.SelectPos == nil or Operation.stateKey["lctrl"] or Operation.stateKey["rctrl"] then
         return
     end
     if y > 0 then
