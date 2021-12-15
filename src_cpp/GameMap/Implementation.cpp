@@ -202,9 +202,8 @@ bool MAP::ChangeType(VECTOR aim, int type) {
             return false;
             break;
         case 6:
-            // _mat[aim.x][aim.y].type = NODE_TYPE::MARSH;
-            // _mat[aim.x][aim.y].unitNum = 1;
-            return false;
+            _mat[aim.x][aim.y].type = NODE_TYPE::MARSH;
+            _mat[aim.x][aim.y].unitNum = 1;
             break;
         default:
             break;
