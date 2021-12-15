@@ -169,6 +169,8 @@ bool MAP::IncreaseOrDecrease(VECTOR aim, int mode) {
             if (mode == 2) {
                 if (_mat[aim.x][aim.y].unitNum > 0) {
                     _mat[aim.x][aim.y].unitNum--;
+                } else {
+                    return false;
                 }
             }
         }
@@ -177,9 +179,6 @@ bool MAP::IncreaseOrDecrease(VECTOR aim, int mode) {
 }
 
 bool MAP::ChangeType(VECTOR aim, int type) {
-    if (_mat[aim.x][aim.y].type == NODE_TYPE::KING) {
-        _armyCnt--;
-    }
     switch (type) {
         case 1:
             _mat[aim.x][aim.y].type = NODE_TYPE::HILL;
@@ -192,7 +191,6 @@ bool MAP::ChangeType(VECTOR aim, int type) {
             break;
         case 3:
             _mat[aim.x][aim.y].type = NODE_TYPE::KING;
-            _mat[aim.x][aim.y].unitNum = 0;
             break;
         case 4:
             _mat[aim.x][aim.y].type = NODE_TYPE::FORT;
@@ -204,8 +202,9 @@ bool MAP::ChangeType(VECTOR aim, int type) {
             return false;
             break;
         case 6:
-            _mat[aim.x][aim.y].type = NODE_TYPE::MARSH;
-            _mat[aim.x][aim.y].unitNum = 1;
+            // _mat[aim.x][aim.y].type = NODE_TYPE::MARSH;
+            // _mat[aim.x][aim.y].unitNum = 1;
+            return false;
             break;
         default:
             break;
@@ -225,7 +224,6 @@ bool MAP::ChangeBelong(VECTOR aim, int colorNum) {
         _mat[aim.x][aim.y].type == NODE_TYPE::KING) {
         _mat[aim.x][aim.y].unitNum = 0;
         _mat[aim.x][aim.y].type = NODE_TYPE::BLANK;
-        this->_armyCnt--;
     }
     return true;
 }
@@ -236,7 +234,7 @@ void MAP::ResizeMap(char direction, bool add) {
              (direction == 'w' || direction == 's')) ||
             (_sizeY >= MAX_GRAPH_SIZE &&
              (direction == 'a' || direction == 'd'))) {
-            Debug::Singleton().Log("info", std::string("size limit ") +
+            Debug::Singleton().Log("info", std::string("size limited: ") +
                                                std::to_string(MAX_GRAPH_SIZE) +
                                                "x" +
                                                std::to_string(MAX_GRAPH_SIZE));

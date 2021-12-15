@@ -56,18 +56,17 @@ function Operation.CatchKeyPressed(key)
     elseif key == "f" then
         CGameMap.ChangeType(x, y, 4)
         Debug.Log("info", string.format("Change %d,%d to FORT type", x, y))
-    elseif key == "m" then
-        CGameMap.ChangeType(x, y, 6)
-        Debug.Log("info", string.format("Change %d,%d to MARSH type", x, y))
     elseif key == "space" then
-        CGameMap.ChangeBelong(x, y, Color.colorNum)
-        if CGameMap.GetNodeType(x, y) ~= "NODE_TYPE_HILL" then
+        if CGameMap.ChangeBelong(x, y, Color.colorNum) then
             Debug.Log("info", string.format("Change the belong of %d,%d", x, y))
         end
     end
-    -- elseif if key == "o" then
+    -- elseif key == "o" then
     --     CGameMap.ChangeType(x, y, 5)  --禁用obstacle，调了也没用
     --     Debug.Log("info", string.format("Change %d,%d to OBSTACLE type", x, y))
+    -- elseif key == "m" then
+    --     CGameMap.ChangeType(x, y, 6)
+    --     Debug.Log("info", string.format("Change %d,%d to MARSH type", x, y))
 
     Operation.Select(x, y)
 end
@@ -109,8 +108,9 @@ function Operation.CatchMousePressed(pixelX, pixelY, button, istouch, presses)
                     end
                     Debug.Log("info", string.format("Decrease 10 at %d,%d", x, y))
                 else
-                    Operation.Decrease(x, y)
-                    Debug.Log("info", string.format("Decrease 1 at %d,%d", x, y))
+                    if Operation.Decrease(x, y) then
+                        Debug.Log("info", string.format("Decrease 1 at %d,%d", x, y))
+                    end
                 end
             end
         else

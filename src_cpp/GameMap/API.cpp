@@ -266,7 +266,6 @@ static int IncreaseOrDecrease(lua_State *luaState) {
     APIparam(luaState, aimX, aimY, mode);
     return APIreturn(luaState,
                      MAP::Singleton().IncreaseOrDecrease({aimX, aimY}, mode));
-    // return APIreturn(luaState, true);
 }
 /**
  * @brief 改变目标格点的类型
