@@ -59,14 +59,12 @@ end
 
 function PlayGame.filedropped(file)
     fileName = file:getFilename()
+    if string.match(fileName, "[\128-\191]") then
+        Debug.Log("info", "Cannot open file " .. fileName)
+        return
+    end
     Debug.Log("info", "directory dropped " .. fileName)
     PlayGame.droppedFile = fileName
-    -- for word in string.gmatch(fileName, "Commander\\.*%.map") do
-    --     for path in string.gmatch(word, "\\.*\\") do
-    --         PlayGame.droppedFilePath = path
-    --         PlayGame.droppedFile = string.sub(word, 10 + string.len(path))
-    --     end
-    -- end
     PlayGame.LoadMap()
 end
 
