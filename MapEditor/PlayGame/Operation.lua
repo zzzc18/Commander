@@ -56,6 +56,9 @@ function Operation.CatchKeyPressed(key)
     elseif key == "f" then
         CGameMap.ChangeType(x, y, 4)
         Debug.Log("info", string.format("Change %d,%d to FORT type", x, y))
+    elseif key == "m" then
+        CGameMap.ChangeType(x, y, 6)
+        Debug.Log("info", string.format("Change %d,%d to MARSH type", x, y))
     elseif key == "space" then
         if CGameMap.ChangeBelong(x, y, Color.colorNum) then
             Debug.Log("info", string.format("Change the belong of %d,%d", x, y))
@@ -64,9 +67,6 @@ function Operation.CatchKeyPressed(key)
     -- elseif key == "o" then
     --     CGameMap.ChangeType(x, y, 5)  --禁用obstacle，调了也没用
     --     Debug.Log("info", string.format("Change %d,%d to OBSTACLE type", x, y))
-    -- elseif key == "m" then
-    --     CGameMap.ChangeType(x, y, 6)
-    --     Debug.Log("info", string.format("Change %d,%d to MARSH type", x, y))
 
     Operation.Select(x, y)
 end

@@ -46,15 +46,7 @@ function love.keyreleased(key, scancode)
 end
 
 function love.filedropped(file)
-    Debug.Log("info", "directorydropped " .. file:getFilename())
-    PlayGame.droppedFile = file:getFilename()
-    -- for word in string.gmatch(file:getFilename(), "Commander\\.*%.map") do
-    --     for path in string.gmatch(word, "\\.*\\") do
-    --         PlayGame.droppedFilePath = path
-    --         PlayGame.droppedFile = string.sub(word, 10 + string.len(path))
-    --     end
-    -- end
-    PlayGame.LoadMap()
+    Running.filedropped(file)
 end
 
 function love.update(dt)
