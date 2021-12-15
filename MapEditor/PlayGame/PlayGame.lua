@@ -24,6 +24,7 @@ end
 
 function PlayGame.wheelmoved(x, y)
     MapAdjust.Catchwheelmoved(x, y)
+    Operation.Catchwheelmoved(x, y)
 end
 
 function PlayGame.mousepressed(pixelX, pixelY, button, istouch, presses)

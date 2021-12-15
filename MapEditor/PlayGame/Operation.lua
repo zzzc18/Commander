@@ -124,6 +124,18 @@ end
 function Operation.CatchMouseReleased(pixelX, pixelY, button, istouch, presses)
 end
 
+function Operation.Catchwheelmoved(x, y)
+    if Operation.SelectPos == nil then
+        return
+    end
+    if y > 0 then
+        Operation.Increase(Operation.SelectPos.x, Operation.SelectPos.y)
+    end
+    if y < 0 then
+        Operation.Decrease(Operation.SelectPos.x, Operation.SelectPos.y)
+    end
+end
+
 function Operation.DrawSelect()
     if Operation.SelectPos == nil then
         return
