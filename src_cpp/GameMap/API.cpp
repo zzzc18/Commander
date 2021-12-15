@@ -113,6 +113,17 @@ static int SaveEdit(lua_State *luaState) {
     return APIreturn(luaState);
 }
 /**
+ * @brief 编辑器：编辑地图大小
+ *
+ */
+static int ResizeMap(lua_State *luaState) {
+    std::string direction;
+    int add;
+    APIparam(luaState, direction, add);
+    MAP::Singleton().ResizeMap(direction[0], add);
+    return APIreturn(luaState);
+}
+/**
  * @brief 保存地图至文件
  *
  * @param @c void
@@ -300,8 +311,8 @@ static int Surrender(lua_State *luaState) {
 LUA_REG_FUNC(GameMap, C_API(RandomGenMap), C_API(InitSavedata),
              C_API(SaveGameOver), C_API(LoadMap), C_API(LoadReplayFile),
              C_API(LoadCheckPoint), C_API(GetReplayStatus), C_API(SaveEdit),
-             C_API(WriteMap), C_API(GetSize), C_API(GetVision),
-             C_API(GetNodeType), C_API(GetUnitNum), C_API(GetBelong),
-             C_API(GetArmyPath), C_API(GetFolder), C_API(GetKingPos),
-             C_API(PushMove), C_API(Judge), C_API(Surrender),
+             C_API(ResizeMap), C_API(WriteMap), C_API(GetSize),
+             C_API(GetVision), C_API(GetNodeType), C_API(GetUnitNum),
+             C_API(GetBelong), C_API(GetArmyPath), C_API(GetFolder),
+             C_API(GetKingPos), C_API(PushMove), C_API(Judge), C_API(Surrender),
              C_API(IncreaseOrDecrease), C_API(ChangeType), C_API(ChangeBelong))

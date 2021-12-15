@@ -209,8 +209,8 @@ function BasicMap.Init()
     BasicMap.Focus.pixelX, BasicMap.Focus.pixelY = love.graphics.getDimensions()
     BasicMap.Focus.pixelX = BasicMap.Focus.pixelX / 2
     BasicMap.Focus.pixelY = BasicMap.Focus.pixelY / 2
-    BasicMap.Focus.x = BasicMap.MapSize.x / 2
-    BasicMap.Focus.y = BasicMap.MapSize.y / 2
+    BasicMap.Focus.x = math.floor(BasicMap.MapSize.x / 2)
+    BasicMap.Focus.y = math.floor(BasicMap.MapSize.y / 2)
     BasicMap.horizontalDis = math.sqrt(3) * BasicMap.radius
     BasicMap.verticalDis = 1.5 * BasicMap.radius
 end

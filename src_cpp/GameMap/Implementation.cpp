@@ -230,6 +230,87 @@ bool MAP::ChangeBelong(VECTOR aim, int colorNum) {
     return true;
 }
 
+void MAP::ResizeMap(char direction, bool add) {
+    if (add) {
+        if ((_sizeX >= MAX_GRAPH_SIZE &&
+             (direction == 'w' || direction == 's')) ||
+            (_sizeY >= MAX_GRAPH_SIZE &&
+             (direction == 'a' || direction == 'd'))) {
+            Debug::Singleton().Log("info", std::string("size limit ") +
+                                               std::to_string(MAX_GRAPH_SIZE) +
+                                               "x" +
+                                               std::to_string(MAX_GRAPH_SIZE));
+            return;
+        }
+        switch (direction) {  //第一维是竖直方向，第二维是水平方向
+            case 'w':         //上
+                this->_sizeX++;
+                for (int i = this->_sizeX - 1; i >= 0; i--) {
+                    for (int j = this->_sizeY - 1; j >= 0; j--) {
+                        this->_mat[i][j] =
+                            (i == 0) ? NODE() : this->_mat[i - 1][j];
+                    }
+                }
+                break;
+            case 's':  //下
+                for (int j = 0; j < this->_sizeY; j++) {
+                    this->_mat[this->_sizeX][j] = NODE();
+                }
+                this->_sizeX++;
+                break;
+            case 'a':  //左
+                this->_sizeY++;
+                for (int i = this->_sizeX - 1; i >= 0; i--) {
+                    for (int j = this->_sizeY - 1; j >= 0; j--) {
+                        this->_mat[i][j] =
+                            (j == 0) ? NODE() : this->_mat[i][j - 1];
+                    }
+                }
+                break;
+            case 'd':  //右
+                for (int i = 0; i < this->_sizeX; i++) {
+                    this->_mat[i][this->_sizeY] = NODE();
+                }
+                this->_sizeY++;
+                break;
+            default:
+                break;
+        }
+    } else {
+        if ((_sizeX <= 1 && (direction == 'w' || direction == 's')) ||
+            (_sizeY <= 1 && (direction == 'a' || direction == 'd'))) {
+            Debug::Singleton().Log("info", "Cannot shrink");
+            return;
+        }
+        switch (direction) {
+            case 'w':  //上
+                this->_sizeX--;
+                for (int i = 0; i < this->_sizeX; i++) {
+                    for (int j = 0; j < this->_sizeY; j++) {
+                        this->_mat[i][j] = this->_mat[i + 1][j];
+                    }
+                }
+                break;
+            case 's':  //下
+                this->_sizeX--;
+                break;
+            case 'a':  //左
+                this->_sizeY--;
+                for (int i = 0; i < this->_sizeX; i++) {
+                    for (int j = 0; j < this->_sizeY; j++) {
+                        this->_mat[i][j] = this->_mat[i][j + 1];
+                    }
+                }
+                break;
+            case 'd':  //右
+                this->_sizeY--;
+                break;
+            default:
+                break;
+        }
+    }
+}
+
 void MAP::RandomGen(
     int armyCnt, int sizeX, int sizeY, std::string mapName,
     int level) {  // sizeX = 24, sizeY = 24, mapName = "map", level = 0
@@ -514,7 +595,8 @@ NODE_TYPE MAP::GetType(VECTOR pos) const {
     if (!InMap(pos)) {
         Debug::Singleton().Log("error", "Invalid Position");
         return NODE_TYPE::HILL;
-        // throw std::runtime_error("Invalid Position");//这可能会导致闪退
+        // throw std::runtime_error("Invalid
+        // Position");//这可能会导致闪退
     }
     NODE_TYPE type = _mat[pos.x][pos.y].type;
     if (this->IsViewable(pos)) return type;

@@ -36,6 +36,8 @@ function Operation.CatchKeyPressed(key)
         return
     end
 
+    Operation.ResizeMap(key)
+
     if Operation.SelectPos == nil then
         return
     end
@@ -146,7 +148,24 @@ function Operation.Decrease(x, y)
     CGameMap.IncreaseOrDecrease(newRequest.aimX, newRequest.aimY, 2)
 end
 
+function Operation.ResizeMap(key)
+    if not (key == "w" or key == "s" or key == "a" or key == "d") then
+        return
+    end
+    if Operation.stateKey["lalt"] or Operation.stateKey["ralt"] then
+        CGameMap.ResizeMap(key, 1)
+        Debug.Log("info", "Enlarge map")
+    end
+    if Operation.stateKey["lshift"] or Operation.stateKey["rshift"] then
+        CGameMap.ResizeMap(key, 0)
+        Debug.Log("info", "Shrink map")
+    end
+    BasicMap.Init()
+    Operation.SelectPos = nil
+end
+
 function Operation.Update(mouseX, mouseY)
+    -- print(BasicMap.MapSize.x, BasicMap.MapSize.y)
 end
 
 return Operation

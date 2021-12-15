@@ -115,6 +115,8 @@ class MAP final {
     bool ChangeType(VECTOR aim, int type);
     //编辑器：改变格点归属，禁止用户调用！！！
     bool ChangeBelong(VECTOR aim, int colorNum);
+    //编辑器：编辑地图大小，禁止用户调用！！！
+    void ResizeMap(char direction, bool add);
 
     //回放器：从回放文件读取当前步添加到命令队列的命令
     void ReadMove(int ReplayStep);
@@ -184,9 +186,10 @@ class MAP final {
     } kingState;
     //描述地图中的点
     struct NODE {
-        NODE_TYPE type = NODE_TYPE::BLANK;  //点的类型
-        int unitNum = 0;                    //兵数
-        int belong = SERVER;                //所属军队
+        NODE() : type(NODE_TYPE::BLANK), unitNum(0), belong(SERVER) {}
+        NODE_TYPE type;  //点的类型
+        int unitNum;     //兵数
+        int belong;      //所属军队
         //国王处兵力增长
         void Update();
         //空白格兵力增长，沼泽兵力减少
